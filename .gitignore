@@ -60,6 +60,9 @@ typings/
 .env.development
 .env.staging
 
+idea
+idea/*
+
 .cache/
 public
 yarn-error.log
