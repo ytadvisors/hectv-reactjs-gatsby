@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import 'react-dates/initialize';
 import VERTICAL_ORIENTATION from 'react-dates/constants';
 import { SingleDatePicker } from 'react-dates';
+import { isServer } from './../../utils/helperFunctions';
 import 'react-dates/lib/css/_datepicker.css';
 import './styles.scss';
 
@@ -17,7 +18,7 @@ export default class CalendarSelector extends Component {
   }
 
   componentDidMount() {
-    this.smallDevice = window.matchMedia('(max-width: 400px)').matches;
+    this.smallDevice = !isServer && window.matchMedia('(max-width: 400px)').matches;
   }
 
   changeDefaultDate(date) {

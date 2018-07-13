@@ -6,6 +6,7 @@ import _ from 'lodash';
 import { Button } from 'react-bootstrap';
 import defaultImage from './../../assets/nothumbnail.png';
 import playButton from './../../assets/play-button.png';
+import { isServer } from './../../utils/helperFunctions';
 import * as Material from 'react-icons/lib/md';
 import * as Ionicons from 'react-icons/lib/io';
 import texture from './../../assets/texture.jpg';
@@ -37,16 +38,18 @@ export default class ListOfPosts extends Component {
   }
 
   componentDidMount() {
-    window.addEventListener('resize', this.resize);
-    this.setState({ isMobile: window.innerWidth <= 500 });
+    if(!isServer)
+      window.addEventListener('resize', this.resize);
+    this.setState({ isMobile: !isServer && window.innerWidth <= 500 });
   }
 
   componentWillUnmount() {
-    window.removeEventListener('resize', this.resize);
+    if(!isServer)
+      window.removeEventListener('resize', this.resize);
   }
 
   resize() {
-    this.setState({ isMobile: window.innerWidth <= 500 });
+    this.setState({ isMobile: !isServer && window.innerWidth <= 500 });
   }
 
   truncate(excerpt, truncateLength) {

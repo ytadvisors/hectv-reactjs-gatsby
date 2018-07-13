@@ -1,30 +1,43 @@
 import React from "react";
 import { graphql } from "gatsby"
-import Helmet from 'react-helmet';
+import SEO from "./../components/SEO";
 import Layout from "./../components/Layout"
+import SinglePost from "./../components/SinglePost"
 
-export default ({data, props}) => {
+export default ({data}) => {
+
   return <div>
-    <Helmet
-      title={data.wordpressPost.title}
-      meta={[
-        {name: 'description', content: 'Sample'},
-        {name: 'keywords', content: 'sample, something'},
-      ]}
-    />
-    <Layout {...props}>
-      <section>
-        {data.wordpressPost.content}
-      </section>
+    <SEO
+      {...{
+        title : data.wpPost.title,
+        image : data.wpPost.thumbnail,
+        description : data.wpPost.content.replace(/<\/?[^>]+(>|$)/g, '').substring(0, 130) + '...',
+        url : process.env.SITE_HOST,
+        pathname: data.wpPost.link.replace(/https?:\/\/[^/]+/, ''),
+        site_name : "hectv.org",
+        author: "hectv",
+        twitter_handle : "@hec_tv"
+      }}
+      />
+    <Layout style={{ background: '#eee' }}>
+      <div className="col-md-12" style={{ background: '#eee' }}>
+        <SinglePost {...{ post : data.wpPost}} />
+      </div>
     </Layout>
   </div>
 }
 
 export const query = graphql`
    query postQuery ($id: String!){
-     wordpressPost (id : { eq : $id }) {
+     wpPost: wordpressPost (id : { eq : $id }) {
         title
         content
+        thumbnail
+        link
+        acf {
+          youtube_id
+          vimeo_id
+        }
       }
    }
 `;

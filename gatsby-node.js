@@ -2,6 +2,8 @@ const _ = require(`lodash`);
 const Promise = require(`bluebird`);
 const path = require(`path`);
 const slash = require(`slash`);
+const moment = require(`moment`);
+let day = moment().format('MMMM-YYYY').toLowerCase();
 
 function createPostHelper(createPage, links, template, prefix = "posts"){
   _.each(links, link => {
@@ -10,10 +12,26 @@ function createPostHelper(createPage, links, template, prefix = "posts"){
       component: slash(template),
       context: {
         id: link.node.id,
-        slug : link.node.slug
+        slug : link.node.slug,
+        day : day
       },
     })
   })
+}
+
+function createCategoryPageHelper(createPage, links, template){
+  _.each(links, obj => {
+    console.log("LINK", obj);
+    const newLink = obj.node.link.replace(/https?:\/\/[^/]+/, '');
+    createPage({
+      path: newLink,
+      component: slash(template),
+      context: {
+        slug : obj.node.slug,
+        day : day
+      }
+    })
+  });
 }
 
 function createPageHelper(createPage, links, template){
@@ -24,7 +42,8 @@ function createPageHelper(createPage, links, template){
       path: newLink,
       component: slash(template),
       context: {
-        slug : link.object_slug
+        slug : link.object_slug,
+        day : day
       }
     })
     if (link.wordpress_children) {
@@ -97,7 +116,37 @@ exports.createPages = ({ graphql, boundActionCreators }) => {
             reject(result.errors)
           }
           const eventTemplate = path.resolve("./src/templates/event.js");
-          createPostHelper(createPage, result.data.allWordpressWpEvent.edges, eventTemplate, "events");
+          createPostHelper(createPage, result.data.allWordpressWpEvent.edges, eventTemplate, "event");
+        })
+      })
+      .then(() => {
+        graphql(
+          `
+          {
+             allWordpressCategory{
+              edges{
+                node {
+                  name
+                  slug
+                  link
+                  wordpress_parent
+                  wordpress_id
+                  parent_element{
+                    name
+                    slug
+                  }
+                }
+              }
+            }
+          }
+          `
+        ).then(result => {
+          if (result.errors) {
+            console.log(result.errors)
+            reject(result.errors)
+          }
+          const pageTemplate = path.resolve("./src/templates/category.js");
+          createCategoryPageHelper(createPage, result.data.allWordpressCategory.edges, pageTemplate);
         })
       })
       .then(() => {
@@ -110,7 +159,6 @@ exports.createPages = ({ graphql, boundActionCreators }) => {
                     id
                     slug
                     title
-                    
                   }
                 }
               }
@@ -122,7 +170,7 @@ exports.createPages = ({ graphql, boundActionCreators }) => {
             reject(result.errors)
           }
           const magazineTemplate = path.resolve("./src/templates/magazine.js");
-          createPostHelper(createPage, result.data.allWordpressWpMagazine.edges, magazineTemplate, "magazines");
+          createPostHelper(createPage, result.data.allWordpressWpMagazine.edges, magazineTemplate, "magazine");
         })
       })
       .then(() => {

@@ -30,7 +30,7 @@ module.exports = {
         verboseOutput: false,
         concurrentRequests: 10,
         auth: {},
-        excludedRoutes: ["/jetpack/**", "/*/*/categories", "/*/*/tags", "/*/*/settings", "/*/*/media", "/*/*/comments", "/*/*/users/*",  "/yoast/**"]
+        excludedRoutes: ["/jetpack/**", "/*/*/tags", "/*/*/settings", "/*/*/media", "/*/*/comments", "/*/*/users/*",  "/yoast/**"]
       },
     },
     {

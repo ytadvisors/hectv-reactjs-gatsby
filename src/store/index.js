@@ -2,6 +2,7 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import reducers from './reducers';
 import mainSaga from './sagas';
 import logger from 'redux-logger';
+import { isServer } from './../utils/helperFunctions';
 import createSagaMiddleware from 'redux-saga';
 
 const sagaMiddleware = createSagaMiddleware();
@@ -14,8 +15,7 @@ const middlewares =
 export default function configureStore(initialState = {}) {
   // Create the store with two middlewares
   const composeEnhancers =
-    (process.env.NODE_ENV !== 'production' &&
-    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) ||
+    (process.env.NODE_ENV !== 'production' && !isServer && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) ||
     compose;
   const enhancers = [applyMiddleware(...middlewares)];
 
