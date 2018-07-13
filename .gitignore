@@ -62,6 +62,7 @@ typings/
 
 idea
 idea/*
+yarn.lock
 
 .cache/
 public
