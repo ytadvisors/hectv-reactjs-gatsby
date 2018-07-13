@@ -3,7 +3,7 @@ pipeline {
   stages {
     stage('Build & Deploy') {
       steps {
-        sh 'yarn deploy:staging'
+        sh 'npm deploy:staging'
       }
     }
     stage('Clean Up') {
