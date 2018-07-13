@@ -60,8 +60,9 @@ typings/
 .env.development
 .env.staging
 
-idea
-idea/*
+.idea
+.idea/*
+yarn.lock
 
 .cache/
 public

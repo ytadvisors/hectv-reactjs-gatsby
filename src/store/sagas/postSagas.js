@@ -105,7 +105,7 @@ function mapPost(result) {
     }
   }
 
-  response.categories = result.categories;
+  response.categories = result.category_list;
 
   return response;
 }

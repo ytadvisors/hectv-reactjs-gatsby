@@ -1,6 +1,13 @@
 import React, { Component } from 'react';
 import * as FontAwesome from 'react-icons/lib/fa';
 
+// A nice helper to tell us if we're on the server
+export const isServer = !(
+  typeof window !== 'undefined' &&
+  window.document &&
+  window.document.createElement
+);
+
 function getSocialIcon(title, size, color) {
   switch (title.toLowerCase()) {
     case 'facebook':

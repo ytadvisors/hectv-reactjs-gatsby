@@ -5,6 +5,7 @@ import SocialLinks from './../../components/SocialLinks';
 import NavWrap from './../../components/NavWrap';
 import PropTypes from 'prop-types';
 import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
+import { isServer } from './../../utils/helperFunctions';
 import { Link } from "gatsby"
 import logo from './../../assets/white_hec.png';
 import $ from 'jquery';
@@ -168,7 +169,7 @@ export default class Header extends Component {
       openLink
     } = this.props;
 
-    const isMobile = window.innerWidth <= 1170;
+    const isMobile = !isServer && window.innerWidth <= 1170;
     let style = isMobile
       ? { width: window.innerWidth - 50 + 'px', right: '12px' }
       : {};

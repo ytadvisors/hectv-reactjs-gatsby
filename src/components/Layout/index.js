@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import { StaticQuery, graphql } from "gatsby"
 import $ from 'jquery';
+import ProgramViewer from './../../components/ProgramViewer';
 import "./../../../node_modules/bootstrap/dist/css/bootstrap.css";
 import "./../../../node_modules/bootstrap/dist/css/bootstrap-theme.css";
 import "./../../../node_modules/slick-carousel/slick/slick.css";
@@ -12,8 +13,7 @@ import Header from "./../../components/Header";
 import Footer from "./../../components/Footer";
 
 
-export default (props) => {
-  const {children} = props;
+export default ({children, style, category_slug}) => {
   return <StaticQuery
     query={graphql`
            query MenuQuery {
@@ -45,7 +45,9 @@ export default (props) => {
         const social = menus.reduce((result, menu) => menu.node.name === "Social" ? menu.node.items : result);
         return <section>
           <Header header={header} social={social}/>
-          {children}
+            <ProgramViewer style={style}>
+              {children}
+            </ProgramViewer>
           <Footer footer={footer} social={social}/>
         </section>
       }

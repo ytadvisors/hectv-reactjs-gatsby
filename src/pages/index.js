@@ -6,7 +6,7 @@ import Layout from "./../components/Layout"
 export default ({data, props}) => {
   return <div>
     <Helmet
-      title={data.wordpressPage.title}
+      title={data.wpPage.title}
       meta={[
         {name: 'description', content: 'Sample'},
         {name: 'keywords', content: 'sample, something'},
@@ -14,7 +14,7 @@ export default ({data, props}) => {
     />
     <Layout {...props}>
       <section>
-        {data.wordpressPage.content}
+        {data.wpPage.content}
       </section>
     </Layout>
   </div>
@@ -22,7 +22,7 @@ export default ({data, props}) => {
 
 export const query = graphql`
    query homePageQuery {
-     wordpressPage (slug : { eq : "home" }) {
+     wpPage: wordpressPage (slug : { eq : "home" }) {
        title
        content
      }

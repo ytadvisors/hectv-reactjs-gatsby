@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from "gatsby"
 import PropTypes from 'prop-types';
 import logo from './../../assets/white_hec.png';
-import { getSocialMenuObject } from './../../utils/helperFunctions';
+import { getSocialMenuObject, isServer } from './../../utils/helperFunctions';
 import SocialLinks from './../../components/SocialLinks';
 import _ from 'lodash';
 
@@ -14,7 +14,7 @@ export default class Footer extends Component {
   }
 
   componentDidMount() {
-    this.isMobile = window.innerWidth <= 500;
+    this.isMobile = !isServer && window.innerWidth <= 500;
   }
 
   componentDidMount() {}

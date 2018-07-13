@@ -16,15 +16,15 @@ export default class PostApi extends MainApi {
   }
 
   getSubCategories(parent) {
-    return this.json_api.get(`categories?parent=${parent}`);
+    return this.json_api.get(`category_list?parent=${parent}`);
   }
 
   getCategory(slug) {
-    return this.json_api.get(`categories?slug=${slug}`);
+    return this.json_api.get(`category_list?slug=${slug}`);
   }
 
   getCategoryById(id) {
-    return this.json_api.get(`categories/${id}`);
+    return this.json_api.get(`category_list/${id}`);
   }
 
   getAllPosts(page_category = '', page = 1) {
@@ -32,7 +32,7 @@ export default class PostApi extends MainApi {
       return this.json_api.get(`posts?per_page=10&page=${page}`);
     else {
       return this.json_api.get(
-        `posts?per_page=10&page=${page}&categories=${page_category}`
+        `posts?per_page=10&page=${page}&category_list=${page_category}`
       );
     }
   }
@@ -55,10 +55,10 @@ export default class PostApi extends MainApi {
     return this.json_api.get(`posts/${post_id}`);
   }
 
-  getCategoriesPosts(categories = [], page = 1, per_page = 3) {
+  getCategoriesPosts(category_list = [], page = 1, per_page = 3) {
     return this.json_api.get(
-      `posts?per_page=${per_page}&page=${page}&categories[]=${categories.join(
-        '&categories[]='
+      `posts?per_page=${per_page}&page=${page}&category_list[]=${category_list.join(
+        '&category_list[]='
       )}`
     );
   }

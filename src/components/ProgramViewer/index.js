@@ -2,15 +2,14 @@ import React, { Component } from 'react';
 import SideNavigation from './../../components/SideNavigation';
 import ListOfSideTabs from './../../components/ListOfSideTabs';
 import ListOfMagazines from './../../components/ListOfMagazines';
-import PostHeader from './../../components/PostHeader';
 
-import ScheduleContainer from './../../containers/ScheduleContainer';
-import ListOfEventsContainer from './../../containers/ListOfEventsContainer';
+import Schedule from './../../components/Schedule';
+import ListOfEvents from './../../components/ListOfEvents';
 import NewsLetter from './../../components/NewsLetter';
 import SignUp from './../../components/SignUp';
 import './styles.scss';
 
-export default ({style, children}) => {
+export default ({style, schedule, children}) => {
 
     return (
       <section className="program-viewer">
@@ -28,7 +27,7 @@ export default ({style, children}) => {
               <SideNavigation>
                 <div className="row">
                   <div className="col-sm-4 col-sm-push-8 col-lg-12 col-lg-push-0 no-padding">
-                    <ListOfEventsContainer />
+                    <ListOfEvents />
                   </div>
                   <div className="col-sm-8 col-sm-pull-4  col-lg-12 col-lg-pull-0  no-padding">
                     <ListOfSideTabs
@@ -48,7 +47,7 @@ export default ({style, children}) => {
                 </div>
                 <div className="row">
                   <div className="col-sm-4 col-sm-push-8 col-lg-12 col-lg-push-0 no-padding">
-                    <ScheduleContainer />
+                    <Schedule schedule={schedule}/>
                   </div>
                   <div className="col-sm-8 col-sm-pull-4  col-lg-12 col-lg-pull-0  no-padding">
                     <ListOfMagazines />
