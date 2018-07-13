@@ -1,10 +1,5 @@
 pipeline {
-  agent {
-    node {
-      label 'Run Environment'
-    }
-
-  }
+  agent any
   stages {
     stage('Build & Deploy') {
       steps {
