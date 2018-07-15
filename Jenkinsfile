@@ -16,9 +16,14 @@ pipeline {
         sh 'npm run build:staging 2>&1'
       }
     }
-    stage('Deploy') {
+    stage('S3 sync dynamic content') {
       steps {
-        sh 'npm run deploy:staging'
+        sh 'npm run sync-dynamic:staging'
+      }
+    }
+    stage('S3 sync static content') {
+      steps {
+        sh 'npm run sync-static:staging'
       }
     }
   }
