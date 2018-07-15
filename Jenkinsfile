@@ -1,17 +1,16 @@
 pipeline {
-    agent { docker { image 'node:6.3' } }
-    stages {
-        stage('build') {
-            steps {
-                sh 'npm --version'
-                sh 'npm install'
-                sh 'npm run deploy:staging'
-            }
-        }
-        stage('Clean Up') {
-            steps {
-                echo 'Completed'
-            }
-        }
+  agent {
+    node {
+      label 'build_machine_node'
     }
+
+  }
+  stages {
+    stage('Install') {
+      steps {
+        sh 'npm install'
+        sh 'npm run deploy:staging'
+      }
+    }
+  }
 }
