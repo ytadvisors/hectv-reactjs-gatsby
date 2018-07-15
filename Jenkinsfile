@@ -1,7 +1,7 @@
 pipeline {
   agent {
-    docker {
-      image 'image \'node:7.4\''
+    node {
+      label 'build'
     }
 
   }
