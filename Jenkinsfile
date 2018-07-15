@@ -1,19 +1,21 @@
 pipeline {
-  agent any
-  stages {
-    stage('Build') {
-      steps {
-        sh 'npm install'
-      }
+  agent {
+    docker {
+      image 'node:6.3'
     }
-    stage('Deploy to staging') {
+  }
+
+  stages {
+    stage('Install') {
       steps {
-        sh 'npm deploy:staging'
+        sh 'console.log("Start Installation")'
+        sh 'npm install'
+        sh 'npm run deploy:staging'
       }
     }
     stage('Clean Up') {
       steps {
-        echo 'Build Completed'
+        echo 'Completed'
       }
     }
   }
