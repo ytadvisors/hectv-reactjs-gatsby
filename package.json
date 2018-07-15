@@ -3,7 +3,7 @@
   "description": "HEC-TV website",
   "license": "MIT",
   "scripts": {
-    "build:staging": "ACTIVE_ENV=staging gatsby build  --verbose --no-uglify",
+    "build:staging": "ACTIVE_ENV=staging gatsby build  --verbose --noUglify",
     "build:production": "ACTIVE_ENV=production gatsby build --verbose",
     "deploy:staging": "s3-deploy './public/**' --cwd './public/' --bucket hectv-gatsby  --deleteRemoved --gzip && npm run clear",
     "deploy:production": "s3-deploy './public/**' --cwd './public/' --bucket hectv-gatsby  --deleteRemoved --gzip && npm run clear",
