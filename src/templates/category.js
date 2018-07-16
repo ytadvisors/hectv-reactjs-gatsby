@@ -11,12 +11,14 @@ export default ({data}) => {
   if(data.wpCategory.description)
     data.wpCategory.content = data.wpCategory.description;
 
+  let description = data.wpCategory.content || "On Demand Arts, Culture &amp; Education Programming";
+
   return <div>
     <SEO
       {...{
         title : `HEC-TV | ${data.wpCategory.name}`,
         image : "",
-        description : data.wpCategory.content.replace(/<\/?[^>]+(>|$)/g, '').substring(0, 130) + '...',
+        description : description.replace(/<\/?[^>]+(>|$)/g, '').substring(0, 130) + '...',
         url : process.env.SITE_HOST,
         pathname: data.wpCategory.link.replace(/https?:\/\/[^/]+/, ''),
         site_name : "hectv.org",

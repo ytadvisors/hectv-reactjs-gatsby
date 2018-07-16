@@ -6,12 +6,13 @@ import SEO from "./../components/SEO";
 import Layout from "./../components/Layout"
 
 export default ({data, props}) => {
+  let description = data.wpPage.content || "On Demand Arts, Culture &amp; Education Programming";
   return <div>
     <SEO
       {...{
         title : `HEC-TV | ${data.wpPage.title}`,
         image : "",
-        description : data.wpPage.content.replace(/<\/?[^>]+(>|$)/g, '').substring(0, 130) + '...',
+        description : description.replace(/<\/?[^>]+(>|$)/g, '').substring(0, 130) + '...',
         url : process.env.SITE_HOST,
         pathname: data.wpPage.link.replace(/https?:\/\/[^/]+/, ''),
         site_name : "hectv.org",
