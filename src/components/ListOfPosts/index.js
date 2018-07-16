@@ -9,6 +9,7 @@ import playButton from './../../assets/play-button.png';
 import { isServer } from './../../utils/helperFunctions';
 import * as Material from 'react-icons/lib/md';
 import * as Ionicons from 'react-icons/lib/io';
+import LazyLoad from 'react-lazyload';
 import texture from './../../assets/texture.jpg';
 
 import './styles.scss';
@@ -62,11 +63,13 @@ export default class ListOfPosts extends Component {
     return (
       <Link to={`/${type}/${slug}`} className="thumbnail-link">
         {format === 'video' && <img src={playButton} className="play-icon" />}
-        <img
-          src={thumbnail || defaultImage}
-          className="img-responsive full-width thumbnail-img"
-          alt=""
-        />
+        <LazyLoad height={200}>
+          <img
+            src={thumbnail || defaultImage}
+            className="img-responsive full-width thumbnail-img"
+            alt=""
+          />
+        </LazyLoad>
       </Link>
     );
   }
