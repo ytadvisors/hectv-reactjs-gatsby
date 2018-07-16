@@ -1,5 +1,5 @@
 import React from 'react';
-import Helmet from 'react-helmet';
+import { Helmet } from 'react-helmet';
 import midSizedFavicon from "./../../assets/favicons/favicon-32x32.png"
 import smallFavicon from "./../../assets/favicons/favicon-16x16.png"
 
