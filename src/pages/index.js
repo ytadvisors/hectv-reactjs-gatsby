@@ -1,6 +1,8 @@
 import React from "react";
 import { graphql } from "gatsby"
 import Helmet from 'react-helmet';
+import "./../utils/cssDependencies";
+
 import Layout from "./../components/Layout"
 
 export default ({data, props}) => {

@@ -1,5 +1,7 @@
 import React from "react";
 import { graphql } from "gatsby"
+import "./../utils/cssDependencies";
+
 import SEO from "./../components/SEO";
 import Layout from "./../components/Layout"
 import SinglePost from "./../components/SinglePost"

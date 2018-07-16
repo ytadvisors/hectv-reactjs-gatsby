@@ -19,6 +19,7 @@ module.exports = {
     title: 'HEC-TV | Home',
   },
   plugins: [
+    `gatsby-plugin-react-helmet`,
     {
       resolve: `gatsby-source-wordpress`,
       options: {
