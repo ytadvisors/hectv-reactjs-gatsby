@@ -1,4 +1,3 @@
-
 let activeEnv = process.env.ACTIVE_ENV;
 let baseUrl = "";
 let protocol = "";
@@ -16,10 +15,11 @@ if(process.env.WP_HOST){
 }
 
 module.exports = {
+  siteMetadata: {
+    title: 'HEC-TV | Home',
+  },
   plugins: [
     `gatsby-plugin-react-helmet`,
-    `gatsby-plugin-offline`,
-    `gatsby-plugin-react-next`,
     {
       resolve: `gatsby-source-wordpress`,
       options: {
