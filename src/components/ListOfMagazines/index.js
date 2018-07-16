@@ -1,6 +1,7 @@
 import React  from 'react';
 import { Link } from 'react-router-dom';
 import { StaticQuery, graphql } from "gatsby"
+import LazyLoad from 'react-lazyload';
 
 import './styles.scss';
 
@@ -39,7 +40,9 @@ export default () => {
                   <Link to={link.replace(/https?:\/\/[^/]+/, '')}>
                     <div className="row">
                       <div className="magazine-img col-xs-4 ">
-                        <img src={cover_image} className="img-responsive"/>
+                        <LazyLoad height={150}>
+                          <img src={cover_image} className="img-responsive"/>
+                        </LazyLoad>
                       </div>
                       <div
                         className="magazine-info col-xs-8"

@@ -63,4 +63,4 @@ export default ({
     { rel: 'mask-icon', color : "#5bbad5", href : safariFavicon },
   ]}
   title={title}
->
+/>
