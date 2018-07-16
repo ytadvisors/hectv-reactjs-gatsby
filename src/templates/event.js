@@ -8,12 +8,14 @@ import SinglePost from "./../components/SinglePost"
 
 export default ({data}) => {
 
+  let description = data.wpEvent.content || "On Demand Arts, Culture &amp; Education Programming";
+
   return <div>
     <SEO
       {...{
         title : data.wpEvent.title,
         image : data.wpEvent.thumbnail,
-        description : data.wpEvent.content.replace(/<\/?[^>]+(>|$)/g, '').substring(0, 130) + '...',
+        description : description.replace(/<\/?[^>]+(>|$)/g, '').substring(0, 130) + '...',
         url : process.env.SITE_HOST,
         pathname: data.wpEvent.link.replace(/https?:\/\/[^/]+/, ''),
         site_name : "hectv.org",

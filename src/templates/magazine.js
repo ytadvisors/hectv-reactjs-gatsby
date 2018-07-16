@@ -12,12 +12,14 @@ export default ({data}) => {
   if(data.wpMagazine.acf && data.wpMagazine.acf.cover_image)
     data.wpMagazine.thumbnail = data.wpMagazine.acf.cover_image;
 
+  let description = data.wpMagazine.content || "On Demand Arts, Culture &amp; Education Programming";
+
   return <div>
     <SEO
       {...{
         title : data.wpMagazine.title,
         image : data.wpMagazine.thumbnail,
-        description : data.wpMagazine.content.replace(/<\/?[^>]+(>|$)/g, '').substring(0, 130) + '...',
+        description : description.replace(/<\/?[^>]+(>|$)/g, '').substring(0, 130) + '...',
         url : process.env.SITE_HOST,
         pathname: data.wpMagazine.link.replace(/https?:\/\/[^/]+/, ''),
         site_name : "hectv.org",

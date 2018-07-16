@@ -7,13 +7,13 @@ import Layout from "./../components/Layout"
 import SinglePost from "./../components/SinglePost"
 
 export default ({data}) => {
-
+  let description = data.wpPost.content || "On Demand Arts, Culture &amp; Education Programming";
   return <div>
     <SEO
       {...{
         title : data.wpPost.title,
         image : data.wpPost.thumbnail,
-        description : data.wpPost.content.replace(/<\/?[^>]+(>|$)/g, '').substring(0, 130) + '...',
+        description : description.replace(/<\/?[^>]+(>|$)/g, '').substring(0, 130) + '...',
         url : process.env.SITE_HOST,
         pathname: data.wpPost.link.replace(/https?:\/\/[^/]+/, ''),
         site_name : "hectv.org",
