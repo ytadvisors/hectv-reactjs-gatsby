@@ -23,7 +23,6 @@
     "gatsby-plugin-google-analytics": "next",
     "gatsby-plugin-react-helmet": "next",
     "gatsby-plugin-sass": "next",
-    "gatsby-plugin-typography": "next",
     "gatsby-source-wordpress": "latest",
     "install": "0.12.1",
     "jquery": "3.3.1",
