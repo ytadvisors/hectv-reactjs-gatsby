@@ -1,14 +1,9 @@
 import React, {Component} from 'react';
 import { StaticQuery, graphql } from "gatsby"
-import $ from 'jquery';
-import ProgramViewer from './../../components/ProgramViewer';
-import "./../../../node_modules/bootstrap/dist/css/bootstrap.css";
-import "./../../../node_modules/bootstrap/dist/css/bootstrap-theme.css";
-import "./../../../node_modules/slick-carousel/slick/slick.css";
-import "./../../../node_modules/slick-carousel/slick/slick-theme.css";
-import "./../../../node_modules/react-datepicker/dist/react-datepicker.css";
-import "./styles.scss"
 
+
+import "./styles.scss"
+import ProgramViewer from './../../components/ProgramViewer';
 import Header from "./../../components/Header";
 import Footer from "./../../components/Footer";
 
