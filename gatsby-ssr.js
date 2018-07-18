@@ -6,7 +6,7 @@ import configureStore from './src/store'
 
 export const replaceRenderer = ({ bodyComponent, replaceBodyHTMLString }) => {
 
-  const store = configureStore({}).run();
+  const store = configureStore({});
   const ConnectedBody = () => (
     <Provider store={store}>
       {bodyComponent}
