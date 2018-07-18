@@ -1,4 +1,4 @@
-import React from "react";
+import React, {Component} from "react";
 import { graphql } from "gatsby"
 import { connect } from 'react-redux';
 
@@ -12,47 +12,54 @@ import EventNav from './../components/SubNavigation/EventNav';
 import Template1 from "../components/Templates/template-1/index";
 import Template3 from "../components/Templates/template-3/index";
 
-const Page = ({data}) => {
-  let title = data.wpPage.title;
 
-  if(data.wpPage.acf)
-    data.wpPage.acf.content = data.wpPage.content;
+class Page extends Component {
+  constructor(props) {
+    super(props);
+  }
 
-  let description = data.wpPage.content || "On Demand Arts, Culture &amp; Education Programming";
+  render() {
+    const {data} = this.props;
+    let title = data.wpPage.title;
+    if (data.wpPage.acf)
+      data.wpPage.acf.content = data.wpPage.content;
 
-  return <div>
-    <SEO
-      {...{
-        title : `HEC-TV | ${data.wpPage.title}`,
-        image : "",
-        description : description.replace(/<\/?[^>]+(>|$)/g, '').substring(0, 130) + '...',
-        url : process.env.SITE_HOST,
-        pathname: data.wpPage.link.replace(/https?:\/\/[^/]+/, ''),
-        site_name : "hectv.org",
-        author: "hectv",
-        twitter_handle : "@hec_tv"
-      }}
-    />
-    <Layout >
-      <div>
-        <div className="col-md-12">
-          { data.wpPage.template !== "template-2.php"
-            ? data.wpPage.slug === "events"
-              ? <EventNav />
-              : <DefaultNav title={title} link={data.wpPage.link} />
-            : ""
-          }
-        </div>
+    let description = data.wpPage.content || "On Demand Arts, Culture &amp; Education Programming";
+
+    return <div>
+      <SEO
+        {...{
+          title: `HEC-TV | ${data.wpPage.title}`,
+          image: "",
+          description: description.replace(/<\/?[^>]+(>|$)/g, '').substring(0, 130) + '...',
+          url: process.env.SITE_HOST,
+          pathname: data.wpPage.link.replace(/https?:\/\/[^/]+/, ''),
+          site_name: "hectv.org",
+          author: "hectv",
+          twitter_handle: "@hec_tv"
+        }}
+      />
+      <Layout  {...this.props}>
         <div>
-          { data.wpPage.template === "template-2.php" && <div className="col-md-12">
-            <SinglePost {...{ post: data.wpPage}} /></div> }
-          { data.wpPage.template === "template-1.php" && <Template1 {...{ page_content: data.wpPage.acf}} /> }
-          { data.wpPage.template === "template-3.php" && <Template3 {...{ page_content: data.wpPage.acf}} /> }
+          <div className="col-md-12">
+            { data.wpPage.template !== "template-2.php"
+              ? data.wpPage.slug === "events"
+                ? <EventNav />
+                : <DefaultNav title={title} link={data.wpPage.link}/>
+              : ""
+            }
+          </div>
+          <div>
+            { data.wpPage.template === "template-2.php" && <div className="col-md-12">
+              <SinglePost {...{post: data.wpPage}} /></div> }
+            { data.wpPage.template === "template-1.php" && <Template1 {...{page_content: data.wpPage.acf}} /> }
+            { data.wpPage.template === "template-3.php" && <Template3 {...{page_content: data.wpPage.acf}} /> }
+          </div>
         </div>
-      </div>
-    </Layout>
-  </div>
-};
+      </Layout>
+    </div>
+  }
+}
 
 const mapStateToProps = state => ({
   values: state.form.newsletter.values
