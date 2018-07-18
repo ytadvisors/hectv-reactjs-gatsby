@@ -16,6 +16,11 @@ import Template3 from "../components/Templates/template-3/index";
 class Page extends Component {
   constructor(props) {
     super(props);
+    debugger;
+  }
+
+  componentDidMount(){
+    debugger;
   }
 
   render() {
