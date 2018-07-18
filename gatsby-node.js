@@ -21,7 +21,6 @@ function createPostHelper(createPage, links, template, prefix = "posts"){
 
 function createCategoryPageHelper(createPage, links, template){
   _.each(links, obj => {
-    console.log("LINK", obj);
     const newLink = obj.node.link.replace(/https?:\/\/[^/]+/, '');
     createPage({
       path: newLink,
@@ -35,20 +34,17 @@ function createCategoryPageHelper(createPage, links, template){
 }
 
 function createPageHelper(createPage, links, template){
-  _.each(links, link => {
-    console.log("LINK", link);
-    const newLink = link.url.replace(/https?:\/\/[^/]+/, '');
+  _.each(links, obj => {
+    const newLink = obj.node.link.replace(/https?:\/\/[^/]+/, '');
     createPage({
       path: newLink,
       component: slash(template),
       context: {
-        slug : link.object_slug,
+        id: obj.node.id,
+        slug : obj.node.slug,
         day : day
       }
-    })
-    if (link.wordpress_children) {
-      createPageHelper(createPage, link.wordpress_children, template)
-    }
+    });
   });
 }
 
@@ -58,42 +54,26 @@ exports.createPages = ({ graphql, boundActionCreators }) => {
     graphql(
       `
        {
-         allWordpressWpApiMenusMenusItems {
+          allWordpressPage {
             edges {
               node {
-                name
                 id
-                wordpress_id
                 slug
-                items{
-                  title
-                  url
-                  wordpress_id
-                  object_slug
-                  wordpress_children {
-                    wordpress_id
-                    wordpress_parent
-                    title
-                    url
-                    object_slug
-                  }
-                }
+                status
+                template
+                link
               }
             }
           }
-       }
+        }
     `
     )
       .then(result => {
         if (result.errors) {
-          console.log(result.errors)
           reject(result.errors)
         }
         const pageTemplate = path.resolve("./src/templates/page.js");
-        const menus = result.data.allWordpressWpApiMenusMenusItems.edges;
-        const header = menus.reduce((result, menu) => menu.node.name === "Header" ? menu.node.items : result);
-        const footer = menus.reduce((result, menu) => menu.node.name === "Footer" ? menu.node.items : result);
-        createPageHelper(createPage, [ ...header, ...footer ], pageTemplate);
+        createPageHelper(createPage, result.data.allWordpressPage.edges, pageTemplate);
       })
       .then(() => {
         graphql(
