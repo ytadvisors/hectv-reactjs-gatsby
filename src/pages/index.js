@@ -1,12 +1,13 @@
 import React from "react";
 import { graphql } from "gatsby"
-import "./../utils/cssDependencies";
 
 import SEO from "./../components/SEO";
 import Layout from "./../components/Layout"
 
+import "./../utils/cssDependencies";
+
 export default ({data, props}) => {
-  let description = data.wpPage.content || "On Demand Arts, Culture &amp; Education Programming";
+  let description = data.wpPage.content || "On Demand Arts, Culture & Education Programming";
   return <div>
     <SEO
       {...{
