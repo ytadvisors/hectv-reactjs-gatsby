@@ -2,6 +2,8 @@ import React from "react";
 import { graphql } from "gatsby"
 import { connect } from 'react-redux';
 
+import "./../utils/cssDependencies";
+
 import SEO from "./../components/SEO";
 import Layout from "./../components/Layout"
 import SinglePost from "./../components/SinglePost"
@@ -9,8 +11,6 @@ import DefaultNav from './../components/SubNavigation/DefaultNav';
 import EventNav from './../components/SubNavigation/EventNav';
 import Template1 from "../components/Templates/template-1/index";
 import Template3 from "../components/Templates/template-3/index";
-
-import "./../utils/cssDependencies";
 
 const Page = ({data}) => {
   let title = data.wpPage.title;

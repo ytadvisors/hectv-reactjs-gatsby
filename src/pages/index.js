@@ -2,10 +2,10 @@ import React from "react";
 import { graphql } from "gatsby"
 import { connect } from 'react-redux';
 
+import "./../utils/cssDependencies";
+
 import SEO from "./../components/SEO";
 import Layout from "./../components/Layout"
-
-import "./../utils/cssDependencies";
 
 const Pages =  ({data, props}) => {
   let description = data.wpPage.content || "On Demand Arts, Culture & Education Programming";
