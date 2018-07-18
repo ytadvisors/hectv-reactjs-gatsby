@@ -1,7 +1,5 @@
 import React from 'react';
 import { StaticQuery, graphql } from "gatsby"
-
-
 import "./styles.scss"
 import ProgramViewer from './../../components/ProgramViewer';
 import Header from "./../../components/Header";

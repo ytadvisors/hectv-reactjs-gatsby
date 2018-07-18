@@ -1,12 +1,14 @@
 import React from "react";
 import { graphql } from "gatsby"
-import "./../utils/cssDependencies";
+import { connect } from 'react-redux';
 
 import SEO from "./../components/SEO";
 import Layout from "./../components/Layout"
 import SinglePost from "./../components/SinglePost"
 
-export default ({data}) => {
+import "./../utils/cssDependencies";
+
+const Post = ({data}) => {
   let description = data.wpPost.content || "On Demand Arts, Culture &amp; Education Programming";
   return <div>
     <SEO
@@ -28,6 +30,12 @@ export default ({data}) => {
     </Layout>
   </div>
 }
+
+const mapStateToProps = state => ({
+  values: state.form.newsletter.values
+});
+
+export default connect(mapStateToProps)(Post);
 
 export const query = graphql`
    query postQuery ($id: String!){

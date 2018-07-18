@@ -6,9 +6,10 @@ import configureStore from './src/store'
 
 export const replaceRouterComponent = ({ history }) => {
   const store = configureStore({});
-  return ({ children }) => (
+  const ConnectedRouterWrapper =  ({ children }) => (
     <Provider store={store}>
       <Router history={history}>{children}</Router>
     </Provider>
   );
+  return ConnectedRouterWrapper;
 };

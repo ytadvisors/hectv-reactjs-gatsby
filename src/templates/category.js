@@ -1,12 +1,14 @@
 import React from "react";
 import { graphql } from "gatsby"
-import "./../utils/cssDependencies";
+import { connect } from 'react-redux';
 
 import SEO from "./../components/SEO";
 import Layout from "./../components/Layout"
 import CategoryNav from './../components/SubNavigation/CategoryNav';
 
-export default ({data}) => {
+import "./../utils/cssDependencies";
+
+const Category = ({data}) => {
   data.wpCategory.content = "";
   if(data.wpCategory.description)
     data.wpCategory.content = data.wpCategory.description;
@@ -32,7 +34,13 @@ export default ({data}) => {
       </section>
     </Layout>
   </div>
-}
+};
+
+const mapStateToProps = state => ({
+  values: state.form.newsletter.values
+});
+
+export default connect(mapStateToProps)(Category);
 
 export const query = graphql`
    query categoryQuery ($slug: String!){
