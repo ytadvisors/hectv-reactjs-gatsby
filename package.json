@@ -3,7 +3,8 @@
   "description": "HEC-TV website",
   "license": "MIT",
   "scripts": {
-    "build:staging": "ACTIVE_ENV=staging node --max_old_space_size=12000  --stack-size=100000 ./node_modules/.bin/gatsby build --prefix-paths --verbose --noUglify",
+    "build:dev": "ACTIVE_ENV=staging  node --max_old_space_size=2084  ./node_modules/.bin/gatsby build --prefix-paths --verbose --noUglify",
+    "build:staging": "ACTIVE_ENV=staging node --max_old_space_size=12000  --stack-size=100000 ./node_modules/.bin/gatsby build --prefix-paths --verbose",
     "build:production": "ACTIVE_ENV=production node  --max_old_space_size=12000  --stack-size=100000 ./node_modules/.bin/gatsby build --prefix-paths --verbose",
     "sync-dynamic:staging": "aws --profile eb-cli2 s3 sync public/ s3://hectv-gatsby --exclude 'static/*' --exclude  'favicons/*'  --cache-control 'max-age=0'",
     "sync-static:staging": "aws --profile eb-cli2 s3 sync public/ s3://hectv-gatsby",
