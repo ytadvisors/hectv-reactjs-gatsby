@@ -1,5 +1,6 @@
 import React from "react";
 import { graphql } from "gatsby"
+import { connect } from 'react-redux';
 
 import SEO from "./../components/SEO";
 import Layout from "./../components/Layout"
@@ -11,7 +12,7 @@ import Template3 from "../components/Templates/template-3/index";
 
 import "./../utils/cssDependencies";
 
-export default ({data}) => {
+const Page = ({data}) => {
   let title = data.wpPage.title;
 
   if(data.wpPage.acf)
@@ -51,7 +52,13 @@ export default ({data}) => {
       </div>
     </Layout>
   </div>
-}
+};
+
+const mapStateToProps = state => ({
+  values: state.form.newsletter.values
+});
+
+export default connect(mapStateToProps)(Page);
 
 export const query = graphql`
    query defaultPageQuery ($slug: String!){

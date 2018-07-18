@@ -1,12 +1,14 @@
 import React from "react";
 import { graphql } from "gatsby"
-import "./../utils/cssDependencies";
+import { connect } from 'react-redux';
 
 import SEO from "./../components/SEO";
 import Layout from "./../components/Layout"
 import SinglePost from "./../components/SinglePost"
 
-export default ({data}) => {
+import "./../utils/cssDependencies";
+
+const Magazine = ({data}) => {
 
   data.wpMagazine.thumbnail = "";
   if(data.wpMagazine.acf && data.wpMagazine.acf.cover_image)
@@ -40,7 +42,14 @@ export default ({data}) => {
       </div>
     </Layout>
   </div>
-}
+};
+
+const mapStateToProps = state => ({
+  values: state.form.newsletter.values
+});
+
+export default connect(mapStateToProps)(Magazine);
+
 export const query = graphql`
      query magazineQuery ($id: String!){
        wpMagazine : wordpressWpMagazine (id : { eq : $id }) {

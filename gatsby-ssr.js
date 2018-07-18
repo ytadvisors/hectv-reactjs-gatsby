@@ -4,14 +4,18 @@ import { renderToString } from 'react-dom/server'
 
 import configureStore from './src/store'
 
-export const replaceRenderer = ({ bodyComponent, replaceBodyHTMLString }) => {
+export const replaceServerBodyRender = ({ component: body }) => {
 
   const store = configureStore({});
-  replaceBodyHTMLString(
-    renderToString(
-      <Provider store={store}>
-        {bodyComponent}
-      </Provider>
-    )
-  )
+
+  const ConnectedBody = () => (
+    <Provider store={store}>
+      {body}
+    </Provider>
+  );
+
+
+  return {
+    body: renderToString(<ConnectedBody/>),
+  }
 };
