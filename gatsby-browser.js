@@ -5,9 +5,7 @@ import { Provider } from 'react-redux'
 import configureStore from './src/store'
 
 export const replaceRouterComponent = ({ history }) => {
-
-
-  const { store } = configureStore({});
+  const store = configureStore({}).run();
   const ConnectedRouterWrapper = ({ children }) => (
     <Provider store={store}>
       <Router history={history}>{children}</Router>
