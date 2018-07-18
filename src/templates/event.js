@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React from "react";
 import { graphql } from "gatsby"
 import { connect } from 'react-redux';
 
@@ -8,36 +8,30 @@ import SinglePost from "./../components/SinglePost"
 
 import "./../utils/cssDependencies";
 
-class Event extends Component {
-  constructor(props) {
-    super(props);
-  }
+const Event = ({data}) => {
 
-  render() {
-    const {data} = this.props;
-    let description = data.wpEvent.content || "On Demand Arts, Culture &amp; Education Programming";
+  let description = data.wpEvent.content || "On Demand Arts, Culture & Education Programming";
 
-    return <div>
-      <SEO
-        {...{
-          title: data.wpEvent.title,
-          image: data.wpEvent.thumbnail,
-          description: description.replace(/<\/?[^>]+(>|$)/g, '').substring(0, 130) + '...',
-          url: process.env.SITE_HOST,
-          pathname: data.wpEvent.link.replace(/https?:\/\/[^/]+/, ''),
-          site_name: "hectv.org",
-          author: "hectv",
-          twitter_handle: "@hec_tv"
-        }}
-      />
-      <Layout  {...this.props}>
-        <div className="col-md-12">
-          <SinglePost {...{post: data.wpEvent}} />
-        </div>
-      </Layout>
-    </div>
-  }
-}
+  return <div>
+    <SEO
+      {...{
+        title : data.wpEvent.title,
+        image : data.wpEvent.thumbnail,
+        description : description.replace(/<\/?[^>]+(>|$)/g, '').substring(0, 130) + '...',
+        url : process.env.SITE_HOST,
+        pathname: data.wpEvent.link.replace(/https?:\/\/[^/]+/, ''),
+        site_name : "hectv.org",
+        author: "hectv",
+        twitter_handle : "@hec_tv"
+      }}
+    />
+    <Layout >
+      <div className="col-md-12" >
+        <SinglePost {...{ post : data.wpEvent}} />
+      </div>
+    </Layout>
+  </div>
+};
 
 const mapStateToProps = state => ({
   values: state.form.newsletter.values
