@@ -1,6 +1,5 @@
 import React from "react";
 import { graphql } from "gatsby"
-import "./../utils/cssDependencies";
 
 import SEO from "./../components/SEO";
 import Layout from "./../components/Layout"
@@ -9,6 +8,8 @@ import DefaultNav from './../components/SubNavigation/DefaultNav';
 import EventNav from './../components/SubNavigation/EventNav';
 import Template1 from "../components/Templates/template-1/index";
 import Template3 from "../components/Templates/template-3/index";
+
+import "./../utils/cssDependencies";
 
 export default ({data}) => {
   let title = data.wpPage.title;
