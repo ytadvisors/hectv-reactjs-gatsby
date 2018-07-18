@@ -41,7 +41,7 @@ export default () => {
                     <div className="row">
                       <div className="magazine-img col-xs-4 ">
                         <LazyLoad height={150}>
-                          <img src={cover_image} className="img-responsive"/>
+                          <img src={cover_image.replace(/^https?:\/\//, "https://")} className="img-responsive"/>
                         </LazyLoad>
                       </div>
                       <div
