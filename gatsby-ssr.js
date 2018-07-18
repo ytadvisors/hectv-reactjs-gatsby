@@ -5,8 +5,7 @@ import { renderToString } from 'react-dom/server'
 import configureStore from './src/store'
 
 export const replaceRenderer = ({ bodyComponent, replaceBodyHTMLString }) => {
-
-  const { store } = configureStore({});
+  const store = configureStore({});
   const ConnectedBody = () => (
     <Provider store={store}>
       {bodyComponent}
