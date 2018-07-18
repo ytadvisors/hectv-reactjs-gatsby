@@ -1,4 +1,4 @@
-import { createStore, applyMiddleware, compose } from 'redux';
+import { createStore as reduxCreateStore, applyMiddleware, compose } from 'redux';
 import reducers from './reducers';
 import mainSaga from './sagas';
 import logger from 'redux-logger';
@@ -19,16 +19,19 @@ export default function configureStore(initialState = {}) {
     compose;
   const enhancers = [applyMiddleware(...middlewares)];
 
-  const store = createStore(
-    reducers,
-    initialState,
-    composeEnhancers(...enhancers)
-  );
+  return {
+    run : () => {
+      const store = reduxCreateStore(
+        reducers,
+        initialState,
+        composeEnhancers(...enhancers)
+      );
 
+      // Extensions
+      store.runSaga = sagaMiddleware.run(mainSaga);
+      store.asyncReducers = {}; // Async reducer registry
+      return store;
+    }
+  };
 
-  // Extensions
-  store.runSaga = sagaMiddleware.run(mainSaga);
-  store.asyncReducers = {}; // Async reducer registry
-
-  return  { store } ;
 }
