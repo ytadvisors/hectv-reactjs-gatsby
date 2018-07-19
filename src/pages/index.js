@@ -7,15 +7,23 @@ import SEO from "./../components/SEO";
 import Layout from "./../components/Layout";
 import ListOfPosts from "./../components/ListOfPosts";
 
+const removeDuplicates = (myArr, prop) =>{
+  return myArr.filter((obj, pos, arr) => {
+    return arr.map(mapObj => mapObj[prop]).indexOf(obj[prop]) === pos;
+  });
+}
+
 export default ({data, props}) => {
   let description = data.wpPage.content || "On Demand Arts, Culture & Education Programming";
-  let posts = data.wpPage.acf
+  let featured_posts = data.wpPage.acf
     && data.wpPage.acf.post_list
     && data.wpPage.acf.post_list.map(obj =>  (
       { ...obj.post,
-        ...{ title:obj.post.post_title},
+        ...{ title: obj.post.post_title},
         ...{ excerpt: obj.post.post_excerpt }
       }));
+  let posts = [...featured_posts, ...data.wpPosts.edges.map(obj => obj.node)];
+  posts = removeDuplicates(posts, "wordpress_id");
   return <div>
     <SEO
       {...{
@@ -60,6 +68,7 @@ export const query = graphql`
             post_title
             post_name
             post_excerpt
+            wordpress_id
             acf{
               is_video
               video_image{
@@ -79,5 +88,24 @@ export const query = graphql`
         }
        }
      }
+     wpPosts: allWordpressPost (limit:10){
+        edges{
+          node{
+            link
+            title
+            excerpt
+            slug
+            wordpress_id
+            categories{
+              link
+              name
+            }
+            thumbnail
+            acf{
+              is_video
+            }
+          }
+        }
+      }
    }
 `;
