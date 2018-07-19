@@ -24,7 +24,7 @@ export default ({data}) => {
         twitter_handle : "@hec_tv"
       }}
     />
-    <Layout  slug={data.wpMagazine.slug}>
+    <Layout  slug={data.wpEvent.slug}>
       <div className="col-md-12" >
         <SinglePost {...{ post : data.wpEvent}} />
       </div>
