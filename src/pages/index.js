@@ -1,14 +1,21 @@
 import React from "react";
 import { graphql } from "gatsby"
-import { connect } from 'react-redux';
 
 import "./../utils/cssDependencies";
 
 import SEO from "./../components/SEO";
-import Layout from "./../components/Layout"
+import Layout from "./../components/Layout";
+import ListOfPosts from "./../components/ListOfPosts";
 
-const Pages =  ({data, props}) => {
+export default ({data, props}) => {
   let description = data.wpPage.content || "On Demand Arts, Culture & Education Programming";
+  let posts = data.wpPage.acf
+    && data.wpPage.acf.post_list
+    && data.wpPage.acf.post_list.map(obj =>  (
+      { ...obj.post,
+        ...{ title:obj.post.post_title},
+        ...{ excerpt: obj.post.post_excerpt }
+      }));
   return <div>
     <SEO
       {...{
@@ -23,18 +30,17 @@ const Pages =  ({data, props}) => {
       }}
     />
     <Layout {...props}>
-      <section>
-        {data.wpPage.content}
-      </section>
+      <ListOfPosts
+        posts={posts || []}
+        link={{ page: 'posts' }}
+        num_results={0}
+        design={data.wpPage.acf}
+        loadMore={null}
+        resize_rows
+      />
     </Layout>
   </div>
 };
-
-const mapStateToProps = state => ({
-  values: state.form.newsletter.values
-});
-
-export default connect(mapStateToProps)(Pages);
 
 export const query = graphql`
    query homePageQuery {
@@ -42,6 +48,36 @@ export const query = graphql`
        title
        content
        link
+       acf{
+         default_row_layout
+         default_display_type
+         new_row_layout {
+           row_layout
+           display_type
+         }
+         post_list{
+          post{
+            post_title
+            post_name
+            post_excerpt
+            acf{
+              is_video
+              video_image{
+                sizes{
+                  medium
+                  medium_large
+                }
+              }
+              post_header{
+                sizes{
+                  medium
+                  medium_large
+                }
+              }
+            }
+          }
+        }
+       }
      }
    }
 `;

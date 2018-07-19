@@ -8,7 +8,7 @@ import SinglePost from "./../components/SinglePost"
 
 import "./../utils/cssDependencies";
 
-const Magazine = ({data}) => {
+export default ({data}) => {
 
   data.wpMagazine.thumbnail = "";
   if(data.wpMagazine.acf && data.wpMagazine.acf.cover_image)
@@ -43,12 +43,6 @@ const Magazine = ({data}) => {
     </Layout>
   </div>
 };
-
-const mapStateToProps = state => ({
-  values: state.form.newsletter.values
-});
-
-export default connect(mapStateToProps)(Magazine);
 
 export const query = graphql`
      query magazineQuery ($id: String!){

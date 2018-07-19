@@ -8,7 +8,7 @@ import CategoryNav from './../components/SubNavigation/CategoryNav';
 
 import "./../utils/cssDependencies";
 
-const Category = ({data}) => {
+export default ({data}) => {
   data.wpCategory.content = "";
   if(data.wpCategory.description)
     data.wpCategory.content = data.wpCategory.description;
@@ -35,12 +35,6 @@ const Category = ({data}) => {
     </Layout>
   </div>
 };
-
-const mapStateToProps = state => ({
-  values: state.form.newsletter.values
-});
-
-export default connect(mapStateToProps)(Category);
 
 export const query = graphql`
    query categoryQuery ($slug: String!){

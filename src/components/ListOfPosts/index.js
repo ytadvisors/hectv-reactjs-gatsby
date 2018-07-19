@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'gatsby';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import _ from 'lodash';
@@ -28,6 +28,8 @@ export default class ListOfPosts extends Component {
     this.getExcerpt = this.getExcerpt.bind(this);
     this.getContentDetails = this.getContentDetails.bind(this);
     this.getColumnLayout = this.getColumnLayout.bind(this);
+    this.getLink = this.getLink.bind(this);
+    this.getImgSrc = this.getImgSrc.bind(this);
     this.resize = this.resize.bind(this);
 
     //Layout
@@ -59,10 +61,10 @@ export default class ListOfPosts extends Component {
       : excerpt;
   }
 
-  getThumbNail(thumbnail, type, format, slug) {
+  getThumbNail(thumbnail, is_video, link) {
     return (
-      <Link to={`/${type}/${slug}`} className="thumbnail-link">
-        {format === 'video' && <img src={playButton} className="play-icon" />}
+      <Link to={link} className="thumbnail-link">
+        {is_video && <img src={playButton} className="play-icon" />}
         <LazyLoad height={200}>
           <img
             src={thumbnail || defaultImage}
@@ -74,13 +76,31 @@ export default class ListOfPosts extends Component {
     );
   }
 
+  getLink(post){
+    const { page } = this.props.link;
+    const { post_name, redirect } = post;
+    return redirect || `${page}/${post_name}`;
+  }
+
+  getImgSrc(post , type){
+
+    const { acf: {is_video}} = post;
+    let img = is_video ? post.acf.video_image : post.acf.post_header;
+    const { sizes: {medium, medium_large }} = img;
+    switch(type){
+      case "small":
+        return medium;
+    }
+    return medium_large
+  }
+
   getCategories(categories, link) {
     return (
       <p>
         {categories.map((category, x) => (
           <span className="category-info" key={`category-${x}`}>
             <Link
-              to={`/${link.page}/${category.slug}`}
+              to={`/${link.page}/${category.post_name}`}
               dangerouslySetInnerHTML={{
                 __html: category.cat_name
               }}
@@ -91,13 +111,13 @@ export default class ListOfPosts extends Component {
     );
   }
 
-  getTitle(display_type, title, type, slug, layout) {
-    let title_type = layout === '3 Columns' ? 'small_title' : '';
+  getTitle(display_type, title, link, layout) {
+    let post_type = layout === '3 Columns' ? 'small_title' : '';
     if (display_type === 'Wallpaper') {
       return (
         <p>
           <span
-            className={`blog-title ${title_type}`}
+            className={`blog-title ${post_type}`}
             dangerouslySetInnerHTML={{
               __html: title
             }}
@@ -107,9 +127,9 @@ export default class ListOfPosts extends Component {
     } else
       return (
         <p>
-          <Link to={`/${type}/${slug}`}>
+          <Link to={link}>
             <span
-              className={`blog-title ${title_type}`}
+              className={`blog-title ${post_type}`}
               dangerouslySetInnerHTML={{
                 __html: title
               }}
@@ -177,7 +197,6 @@ export default class ListOfPosts extends Component {
 
   getColumnContent(post, link, display_type, layout) {
     const {
-      slug,
       title,
       excerpt,
       content_details,
@@ -190,12 +209,12 @@ export default class ListOfPosts extends Component {
       <div>
         {date && (
           <div className="blog-meta">
-            {this.getDate(display_type, layout, post)}
+            {this.getDate(post)}
           </div>
         )}
         <div className="blog-excerpt">
           {this.getCategories(category_list, link)}
-          {this.getTitle(display_type, title, type, slug, layout)}
+          {this.getTitle(display_type, title, this.getLink(post), layout)}
           {this.getContent(
             display_type,
             layout,
@@ -208,7 +227,7 @@ export default class ListOfPosts extends Component {
     );
   }
 
-  getDate(display_type, layout, post) {
+  getDate(post) {
     const { date } = post;
     if (date) {
       return (
@@ -227,7 +246,7 @@ export default class ListOfPosts extends Component {
   }
 
   getSingleColumnPost(post, content) {
-    const { slug, small_thumbnail, type, format } = post;
+    const { acf: {is_video}} = post;
     return (
       <table className="no-spacing">
         <tbody>
@@ -237,7 +256,11 @@ export default class ListOfPosts extends Component {
               className="col-xs-5"
               style={{ padding: '10px', paddingBottom: '30px' }}
             >
-              {this.getThumbNail(small_thumbnail, type, format, slug)}
+              {this.getThumbNail(
+                this.getImgSrc(post , "small"),
+                is_video,
+                this.getLink(post)
+              )}
             </td>
           </tr>
         </tbody>
@@ -246,7 +269,8 @@ export default class ListOfPosts extends Component {
   }
 
   getSingleColumnWallpaper(post, content) {
-    const { thumbnail, type, slug, redirect } = post;
+    const { redirect } = post;
+
     return (
       <table className="no-spacing">
         <tbody>
@@ -254,7 +278,7 @@ export default class ListOfPosts extends Component {
             <td className="col-md-12 wallpapercontainer">
               <div
                 className="wallpaper"
-                style={{ backgroundImage: `url(${thumbnail || defaultImage})` }}
+                style={{ backgroundImage: `url(${this.getImgSrc(post) || defaultImage})` }}
               >
                 {(redirect && (
                   <a
@@ -267,7 +291,7 @@ export default class ListOfPosts extends Component {
                     <div className="content">{content}</div>
                   </a>
                 )) || (
-                  <Link to={`/${type}/${slug}`}>
+                  <Link to={this.getLink(post)}>
                     <div className="gradient" />
                     <div className="texture" />
                     <div className="content">{content}</div>
@@ -282,14 +306,13 @@ export default class ListOfPosts extends Component {
   }
 
   getFeaturedPost(post, content) {
-    const { slug, thumbnail, small_thumbnail, type, format } = post;
+    const { acf: {is_video} } = post;
     return (
       <div className="featured-block">
         {this.getThumbNail(
-          this.state.isMobile ? small_thumbnail : thumbnail,
-          type,
-          format,
-          slug
+          this.getImgSrc(post, this.state.isMobile ? "small" : ""),
+          is_video,
+          this.getLink(post)
         )}
         {content}
       </div>
@@ -297,17 +320,13 @@ export default class ListOfPosts extends Component {
   }
 
   getFeaturedWallpaper(post, content) {
-    const { slug, thumbnail, small_thumbnail, type, redirect } = post;
-    let link = redirect || `/${type}/${slug}`;
-
-    let bg_thumbnail = this.state.isMobile ? small_thumbnail : thumbnail;
     return (
       <div className="featured-block">
         <div
           className="wallpaper"
-          style={{ backgroundImage: `url(${bg_thumbnail})` }}
+          style={{ backgroundImage: `url(${this.getImgSrc(post, !this.state.isMobile ? "small" : "")})` }}
         >
-          <Link to={link}>
+          <Link to={this.getLink(post)}>
             <div className="gradient" />
             <div className="texture" />
             <div className="content">{content}</div>
@@ -318,11 +337,12 @@ export default class ListOfPosts extends Component {
   }
 
   getPost(layout, post, content) {
-    const { slug, small_thumbnail, type, format } = post;
+    const { acf : {is_video} } = post;
+
     return (
       <div>
         <div className={`thumbnail-${layout.replace(' ', '-').toLowerCase()}`}>
-          {this.getThumbNail(small_thumbnail, type, format, slug)}
+          {this.getThumbNail(this.getImgSrc(post), is_video, this.getLink(post))}
         </div>
         {content}
       </div>
@@ -330,15 +350,12 @@ export default class ListOfPosts extends Component {
   }
 
   getWallpaper(post, content) {
-    const { slug, small_thumbnail, type, redirect } = post;
-    let link = redirect || `/${type}/${slug}`;
-
     return (
       <div
         className="wallpaper"
-        style={{ backgroundImage: `url(${small_thumbnail})` }}
+        style={{ backgroundImage: `url(${this.getImgSrc(post)})` }}
       >
-        <Link to={link}>
+        <Link to={this.getLink(post)}>
           <div className="gradient" />
           <div className="texture" />
           <div className="content">{content}</div>
