@@ -3,15 +3,10 @@ import { graphql } from "gatsby"
 
 import "./../utils/cssDependencies";
 
+import { removeDuplicates } from "./../utils/helperFunctions"
 import SEO from "./../components/SEO";
 import Layout from "./../components/Layout";
 import ListOfPosts from "./../components/ListOfPosts";
-
-const removeDuplicates = (myArr, prop) =>{
-  return myArr.filter((obj, pos, arr) => {
-    return arr.map(mapObj => mapObj[prop]).indexOf(obj[prop]) === pos;
-  });
-}
 
 export default ({data, props}) => {
   let description = data.wpPage.content || "On Demand Arts, Culture & Education Programming";
