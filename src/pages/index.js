@@ -32,7 +32,7 @@ export default ({data, props}) => {
         twitter_handle : "@hec_tv"
       }}
     />
-    <Layout {...props}>
+    <Layout showBottomNav>
       <ListOfPosts
         posts={posts || []}
         link={{ page: 'posts' }}
