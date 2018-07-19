@@ -19,11 +19,13 @@ export default ({data, props}) => {
       }));
   let posts = [...featured_posts, ...data.wpPosts.edges.map(obj => obj.node)];
   posts = removeDuplicates(posts, "wordpress_id");
+  let image = posts[0].acf.video_image.sizes.medium;
+
   return <div>
     <SEO
       {...{
         title : `HEC-TV | ${data.wpPage.title}`,
-        image : "",
+        image : image,
         description : description.replace(/<\/?[^>]+(>|$)/g, '').substring(0, 130) + '...',
         url : process.env.SITE_HOST,
         pathname: data.wpPage.link.replace(/https?:\/\/[^/]+/, ''),
@@ -32,7 +34,7 @@ export default ({data, props}) => {
         twitter_handle : "@hec_tv"
       }}
     />
-    <Layout showBottomNav>
+    <Layout showBottomNav slug={data.wpPage.slug}>
       <ListOfPosts
         posts={posts || []}
         link={{ page: 'posts' }}
@@ -51,6 +53,7 @@ export const query = graphql`
        title
        content
        link
+       slug
        acf{
          default_row_layout
          default_display_type

@@ -7,7 +7,7 @@ import Footer from "./../../components/Footer";
 import BottomNav from "../BottomNav/index";
 
 
-export default ({children, style, category_slug , showBottomNav}) => {
+export default ({children, style, slug , showBottomNav}) => {
   return <StaticQuery
     query={graphql`
            query MenuQuery {
@@ -39,7 +39,7 @@ export default ({children, style, category_slug , showBottomNav}) => {
         const social = menus.reduce((result, menu) => menu.node.name === "Social" ? menu.node.items : result);
         const bottomNav = menus.reduce((result, menu) => menu.node.name === "BottomNav" ? menu.node.items : result);
         return <section>
-          <Header header={header} social={social}/>
+          <Header header={header} social={social} page={slug}/>
             <ProgramViewer style={style}>
               {children}
               {showBottomNav && <BottomNav menus={bottomNav && bottomNav.node.items} title="more from"/>}

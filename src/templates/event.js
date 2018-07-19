@@ -24,7 +24,7 @@ export default ({data}) => {
         twitter_handle : "@hec_tv"
       }}
     />
-    <Layout >
+    <Layout  slug={data.wpMagazine.slug}>
       <div className="col-md-12" >
         <SinglePost {...{ post : data.wpEvent}} />
       </div>
@@ -39,6 +39,7 @@ export const query = graphql`
         content
         link
         thumbnail
+        slug
       	acf {
       	  venue
           web_address

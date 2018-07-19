@@ -32,7 +32,7 @@ export default ({data}) => {
         twitter_handle : "@hec_tv"
       }}
     />
-    <Layout >
+    <Layout slug={data.wpPage.slug}>
       <div>
         <div className="col-md-12">
           { data.wpPage.template !== "template-2.php"
