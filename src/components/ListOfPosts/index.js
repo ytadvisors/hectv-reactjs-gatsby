@@ -79,7 +79,7 @@ export default class ListOfPosts extends Component {
   getLink(post){
     const { page } = this.props.link;
     const { post_name, slug, redirect } = post;
-    return redirect || (post_name) ? `${page}/${post_name}` : `${page}/${slug}`;
+    return redirect || (post_name) ? `/${page}/${post_name}` : `/${page}/${slug}`;
   }
 
   getImgSrc(post , type){
@@ -87,7 +87,7 @@ export default class ListOfPosts extends Component {
     const { thumbnail, acf: {is_video}} = post;
     if(thumbnail)
       return thumbnail;
-    else{
+    else if(post.acf.video_image || post.acf.post_header){
       let img = is_video ? post.acf.video_image : post.acf.post_header;
       const { sizes: {medium, medium_large }} = img;
       switch(type){
@@ -95,6 +95,9 @@ export default class ListOfPosts extends Component {
           return medium;
       }
       return medium_large
+    }
+    else {
+      return defaultImage;
     }
   }
 
