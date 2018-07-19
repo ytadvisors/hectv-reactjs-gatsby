@@ -29,7 +29,7 @@ export default ({data}) => {
         twitter_handle : "@hec_tv"
       }}
     />
-    <Layout style={{ background: '#eee' }} slug={data.wpMagazine.slug}>
+    <Layout style={{ background: '#eee' }} >
       <div className="col-md-12" style={{ background: '#eee' }}>
         <SinglePost {...
           { post : data.wpMagazine,
@@ -50,7 +50,6 @@ export const query = graphql`
           title
           content
           link
-          slug
       		acf{
             cover_image
           }
