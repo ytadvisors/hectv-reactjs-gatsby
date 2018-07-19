@@ -14,10 +14,10 @@ export default ({data}) => {
     data.wpCategory.content = data.wpCategory.description;
 
   let description = data.wpCategory.content || "On Demand Arts, Culture & Education Programming";
-  let posts = data.wpCategoryPosts.edges.map(obj => obj.node);
+  let posts = data.wpCategoryPosts && data.wpCategoryPosts.edges.map(obj => obj.node);
 
   let image = "";
-  if(posts.length > 0)
+  if(posts && posts.length > 0)
     image = posts[0].thumbnail;
   return <div>
     <SEO
