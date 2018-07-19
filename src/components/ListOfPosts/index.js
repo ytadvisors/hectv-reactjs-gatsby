@@ -78,20 +78,24 @@ export default class ListOfPosts extends Component {
 
   getLink(post){
     const { page } = this.props.link;
-    const { post_name, redirect } = post;
-    return redirect || `${page}/${post_name}`;
+    const { post_name, slug, redirect } = post;
+    return redirect || (post_name) ? `${page}/${post_name}` : `${page}/${slug}`;
   }
 
   getImgSrc(post , type){
 
-    const { acf: {is_video}} = post;
-    let img = is_video ? post.acf.video_image : post.acf.post_header;
-    const { sizes: {medium, medium_large }} = img;
-    switch(type){
-      case "small":
-        return medium;
+    const { thumbnail, acf: {is_video}} = post;
+    if(thumbnail)
+      return thumbnail;
+    else{
+      let img = is_video ? post.acf.video_image : post.acf.post_header;
+      const { sizes: {medium, medium_large }} = img;
+      switch(type){
+        case "small":
+          return medium;
+      }
+      return medium_large
     }
-    return medium_large
   }
 
   getCategories(categories, link) {
