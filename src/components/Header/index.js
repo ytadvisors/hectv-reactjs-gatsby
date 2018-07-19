@@ -102,7 +102,7 @@ export default class Header extends Component {
             >
               <Link to={clean_url} dangerouslySetInnerHTML={{
                 __html: label
-              }}>
+              }} onClick={() => this.closeNav()}>
               </Link>
             </NavWrap>
           );
@@ -145,7 +145,7 @@ export default class Header extends Component {
         {icon && icon_placement !== 'right' ? icon : ''}
         <Link to={clean_url} dangerouslySetInnerHTML={{
           __html: label
-        }}>
+        }} onClick={() => this.closeNav()}>
         </Link>
       </NavWrap>
     );

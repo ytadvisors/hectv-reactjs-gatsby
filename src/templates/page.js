@@ -1,6 +1,5 @@
 import React from "react";
 import { graphql } from "gatsby"
-import { connect } from 'react-redux';
 
 import "./../utils/cssDependencies";
 
@@ -12,8 +11,7 @@ import EventNav from './../components/SubNavigation/EventNav';
 import Template1 from "../components/Templates/template-1/index";
 import Template3 from "../components/Templates/template-3/index";
 
-const Page = ({data}) => {
-  debugger;
+export default ({data}) => {
   let title = data.wpPage.title;
 
   if(data.wpPage.acf)
@@ -55,12 +53,6 @@ const Page = ({data}) => {
   </div>
 };
 
-const mapStateToProps = state => ({
-  values: state.form.newsletter.values
-});
-
-export default connect(mapStateToProps)(Page);
-
 export const query = graphql`
    query defaultPageQuery ($slug: String!){
      wpPage: wordpressPage (slug : { eq : $slug }) {
@@ -86,17 +78,21 @@ export const query = graphql`
           }
           partner_link
         }
-        public_school_partners
         higher_education_partners {
           partner
         }
         team {
-          photo
           name
           position
           email
         }
         video_id
+        default_row_layout
+        default_display_type
+        new_row_layout {
+          row_layout
+          display_type
+        }
       }
      }
    }
