@@ -3,6 +3,7 @@ import * as Material from 'react-icons/lib/md';
 
 import './styles.scss';
 import VideoPlayer from '../VideoPlayer/index';
+import LazyLoad from 'react-lazyload';
 
 export default class SinglePost extends Component {
   constructor(props){
@@ -77,16 +78,18 @@ export default class SinglePost extends Component {
                 : `https://vimeo.com/${vimeo_id}`
             } container_style={container_style} />
           </div>
-        ) : (classes && classes.thumbnail &&
+        ) : (
           <div
             className={`blog-image ${(classes && classes.thumbnail) ||
             'default-img'}`}
           >
-            <img
-              src={thumbnail}
-              className="img-responsive blog-thumbnail"
-              alt=""
-            />
+            <LazyLoad height={500}>
+              <img
+                src={thumbnail}
+                className="img-responsive blog-thumbnail"
+                alt=""
+              />
+            </LazyLoad>
           </div>
         )}
         <div className={`blog-content ${(classes && classes.content) || ''}`}>
