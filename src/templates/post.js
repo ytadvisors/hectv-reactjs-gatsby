@@ -22,7 +22,7 @@ export default ({data}) => {
         twitter_handle : "@hec_tv"
       }}
     />
-    <Layout style={{ background: '#eee' }}>
+    <Layout style={{ background: '#eee' }} slug={data.wpPost.slug} >
       <div className="col-md-12" style={{ background: '#eee' }}>
         <SinglePost {...{ post : data.wpPost}} />
       </div>
@@ -37,6 +37,7 @@ export const query = graphql`
         content
         thumbnail
         link
+        slug
         acf {
           youtube_id
           vimeo_id

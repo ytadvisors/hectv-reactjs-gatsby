@@ -69,6 +69,13 @@ export default class Header extends Component {
     this.setState({ navExpanded: false });
   }
 
+  componentWillReceiveProps(newProps) {
+    if(this.props.slug !== newProps.slug){
+      console.log(this.props);
+      this.closeNav();
+    }
+  }
+
   componentDidUpdate(prevProps, prevState) {
     if (prevState.navExpanded) {
       this.closeNav();
@@ -87,9 +94,7 @@ export default class Header extends Component {
     return (
       <NavDropdown
         key={`top_link${i}`}
-        className={`${current_link === clean_url.replace(/\//g, '')
-          ? `btn show ${btn_display}`
-          : `btn  ${btn_display}`}`}
+        className={`btn ${btn_display}`}
         title={label}
         id={`${label}-${i}`}
       >
@@ -102,7 +107,7 @@ export default class Header extends Component {
             >
               <Link to={clean_url} dangerouslySetInnerHTML={{
                 __html: label
-              }} onClick={() => this.closeNav()}>
+              }} >
               </Link>
             </NavWrap>
           );
@@ -145,7 +150,7 @@ export default class Header extends Component {
         {icon && icon_placement !== 'right' ? icon : ''}
         <Link to={clean_url} dangerouslySetInnerHTML={{
           __html: label
-        }} onClick={() => this.closeNav()}>
+        }} >
         </Link>
       </NavWrap>
     );

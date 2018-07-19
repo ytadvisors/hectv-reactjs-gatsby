@@ -14,13 +14,16 @@ export default ({data}) => {
     data.wpCategory.content = data.wpCategory.description;
 
   let description = data.wpCategory.content || "On Demand Arts, Culture & Education Programming";
-
   let posts = data.wpCategoryPosts.edges.map(obj => obj.node);
+
+  let image = "";
+  if(posts.length > 0)
+    image = posts[0].thumbnail;
   return <div>
     <SEO
       {...{
         title : `HEC-TV | ${data.wpCategory.name}`,
-        image : "",
+        image : image,
         description : description.replace(/<\/?[^>]+(>|$)/g, '').substring(0, 130) + '...',
         url : process.env.SITE_HOST,
         pathname: data.wpCategory.link.replace(/https?:\/\/[^/]+/, ''),
@@ -29,7 +32,7 @@ export default ({data}) => {
         twitter_handle : "@hec_tv"
       }}
     />
-    <Layout >
+    <Layout slug={data.wpCategory.slug} >
       <section>
         <CategoryNav slug={data.wpCategory.slug} />
         <ListOfPosts
