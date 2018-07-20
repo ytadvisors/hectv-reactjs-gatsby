@@ -34,7 +34,7 @@ export default ({data}) => {
         </div>
         <ListOfPosts
           posts={posts || []}
-          link={{ page: 'posts' }}
+          link={{ page: 'event' }}
           num_results={0}
           design={data.wpPage.acf}
           loadMore={null}
