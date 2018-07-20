@@ -26,7 +26,7 @@ export default (props) => {
         data => {
           const menus = data.allWordpressWpEventCategory.edges;
           return <section className="sub-navigation">
-            <NavDropdown className="drop-down-menu-list pull-right" title="Filter Events">
+            <NavDropdown id = "filter" className="drop-down-menu-list pull-right" title="Filter Events">
               {menus.map((menu, x) => (
                 <NavWrap
                   key={`menu-${x}`}

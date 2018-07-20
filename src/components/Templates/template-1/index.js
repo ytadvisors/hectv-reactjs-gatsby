@@ -18,13 +18,11 @@ export default class Template1 extends Component {
         phone_number,
         fax_number,
         tv_providers,
-        partner_logos,
         public_school_partners,
         higher_education_partners,
         team,
         video_id
-      },
-      callbackFunc
+      }
     } = this.props;
 
     const video_url = `https://vimeo.com/${video_id}`;
@@ -39,20 +37,20 @@ export default class Template1 extends Component {
               header="About"
               content={content}
               type="white-block"
-              style={{ minHeight: '390px' }}
+              style={{ minHeight: '420px' }}
             />
           </div>
           <div className="col-md-6">
             <ContentBlock
               header={address}
               subheader={`Phone ${phone_number}<br/>Fax ${fax_number}`}
-              style={{ minHeight: '390px' }}
+              style={{ minHeight: '420px' }}
               data={tv_providers.map((tv, x) => (
-                <p key={`provider-${x}`}>
-                  <strong>{tv.provider}</strong>
+                <div key={`provider-${x}`}>
+                  <strong><div dangerouslySetInnerHTML={{ __html: tv.provider }}/></strong>
                   <br />
-                  {tv.channel}
-                </p>
+                  <div dangerouslySetInnerHTML={{ __html: tv.channel }} />
+                </div>
               ))}
               type="blue-block"
             />

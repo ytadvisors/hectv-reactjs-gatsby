@@ -34,6 +34,7 @@ export default class Template3 extends Component {
               content="<strong>WHERE TO FIND US</strong>"
               footer={directions}
               type="blue-block"
+              style={{ minHeight: '320px' }}
             />
           </div>
           <div className="col-md-6">
@@ -41,6 +42,7 @@ export default class Template3 extends Component {
               header="Opportunities"
               content={opportunities}
               type="white-block"
+              style={{ minHeight: '320px' }}
             />
           </div>
         </div>

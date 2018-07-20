@@ -75,8 +75,8 @@ export default ({data}) => {
 };
 
 export const query = graphql`
-query defaultPageQuery($slug: String!) {
-  wpPage: wordpressPage(slug: {eq: $slug}) {
+query magazinePageQuery{
+  wpPage: wordpressPage(slug: {eq: "magazines" }) {
     slug
     title
     content
