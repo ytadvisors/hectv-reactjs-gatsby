@@ -19,6 +19,7 @@ export default class SinglePost extends Component {
         content,
         event_link
       },
+      hideTitle,
       classes
     } = this.props;
 
@@ -41,7 +42,7 @@ export default class SinglePost extends Component {
     return (
       <section className="post-container">
         <div className="col-md-12 no-padding">
-          <h2 dangerouslySetInnerHTML={{ __html: title }} />
+          {!hideTitle && <h2 dangerouslySetInnerHTML={{ __html: title }} />}
           <ul className="post-details">
             {venue && (
               <li>

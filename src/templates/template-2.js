@@ -18,7 +18,7 @@ export default ({data}) => {
   return <div>
     <SEO
       {...{
-        title: `HEC-TV | ${data.wpPage.title}`,
+        title: `HEC-TV | ${title}`,
         image: "",
         description: description.replace(/<\/?[^>]+(>|$)/g, '').substring(0, 130) + '...',
         url: process.env.SITE_HOST,
@@ -34,7 +34,7 @@ export default ({data}) => {
           <DefaultNav title={title} link={data.wpPage.link}/>
         </div>
         <div className="col-md-12">
-          <SinglePost {...{post: data.wpPage}} />
+          <SinglePost {...{post: data.wpPage}} hideTitle />
         </div>
       </div>
     </Layout>

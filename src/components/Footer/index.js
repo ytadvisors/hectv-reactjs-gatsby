@@ -17,8 +17,6 @@ export default class Footer extends Component {
     this.isMobile = !isServer && window.innerWidth <= 500;
   }
 
-  componentDidMount() {}
-
   render() {
     const { footer, social } = this.props;
     let links = _.chunk(footer, footer.length / 2);

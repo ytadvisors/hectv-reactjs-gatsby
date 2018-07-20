@@ -10,16 +10,22 @@ import ListOfPosts from "./../components/ListOfPosts";
 
 export default ({data, props}) => {
   let description = data.wpPage.content || "On Demand Arts, Culture & Education Programming";
-  let featured_posts = data.wpPage.acf
+  let posts = data.wpPage.acf
     && data.wpPage.acf.post_list
     && data.wpPage.acf.post_list.map(obj =>  (
       { ...obj.post,
         ...{ title: obj.post.post_title},
         ...{ excerpt: obj.post.post_excerpt }
-      }));
-  let posts = [...featured_posts, ...data.wpPosts.edges.map(obj => obj.node)];
+      }))
+    || [];
+  if(data.wpPosts)
+    posts = [...posts, ...data.wpPosts.edges.map(obj => obj.node)];
   posts = removeDuplicates(posts, "wordpress_id");
-  let image = posts[0].acf.video_image.sizes.medium;
+  let image = "";
+  if(posts.length > 0){
+    let imgContainer = posts[0].acf.video_image || posts[0].acf.post_header;
+    image = imgContainer.sizes.medium;
+  }
 
   return <div>
     <SEO
