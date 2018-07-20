@@ -9,9 +9,9 @@ export default (props) => {
         <div className="row heading">
           <div className="pull-left">
             <h2>
-              <Link to ={link.replace(/https?:\/\/[^/]+/, '')}
-                    dangerouslySetInnerHTML={{ __html: title }}
-              />
+              <Link to ={link.replace(/https?:\/\/[^/]+/, '')}>
+                <div dangerouslySetInnerHTML={{ __html: title }} />
+              </Link>
             </h2>
           </div>
         </div>

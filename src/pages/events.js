@@ -30,7 +30,7 @@ export default ({data}) => {
     <Layout slug={data.wpPage.slug}>
       <div>
         <div className="col-md-12">
-          <EventNav />
+          <EventNav {...data.wpPage}/>
         </div>
         <ListOfPosts
           posts={posts || []}

@@ -6,7 +6,7 @@ import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
 import './styles.scss';
 
 export default (props) => {
-  const { slug } = props;
+  const { slug, link, title } = props;
   return (
     <StaticQuery
       query={graphql`
@@ -26,6 +26,13 @@ export default (props) => {
         data => {
           const menus = data.allWordpressWpEventCategory.edges;
           return <section className="sub-navigation">
+            <div className="pull-left">
+              <h2>
+                <Link to={link.replace(/https?:\/\/[^/]+/, '')}
+                      dangerouslySetInnerHTML={{__html: title}}
+                />
+              </h2>
+            </div>
             <NavDropdown id = "filter" className="drop-down-menu-list pull-right" title="Filter Events">
               {menus.map((menu, x) => (
                 <NavWrap

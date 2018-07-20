@@ -101,15 +101,15 @@ export default class ListOfPosts extends Component {
     }
   }
 
-  getCategories(categories, link) {
+  getCategories(categories) {
     return (
       <p>
         {categories.map((category, x) => (
           <span className="category-info" key={`category-${x}`}>
             <Link
-              to={`/${link.page}/${category.post_name}`}
+              to={category.link.replace(/https?:\/\/[^/]+/, '')}
               dangerouslySetInnerHTML={{
-                __html: category.cat_name
+                __html: category.name
               }}
             />
           </span>
@@ -220,7 +220,7 @@ export default class ListOfPosts extends Component {
           </div>
         )}
         <div className="blog-excerpt">
-          {this.getCategories(category_list, link)}
+          {this.getCategories(category_list)}
           {this.getTitle(display_type, title, this.getLink(post), layout)}
           {this.getContent(
             display_type,
