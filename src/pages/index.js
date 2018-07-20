@@ -73,6 +73,10 @@ export const query = graphql`
             post_name
             post_excerpt
             wordpress_id
+            categories {
+              link
+              name
+            }
             acf{
               is_video
               video_image{
