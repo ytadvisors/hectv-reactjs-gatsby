@@ -9,6 +9,7 @@ if (!activeEnv) {
 
 require("dotenv").config({
   path: `.env.${activeEnv}`,
+  silent : true
 });
 
 if(process.env.WP_HOST){
