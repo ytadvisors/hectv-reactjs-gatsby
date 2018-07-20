@@ -5,7 +5,7 @@ ReactJS website for HEC-TV.
 `yarn develop`
 
 ## Building 
-`yarn build`
+`yarn build` 
 
 ## Running build directory 
 `yarn serve`
