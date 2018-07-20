@@ -34,7 +34,7 @@ export default ({data, props}) => {
         twitter_handle : "@hec_tv"
       }}
     />
-    <Layout showBottomNav slug={data.wpPage.slug}>
+    <Layout showBottomNav  slug={data.wpPage.slug}>
       <ListOfPosts
         posts={posts || []}
         link={{ page: 'posts' }}

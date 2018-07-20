@@ -16,14 +16,14 @@ export default ({
   <title>{title}</title>
   <meta name="description" content={description || ''}  />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="og:image" content={image || ''}  />
-  <meta name="og:title" content={title || ''}  />
-  <meta name="og:image:width" content="650"  />
-  <meta name="og:image:height" content="497"  />
-  <meta name="og:site_name" content={site_name || ''}  />
-  <meta name="og:locale'" content="en_US"  />
-  <meta name="og:url" content={`${url}${pathname}`}  />
-  <meta name="og:type" content='article'  />
+  <meta property="og:image" content={image || ''}  />
+  <meta property="og:title" content={title || ''}  />
+  <meta property="og:image:width" content="650"  />
+  <meta property="og:image:height" content="497"  />
+  <meta property="og:site_name" content={site_name || ''}  />
+  <meta property="og:locale'" content="en_US"  />
+  <meta property="og:url" content={`${url}${pathname}`}  />
+  <meta property="og:type" content='article'  />
 
   <meta name="twitter:image" content={image || ''}  />
   <meta name="twitter:title" content={title || ''}  />

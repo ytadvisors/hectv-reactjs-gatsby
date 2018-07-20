@@ -3,11 +3,13 @@ const Promise = require(`bluebird`);
 const path = require(`path`);
 const slash = require(`slash`);
 const moment = require(`moment`);
+const fs = require(`fs`);
 let day = moment().format('MMMM-YYYY').toLowerCase();
 
 function createPostHelper(createPage, links, template, prefix = "posts"){
   _.each(links, link => {
-    createPage({
+
+    const postInfo = {
       path: `/${prefix}/${link.node.slug}/`,
       component: slash(template),
       context: {
@@ -15,36 +17,58 @@ function createPostHelper(createPage, links, template, prefix = "posts"){
         slug : link.node.slug,
         day : day
       },
-    })
+    };
+
+    //console.log("POST INFO: ", postInfo);
+    createPage(postInfo);
   })
 }
 
 function createCategoryPageHelper(createPage, links, template){
   _.each(links, obj => {
     const newLink = obj.node.link.replace(/https?:\/\/[^/]+/, '');
-    createPage({
+
+    const categoryInfo = {
       path: newLink,
       component: slash(template),
       context: {
         slug : obj.node.slug,
         day : day
       }
-    })
+    };
+
+    //console.log("CATEGORY INFO: ", categoryInfo);
+    createPage(categoryInfo);
   });
 }
 
-function createPageHelper(createPage, links, template){
+function createPageHelper(createPage, links){
   _.each(links, obj => {
     const newLink = obj.node.link.replace(/https?:\/\/[^/]+/, '');
-    createPage({
+    let templatePath = "./src/templates/page.js";
+    switch(obj.node.template){
+      case "":
+        let filePath = `./src/pages/${obj.node.slug.toLowerCase()}.js`;
+        if(fs.existsSync(filePath))
+          templatePath = filePath;
+        break;
+      default:
+        templatePath = `./src/templates/${obj.node.template.replace(/\..+/g, "").toLowerCase()}.js`;
+    }
+
+    const pageInfo = {
       path: newLink,
-      component: slash(template),
+      component: slash(path.resolve(templatePath)),
       context: {
         id: obj.node.id,
         slug : obj.node.slug,
         day : day
       }
-    });
+    };
+
+    //console.log("PAGE INFO: ", pageInfo);
+    createPage(pageInfo);
+
   });
 }
 
@@ -72,8 +96,7 @@ exports.createPages = ({ graphql, actions }) => {
         if (result.errors) {
           reject(result.errors)
         }
-        const pageTemplate = path.resolve("./src/templates/page.js");
-        createPageHelper(createPage, result.data.allWordpressPage.edges, pageTemplate);
+        createPageHelper(createPage, result.data.allWordpressPage.edges);
       })
       .then(() => {
         graphql(
