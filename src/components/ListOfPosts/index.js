@@ -85,11 +85,13 @@ export default class ListOfPosts extends Component {
   getImgSrc(post , type){
 
     const {
-      thumbnail,
+      thumbnail
+    } = post;
+    const {
       acf:{
         is_video,
         cover_image
-      }
+      } = {}
     } = post;
     if(thumbnail)
       return thumbnail;
@@ -264,7 +266,7 @@ export default class ListOfPosts extends Component {
     const {
       acf: {
         is_video
-      }
+      } = {}
     } = post;
     return (
       <table className="no-spacing">
@@ -327,7 +329,7 @@ export default class ListOfPosts extends Component {
   getFeaturedPost(post, content) {
     const { acf: {
       is_video
-    }} = post;
+    } = {}} = post;
     return (
       <div className="featured-block">
         {this.getThumbNail(
@@ -358,7 +360,9 @@ export default class ListOfPosts extends Component {
   }
 
   getPost(layout, post, content) {
-    const { acf : {is_video}} = post;
+    const {
+      acf : {is_video} = {}
+    } = post;
 
     return (
       <div>
