@@ -16,19 +16,21 @@ export default class SinglePost extends Component {
         date,
         title,
         thumbnail,
-        content,
-        acf : {
-          youtube_id,
-          web_address,
-          event_price,
-          venue,
-          vimeo_id,
-        }
+        content
       },
       hideTitle,
       classes
     } = this.props;
 
+    const {
+      acf : {
+        youtube_id,
+        web_address,
+        event_price,
+        venue,
+        vimeo_id,
+      } = {}
+  } = this.props;
     return (
       <section className="post-container">
         <div className="col-md-12 no-padding">
