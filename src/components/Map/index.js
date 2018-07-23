@@ -32,12 +32,11 @@ const MapWithAMarker = withScriptjs(
 export default class Map extends Component {
   constructor(props) {
     super(props);
-    this.mapKey = process.env.GOOGLE_API_KEY;
   }
 
   render() {
-    let mapUrl = `https://maps.googleapis.com/maps/api/js?key=${this
-      .mapKey}&v=3.exp&libraries=geometry,drawing,places`;
+    let { mapKey } = this.props;
+    let mapUrl = `https://maps.googleapis.com/maps/api/js?key=${mapKey}&v=3.exp&libraries=geometry,drawing,places`;
     return (
       <section>
         <div className="row">
