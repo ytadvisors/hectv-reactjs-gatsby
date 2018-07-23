@@ -1,7 +1,7 @@
 import React, {Component}  from 'react';
 import * as Material from 'react-icons/lib/md';
 
-import './styles.scss';
+import './modules.scss';
 import VideoPlayer from '../VideoPlayer/index';
 import LazyLoad from 'react-lazyload';
 

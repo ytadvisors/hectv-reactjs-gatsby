@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import NewsLetterForm from './../../components/Forms/NewsLetterForm';
-import './styles.scss';
+import './modules.scss';
 
 const subscribe = () => {
   console.log('subscribe');

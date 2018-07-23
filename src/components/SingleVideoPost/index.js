@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './styles.scss';
+import './modules.scss';
 import VideoPlayer from './../VideoPlayer';
 import PropTypes from 'prop-types';
 import ShareSocialLinks from './../../components/ShareSocialLinks';

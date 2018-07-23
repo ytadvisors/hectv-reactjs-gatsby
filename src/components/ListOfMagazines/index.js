@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { StaticQuery, graphql } from "gatsby"
 import LazyLoad from 'react-lazyload';
 
-import './styles.scss';
+import './modules.scss';
 
 export default () => {
   return (

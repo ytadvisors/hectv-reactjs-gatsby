@@ -3,7 +3,7 @@ import { Link, StaticQuery, graphql  } from 'gatsby';
 import NavWrap from './../../components/NavWrap';
 import PropTypes from 'prop-types';
 import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
-import './styles.scss';
+import './modules.scss';
 
 export default (props) => {
   const { slug, link, title } = props;

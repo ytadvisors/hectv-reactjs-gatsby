@@ -12,7 +12,7 @@ import * as Ionicons from 'react-icons/lib/io';
 import LazyLoad from 'react-lazyload';
 import texture from './../../assets/texture.jpg';
 
-import './styles.scss';
+import './modules.scss';
 
 export default class ListOfPosts extends Component {
   constructor(props) {

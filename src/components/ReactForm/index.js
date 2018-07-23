@@ -11,7 +11,7 @@ import CheckBoxInput from './CheckBoxInput';
 import DateTimeAdder from './DateTimeAdder';
 import { Link } from 'react-router-dom';
 
-import './styles.scss';
+import './modules.scss';
 
 export default class ReactForm extends Component {
   constructor(props) {

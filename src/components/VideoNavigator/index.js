@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 import defaultImage from './../../assets/nothumbnail.png';
-import './styles.scss';
+import './modules.scss';
 import { Link } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
 import PropTypes from 'prop-types';

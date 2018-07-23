@@ -3,7 +3,7 @@ import * as FontAwesome from 'react-icons/lib/fa';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-import './styles.scss';
+import './modules.scss';
 
 export default class BottomNav extends Component {
   constructor(props) {
