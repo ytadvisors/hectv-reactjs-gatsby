@@ -3,23 +3,14 @@ import { graphql } from "gatsby"
 
 import "./../utils/cssDependencies";
 
-import { removeDuplicates } from "./../utils/helperFunctions"
+import { removeDuplicates, getPosts } from "./../utils/helperFunctions"
 import SEO from "./../components/SEO";
 import Layout from "./../components/Layout";
 import ListOfPosts from "./../components/ListOfPosts";
 
 export default ({data, props}) => {
   let description = data.wpPage.content || "On Demand Arts, Culture & Education Programming";
-  let posts = data.wpPage.acf
-    && data.wpPage.acf.post_list
-    && data.wpPage.acf.post_list.map(obj =>  (
-      { ...obj.post,
-        ...{ title: obj.post.post_title},
-        ...{ excerpt: obj.post.post_excerpt }
-      }))
-    || [];
-  if(data.wpPosts)
-    posts = [...posts, ...data.wpPosts.edges.map(obj => obj.node)];
+  let posts = getPosts(data, "wpPage", "post_list", "post", "wpPosts");
   posts = removeDuplicates(posts, "wordpress_id");
   let image = "";
   if(posts.length > 0){

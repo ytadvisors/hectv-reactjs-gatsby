@@ -5,15 +5,22 @@ const slash = require(`slash`);
 const moment = require(`moment`);
 const fs = require(`fs`);
 let day = moment().format('MMMM-YYYY').toLowerCase();
+const util = require('util');
 
-function createPostHelper(createPage, links, template, prefix = "posts"){
+function createPostHelper(createPage, links, template, prefix,
+                          categories_index, categories_subindex){
   _.each(links, link => {
-
+    const categories = link.node[categories_index]
+      ? categories_subindex
+        ? link.node[categories_index].map(obj => obj[categories_subindex])
+        : link.node[categories_index]
+      : [];
     const postInfo = {
       path: `/${prefix}/${link.node.slug}/`,
       component: slash(template),
       context: {
         id: link.node.id,
+        categories : categories,
         slug : link.node.slug,
         day : day
       },
@@ -108,6 +115,7 @@ exports.createPages = ({ graphql, actions }) => {
                     id
                     slug
                     title
+                    event_category
                   }
                 }
               }
@@ -119,7 +127,7 @@ exports.createPages = ({ graphql, actions }) => {
             reject(result.errors)
           }
           const eventTemplate = path.resolve("./src/templates/event.js");
-          createPostHelper(createPage, result.data.allWordpressWpEvent.edges, eventTemplate, "event");
+          createPostHelper(createPage, result.data.allWordpressWpEvent.edges, eventTemplate, "event", "event_category");
         })
       })
       .then(() => {
@@ -162,6 +170,7 @@ exports.createPages = ({ graphql, actions }) => {
                     id
                     slug
                     title
+                    type
                   }
                 }
               }
@@ -173,7 +182,7 @@ exports.createPages = ({ graphql, actions }) => {
             reject(result.errors)
           }
           const magazineTemplate = path.resolve("./src/templates/magazine.js");
-          createPostHelper(createPage, result.data.allWordpressWpMagazine.edges, magazineTemplate, "magazine");
+          createPostHelper(createPage, result.data.allWordpressWpMagazine.edges, magazineTemplate, "magazine", "type");
         })
       })
       .then(() => {
@@ -188,6 +197,9 @@ exports.createPages = ({ graphql, actions }) => {
                     status
                     template
                     format
+                    categories{
+                      wordpress_id
+                    }
                   }
                 }
               }
@@ -199,7 +211,7 @@ exports.createPages = ({ graphql, actions }) => {
             reject(result.errors)
           }
           const postTemplate = path.resolve("./src/templates/post.js");
-          createPostHelper(createPage, result.data.allWordpressPost.edges, postTemplate);
+          createPostHelper(createPage, result.data.allWordpressPost.edges, postTemplate, "posts", "categories", "wordpress_id");
           resolve()
         })
       })

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import * as FontAwesome from 'react-icons/lib/fa';
+import _ from "lodash";
 
 // A nice helper to tell us if we're on the server
 export const isServer = !(
@@ -61,4 +62,41 @@ export function  removeDuplicates(myArr, prop){
   return myArr.filter((obj, pos, arr) => {
     return arr.map(mapObj => mapObj[prop]).indexOf(obj[prop]) === pos;
   });
+}
+
+export function getPosts(data, listIndex, postIndex, postName, extraIndex){
+  let posts = data[listIndex].acf
+    && data[listIndex].acf[postIndex]
+    && data[listIndex].acf[postIndex].map(obj =>  (
+      obj[postName] &&
+      { ...obj[postName],
+        ...{ title: obj[postName].post_title},
+        ...{ excerpt: obj[postName].post_excerpt }
+      }))
+    || [];
+  if(data[extraIndex])
+    posts = [...posts, ...data[extraIndex].edges.map(obj => obj.node)];
+
+
+  return posts.filter( n => n );
+}
+
+export function getTransitions(timeout) {
+  return {
+    entering: {
+      opacity: 0,
+    },
+    entered: {
+      transition: `opacity ${timeout}ms ease-in-out`,
+      opacity: 1,
+    },
+    exiting: {
+      transition: `opacity ${timeout}ms ease-in-out`,
+      opacity: 0,
+    },
+  }
+}
+
+export function getTransitionStyle({ timeout, status }){
+  return getTransitions(timeout)[status] || {};
 }

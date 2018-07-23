@@ -3,14 +3,18 @@ import reducers from './reducers';
 import mainSaga from './sagas';
 import logger from 'redux-logger';
 import { composeWithDevTools } from 'redux-devtools-extension';
+import { loadingBarMiddleware } from 'react-redux-loading-bar'
 import createSagaMiddleware from 'redux-saga';
 
 const sagaMiddleware = createSagaMiddleware();
+const loadingBar = loadingBarMiddleware({
+  promiseTypeSuffixes: ['REQUEST', 'SUCCESS', 'FAILURE'],
+});
 
-const middlewares =
-  process.env.ACTIVE_ENV !== 'production'
-    ? [sagaMiddleware, logger]
-    : [sagaMiddleware];
+let middlewares = [ sagaMiddleware, loadingBar ];
+
+if(process.env.ACTIVE_ENV !== 'production')
+  middlewares.push(logger);
 
 export default function configureStore(initialState = {}) {
   const store = reduxCreateStore(

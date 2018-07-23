@@ -1,10 +1,12 @@
 import React from "react";
 import { graphql } from "gatsby"
 import { connect } from 'react-redux';
+import { getPosts } from "./../utils/helperFunctions"
 
 import SEO from "./../components/SEO";
 import Layout from "./../components/Layout"
-import SinglePost from "./../components/SinglePost"
+import SinglePost from "./../components/SinglePost";
+import ListOfPosts from "./../components/ListOfPosts";
 
 import "./../utils/cssDependencies";
 
@@ -15,6 +17,7 @@ export default ({data}) => {
     data.wpMagazine.thumbnail = data.wpMagazine.acf.cover_image;
 
   let description = data.wpMagazine.content || "On Demand Arts, Culture & Education Programming";
+  let posts = getPosts(data, "wpMagazine", "magazine_post", "post");
 
   return <div>
     <SEO
@@ -30,7 +33,7 @@ export default ({data}) => {
       }}
     />
     <Layout style={{ background: '#eee' }} slug={data.wpMagazine.slug}>
-      <div className="col-md-12" style={{ background: '#eee' }}>
+      <div className="col-md-12" style={{ background: '#eee', paddingBottom: '1em'  }}>
         <SinglePost {...
           { post : data.wpMagazine,
             classes : {
@@ -38,7 +41,22 @@ export default ({data}) => {
               content: 'col-md-10 no-padding'
             }
           }
-                    } />
+        } />
+        <ListOfPosts
+          posts={posts || []}
+          link={{ page: 'posts' }}
+          num_results={0}
+          design={{
+            default_row_layout: '2 Columns',
+            default_display_type: 'Post'
+          }}
+          loadMore={null}
+          style={{
+            background: '#f9f9f9',
+            border: '1px solid #ddd'
+          }}
+          resize_rows
+        />
       </div>
     </Layout>
   </div>
@@ -53,6 +71,29 @@ export const query = graphql`
           slug
       		acf{
             cover_image
+            magazine_post{
+              post {
+                post_title
+                post_excerpt
+                post_name
+                acf{
+                  is_video
+                  post_header {
+                    sizes{
+                      medium
+                      medium_large
+                    }
+                  }
+                  video_image {
+                    sizes {
+                      medium
+                      medium_large
+                    }
+                  }
+                }
+              }
+            }
+      
           }
         }
      }
