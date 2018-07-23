@@ -7,7 +7,7 @@ import Schedule from './../../components/Schedule';
 import ListOfEvents from './../../components/ListOfEvents';
 import NewsLetter from './../../components/NewsLetter';
 import SignUp from './../../components/SignUp';
-import './styles.scss';
+import './module.scss';
 
 export default ({style, schedule, children}) => {
 
