@@ -25,7 +25,7 @@ export default ({data}) => {
         title : data.wpMagazine.title,
         image : data.wpMagazine.thumbnail,
         description : description.replace(/<\/?[^>]+(>|$)/g, '').substring(0, 130) + '...',
-        url: data.wpSite.siteUrl,
+        url: data.wpSite.siteMetadata.siteUrl,
         pathname: data.wpMagazine.link.replace(/https?:\/\/[^/]+/, ''),
         site_name : "hectv.org",
         author: "hectv",

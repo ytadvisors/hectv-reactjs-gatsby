@@ -24,7 +24,7 @@ export default ({data, props}) => {
         title : `HEC-TV | ${data.wpPage.title}`,
         image : image,
         description : description.replace(/<\/?[^>]+(>|$)/g, '').substring(0, 130) + '...',
-        url: data.wpSite.siteUrl,
+        url: data.wpSite.siteMetadata.siteUrl,
         pathname: data.wpPage.link.replace(/https?:\/\/[^/]+/, ''),
         site_name : "hectv.org",
         author: "hectv",
