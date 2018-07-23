@@ -87,18 +87,17 @@ export default class ListOfPosts extends Component {
     const {
       thumbnail
     } = post;
-    const {
-      acf:{
-        is_video,
-        cover_image
-      } = {}
-    } = post;
+
+    let acf = post.acf || {};
+    let is_video = acf.is_video;
+    let cover_image =  acf.cover_image;
+
     if(thumbnail)
       return thumbnail;
     else if(cover_image)
       return cover_image;
-    else if(post.acf.video_image || post.acf.post_header){
-      let img = is_video ? post.acf.video_image : post.acf.post_header;
+    else if(acf.video_image || acf.post_header){
+      let img = is_video ? acf.video_image : acf.post_header;
       const { sizes: {medium, medium_large }} = img;
       switch(type){
         case "small":
@@ -263,11 +262,11 @@ export default class ListOfPosts extends Component {
   }
 
   getSingleColumnPost(post, content) {
-    const {
-      acf: {
-        is_video
-      } = {}
-    } = post;
+
+
+    let acf = post.acf || {};
+    let is_video = acf.is_video;
+
     return (
       <table className="no-spacing">
         <tbody>
@@ -327,9 +326,11 @@ export default class ListOfPosts extends Component {
   }
 
   getFeaturedPost(post, content) {
-    const { acf: {
-      is_video
-    } = {}} = post;
+
+
+    let acf = post.acf || {};
+    let is_video = acf.is_video;
+
     return (
       <div className="featured-block">
         {this.getThumbNail(
@@ -360,9 +361,9 @@ export default class ListOfPosts extends Component {
   }
 
   getPost(layout, post, content) {
-    const {
-      acf : {is_video} = {}
-    } = post;
+
+    let acf = post.acf || {};
+    let is_video = acf.is_video;
 
     return (
       <div>
