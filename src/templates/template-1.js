@@ -21,7 +21,7 @@ export default ({data}) => {
         title: `HEC-TV | ${data.wpPage.title}`,
         image: "",
         description: description.replace(/<\/?[^>]+(>|$)/g, '').substring(0, 130) + '...',
-        url: process.env.SITE_HOST,
+        url: data.wpSite.siteUrl,
         pathname: data.wpPage.link.replace(/https?:\/\/[^/]+/, ''),
         site_name: "hectv.org",
         author: "hectv",
@@ -41,6 +41,11 @@ export default ({data}) => {
 
 export const query = graphql`
 query template1PageQuery($slug: String!) {
+  wpSite: site {
+    siteMetadata{
+      siteUrl
+    }
+  }
   wpPage: wordpressPage(slug: {eq: $slug}) {
     slug
     title

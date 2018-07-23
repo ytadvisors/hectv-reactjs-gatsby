@@ -25,7 +25,7 @@ export default ({data}) => {
         title : data.wpMagazine.title,
         image : data.wpMagazine.thumbnail,
         description : description.replace(/<\/?[^>]+(>|$)/g, '').substring(0, 130) + '...',
-        url : process.env.SITE_HOST,
+        url: data.wpSite.siteUrl,
         pathname: data.wpMagazine.link.replace(/https?:\/\/[^/]+/, ''),
         site_name : "hectv.org",
         author: "hectv",
@@ -63,38 +63,43 @@ export default ({data}) => {
 };
 
 export const query = graphql`
-     query magazineQuery ($id: String!){
-       wpMagazine : wordpressWpMagazine (id : { eq : $id }) {
-          title
-          content
-          link
-          slug
-      		acf{
-            cover_image
-            magazine_post{
-              post {
-                post_title
-                post_excerpt
-                post_name
-                acf{
-                  is_video
-                  post_header {
-                    sizes{
-                      medium
-                      medium_large
-                    }
-                  }
-                  video_image {
-                    sizes {
-                      medium
-                      medium_large
-                    }
-                  }
-                }
+query magazineQuery ($id: String!){
+  wpSite: site {
+    siteMetadata{
+      siteUrl
+    }
+  }
+ wpMagazine : wordpressWpMagazine (id : { eq : $id }) {
+    title
+    content
+    link
+    slug
+    acf{
+      cover_image
+      magazine_post{
+        post {
+          post_title
+          post_excerpt
+          post_name
+          acf{
+            is_video
+            post_header {
+              sizes{
+                medium
+                medium_large
               }
             }
-      
+            video_image {
+              sizes {
+                medium
+                medium_large
+              }
+            }
           }
         }
-     }
+      }
+
+    }
+  }
+}
 `;
