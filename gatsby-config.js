@@ -20,6 +20,7 @@ module.exports = {
   siteMetadata: {
     title: 'HEC-TV | Home',
     siteUrl: process.env.SITE_HOST,
+    mapKey : process.env.GOOGLE_API_KEY
   },
   plugins: [
     `gatsby-plugin-react-helmet`,

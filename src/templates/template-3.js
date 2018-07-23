@@ -38,7 +38,7 @@ export default ({data}) => {
         <div className="col-md-12">
           <DefaultNav title={title} link={data.wpPage.link}/>
         </div>
-        <Template3 {...{page_content: data.wpPage.acf}} callbackFunc={callbackFunc} />
+        <Template3 {...{page_content: data.wpPage.acf}} callbackFunc={callbackFunc} mapKey={data.wpSite.siteMetadata.mapKey}/>
       </div>
     </Layout>
   </div>
@@ -49,6 +49,7 @@ query template3PageQuery($slug: String!) {
   wpSite: site {
     siteMetadata{
       siteUrl
+      mapKey
     }
   }
   wpPage: wordpressPage(slug: {eq: $slug}) {
