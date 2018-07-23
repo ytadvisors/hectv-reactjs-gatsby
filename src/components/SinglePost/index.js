@@ -23,15 +23,6 @@ export default class SinglePost extends Component {
           event_price,
           venue,
           vimeo_id,
-        } = {
-          youtube_id : null,
-          web_address : null,
-          event_price : null,
-          venue : null,
-          event_dates : null,
-          vimeo_id : null,
-          related_posts : null,
-          post_events : null,
         }
       },
       hideTitle,

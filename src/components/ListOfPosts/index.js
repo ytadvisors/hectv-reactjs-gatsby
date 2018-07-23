@@ -89,9 +89,7 @@ export default class ListOfPosts extends Component {
       acf:{
         is_video,
         cover_image
-      } = {
-        is_video : null,
-        cover_image : null}
+      }
     } = post;
     if(thumbnail)
       return thumbnail;
@@ -266,8 +264,6 @@ export default class ListOfPosts extends Component {
     const {
       acf: {
         is_video
-      } = {
-        is_video : null
       }
     } = post;
     return (
@@ -331,8 +327,6 @@ export default class ListOfPosts extends Component {
   getFeaturedPost(post, content) {
     const { acf: {
       is_video
-    } = {
-      is_video : null
     }} = post;
     return (
       <div className="featured-block">
@@ -364,7 +358,7 @@ export default class ListOfPosts extends Component {
   }
 
   getPost(layout, post, content) {
-    const { acf : {is_video} = { is_video : null }} = post;
+    const { acf : {is_video}} = post;
 
     return (
       <div>
