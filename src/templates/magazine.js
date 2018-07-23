@@ -8,8 +8,6 @@ import Layout from "./../components/Layout"
 import SinglePost from "./../components/SinglePost";
 import ListOfPosts from "./../components/ListOfPosts";
 
-import "./../utils/cssDependencies";
-
 export default ({data}) => {
 
   data.wpMagazine.thumbnail = "";

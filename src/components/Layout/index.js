@@ -1,6 +1,6 @@
 import React from 'react';
 import { StaticQuery, graphql } from "gatsby"
-
+import "./../../utils/cssDependencies";
 import "./modules.scss"
 import ProgramViewer from './../ProgramViewer';
 import Header from "./../Header";
