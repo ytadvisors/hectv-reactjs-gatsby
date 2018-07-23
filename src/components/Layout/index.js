@@ -1,9 +1,11 @@
 import React from 'react';
 import { StaticQuery, graphql } from "gatsby"
+
 import "./styles.scss"
-import ProgramViewer from './../../components/ProgramViewer';
-import Header from "./../../components/Header";
-import Footer from "./../../components/Footer";
+import ProgramViewer from './../ProgramViewer';
+import Header from "./../Header";
+import Footer from "./../Footer";
+import Transition from "./../Transition"
 import BottomNav from "../BottomNav/index";
 
 
@@ -41,8 +43,10 @@ export default ({children, style, slug , showBottomNav}) => {
         return <section>
           <Header header={header} social={social} page={slug}/>
             <ProgramViewer style={style}>
-              {children}
-              {showBottomNav && <BottomNav menus={bottomNav && bottomNav.node.items} title="more from"/>}
+              <Transition>
+                {children}
+                {showBottomNav && <BottomNav menus={bottomNav && bottomNav.node.items} title="more from"/>}
+              </Transition>
             </ProgramViewer>
           <Footer footer={footer} social={social}/>
         </section>

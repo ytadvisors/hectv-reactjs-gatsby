@@ -17,27 +17,21 @@ export default class SinglePost extends Component {
         title,
         thumbnail,
         content,
-        event_link
+        event_link,
+        acf: {
+          youtube_id,
+          web_address,
+          event_price,
+          venue,
+          event_dates,
+          vimeo_id,
+          related_posts,
+          post_events,
+        }
       },
       hideTitle,
       classes
     } = this.props;
-
-    let temp = { youtube_id : null,
-      web_address: null,
-      event_price: null,
-      venue: null,
-      event_dates: null,
-      vimeo_id : null };
-
-    const {
-      youtube_id,
-      web_address,
-      event_price,
-      venue,
-      event_dates,
-      vimeo_id
-    } = this.props.post.acf || temp;
 
     return (
       <section className="post-container">
