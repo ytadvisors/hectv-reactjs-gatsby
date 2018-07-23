@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import './styles.scss';
+import './modules.scss';
 
 export default class LiveVideo extends Component {
   constructor(props) {

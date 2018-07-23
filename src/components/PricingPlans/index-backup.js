@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './styles.scss';
+import './modules.scss';
 
 export default class PricingPlans extends Component {
   constructor(props) {

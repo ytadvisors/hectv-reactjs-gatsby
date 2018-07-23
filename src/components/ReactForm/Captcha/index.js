@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Recaptcha from 'react-recaptcha';
-import './styles.scss';
+import './modules.scss';
 
 export default class Captcha extends Component {
   constructor(props) {

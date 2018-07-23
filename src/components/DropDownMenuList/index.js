@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { NavDropdown, MenuItem } from 'react-bootstrap';
-import './styles.scss';
+import './modules.scss';
 
 export default class DropDownMenuList extends Component {
   constructor(props) {

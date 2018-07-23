@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, StaticQuery, graphql  } from 'gatsby';
-import './styles.scss';
+import './modules.scss';
 
 export default (props) => {
   const { title, link } = props;

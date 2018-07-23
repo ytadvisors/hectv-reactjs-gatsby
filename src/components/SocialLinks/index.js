@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import './styles.scss';
+import './modules.scss';
 
 export default class SocialLinks extends Component {
   constructor(props) {

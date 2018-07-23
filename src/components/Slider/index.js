@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import RSlider from 'react-slick';
 import PropTypes from 'prop-types';
-import './styles.scss';
+import './modules.scss';
 
 export default class Slider extends Component {
   constructor(props) {

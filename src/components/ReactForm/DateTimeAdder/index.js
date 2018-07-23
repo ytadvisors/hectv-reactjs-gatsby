@@ -5,7 +5,7 @@ import { Field, Form as ReduxForm } from 'redux-form';
 import { Button } from 'react-bootstrap';
 import * as FontAwesome from 'react-icons/lib/fa';
 import _ from 'lodash';
-import './styles.scss';
+import './modules.scss';
 
 export default class DateTimeAdder extends Component {
   constructor(props) {

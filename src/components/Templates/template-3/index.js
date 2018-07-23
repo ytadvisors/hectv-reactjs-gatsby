@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import ContentBlock from '../../ContentBlock';
 import Map from '../../Map';
 import ContactForm from '../../Forms/ContactForm';
-import './styles.scss';
+import './modules.scss';
 
 export default class Template3 extends Component {
   constructor(props) {

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './styles.scss';
+import './modules.scss';
 import PropTypes from 'prop-types';
 import LoadingBar from 'react-redux-loading-bar';
 

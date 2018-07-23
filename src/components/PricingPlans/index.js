@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Button } from 'react-bootstrap';
-import './styles.scss';
+import './modules.scss';
 import _ from 'lodash';
 
 export default class PricingPlans extends Component {

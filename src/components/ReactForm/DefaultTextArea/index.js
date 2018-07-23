@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './styles.scss';
+import './modules.scss';
 
 export default class DefaultTextArea extends Component {
   constructor(props) {

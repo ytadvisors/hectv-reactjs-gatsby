@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { Button } from 'react-bootstrap';
 
-import './styles.scss';
+import './modules.scss';
 
 export default (props) => {
   let data = props.allWordpressWpEvent || {};
