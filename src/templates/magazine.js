@@ -33,7 +33,7 @@ export default ({data}) => {
       }}
     />
     <Layout style={{ background: '#eee' }} slug={data.wpMagazine.slug}>
-      <div className="col-md-12" style={{ background: '#eee', paddingBottom: '1em'  }}>
+      <div className="col-md-12" style={{ background: '#eee' }}>
         <SinglePost {...
           { post : data.wpMagazine,
             classes : {
