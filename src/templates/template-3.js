@@ -1,6 +1,7 @@
 import React from "react";
 import {graphql} from "gatsby"
 
+import Map from '../components/Map';
 import "./../utils/cssDependencies";
 
 import SEO from "./../components/SEO";
@@ -38,7 +39,9 @@ export default ({data}) => {
         <div className="col-md-12">
           <DefaultNav title={title} link={data.wpPage.link}/>
         </div>
-        <Template3 {...{page_content: data.wpPage.acf}} callbackFunc={callbackFunc} mapKey={data.wpSite.siteMetadata.mapKey}/>
+        <Template3 {...{page_content: data.wpPage.acf}} callbackFunc={callbackFunc} >
+          <Map mapKey={data.wpSite.siteMetadata.mapKey} />
+        </Template3>
       </div>
     </Layout>
   </div>

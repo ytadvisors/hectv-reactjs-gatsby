@@ -19,14 +19,14 @@ export default class Template3 extends Component {
         directions,
         opportunities
       },
-      mapKey,
+      children,
       callbackFunc
     } = this.props;
 
     return (
       <section className="template-3">
         <ContactForm callbackFunc={callbackFunc} />
-        <Map mapKey={mapKey} />
+        {children}
         <div className="row info-block">
           <div className="col-md-6">
             <ContentBlock
