@@ -84,9 +84,11 @@ export default class ListOfPosts extends Component {
 
   getImgSrc(post , type){
 
-    const { thumbnail, acf: {is_video}} = post;
+    const { thumbnail, acf: {is_video, cover_image}} = post;
     if(thumbnail)
       return thumbnail;
+    else if(cover_image)
+      return cover_image;
     else if(post.acf.video_image || post.acf.post_header){
       let img = is_video ? post.acf.video_image : post.acf.post_header;
       const { sizes: {medium, medium_large }} = img;
