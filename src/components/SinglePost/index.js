@@ -18,7 +18,7 @@ export default class SinglePost extends Component {
         thumbnail,
         content,
         event_link,
-        acf: {
+        acf : {
           youtube_id,
           web_address,
           event_price,
@@ -27,8 +27,8 @@ export default class SinglePost extends Component {
           vimeo_id,
           related_posts,
           post_events,
-        }
-      },
+        } = {}
+      } = {},
       hideTitle,
       classes
     } = this.props;
