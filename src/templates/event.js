@@ -17,7 +17,7 @@ export default ({data}) => {
         title : data.wpEvent.title,
         image : data.wpEvent.thumbnail,
         description : description.replace(/<\/?[^>]+(>|$)/g, '').substring(0, 130) + '...',
-        url : process.env.SITE_HOST,
+        url: data.wpSite.siteUrl,
         pathname: data.wpEvent.link.replace(/https?:\/\/[^/]+/, ''),
         site_name : "hectv.org",
         author: "hectv",
@@ -33,22 +33,27 @@ export default ({data}) => {
 };
 
 export const query = graphql`
-   query eventQuery ($id: String!){
-     wpEvent: wordpressWpEvent (id : { eq : $id }) {
-        title
-        content
-        link
-        thumbnail
-        slug
-      	acf {
-      	  venue
-          web_address
-          event_price
-          event_dates{
-            start_time
-            end_time
-          }
-        }
+query eventQuery ($id: String!){
+  wpSite: site {
+    siteMetadata{
+      siteUrl
+    }
+  }
+ wpEvent: wordpressWpEvent (id : { eq : $id }) {
+    title
+    content
+    link
+    thumbnail
+    slug
+    acf {
+      venue
+      web_address
+      event_price
+      event_dates{
+        start_time
+        end_time
       }
-   }
+    }
+  }
+}
 `;

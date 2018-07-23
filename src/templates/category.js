@@ -25,7 +25,7 @@ export default ({data}) => {
         title : `HEC-TV | ${data.wpCategory.name}`,
         image : image,
         description : description.replace(/<\/?[^>]+(>|$)/g, '').substring(0, 130) + '...',
-        url : process.env.SITE_HOST,
+        url: data.wpSite.siteUrl,
         pathname: data.wpCategory.link.replace(/https?:\/\/[^/]+/, ''),
         site_name : "hectv.org",
         author: "hectv",
@@ -49,41 +49,46 @@ export default ({data}) => {
 };
 
 export const query = graphql`
- query categoryQuery ($slug: String!){
-    wpCategory: wordpressCategory (
-      slug : { eq : $slug }
-    ){
-      slug
-      link
-      name
-      description
+query categoryQuery ($slug: String!){
+  wpSite: site {
+    siteMetadata{
+      siteUrl
     }
-    wpCategoryPosts: allWordpressPost(
-      filter: {
-        categories : 
-          { 
-              slug :
-                { eq: $slug }
-          }
-      }
-    ) {
-      edges{
-        node {
-          slug
+  }
+  wpCategory: wordpressCategory (
+    slug : { eq : $slug }
+  ){
+    slug
+    link
+    name
+    description
+  }
+  wpCategoryPosts: allWordpressPost(
+    filter: {
+      categories : 
+        { 
+            slug :
+              { eq: $slug }
+        }
+    }
+  ) {
+    edges{
+      node {
+        slug
+        link
+        title
+        excerpt
+        thumbnail
+        categories {
+          name
           link
-          title
-          excerpt
-          thumbnail
-          categories {
-            name
-            link
-            slug
-          }
-          acf{
-            is_video
-          }
+          slug
+        }
+        acf{
+          is_video
         }
       }
     }
+  }
   }
 `;
