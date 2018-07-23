@@ -96,8 +96,8 @@ export default class ListOfPosts extends Component {
       return thumbnail;
     else if(cover_image)
       return cover_image;
-    else if(acf.video_image || acf.post_header){
-      let img = is_video ? acf.video_image : acf.post_header;
+    else if(acf.video_image || acf.post_header || acf.event_image){
+      let img = (is_video && (acf.video_image || acf.post_header )) || acf.event_image ;
       const { sizes: {medium, medium_large }} = img;
       switch(type){
         case "small":
