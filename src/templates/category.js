@@ -25,7 +25,7 @@ export default ({data}) => {
         title : `HEC-TV | ${data.wpCategory.name}`,
         image : image,
         description : description.replace(/<\/?[^>]+(>|$)/g, '').substring(0, 130) + '...',
-        url: data.wpSite.siteUrl,
+        url: data.wpSite.siteMetadata.siteUrl,
         pathname: data.wpCategory.link.replace(/https?:\/\/[^/]+/, ''),
         site_name : "hectv.org",
         author: "hectv",
