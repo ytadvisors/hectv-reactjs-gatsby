@@ -91,23 +91,27 @@ export default class ListOfPosts extends Component {
     let acf = post.acf || {};
     let is_video = acf.is_video;
     let cover_image =  acf.cover_image;
-
     if(thumbnail)
       return thumbnail;
     else if(cover_image)
       return cover_image;
-    else if(acf.video_image || acf.post_header){
-      let img = is_video ? acf.video_image : acf.post_header;
-      const { sizes: {medium, medium_large }} = img;
-      switch(type){
-        case "small":
-          return medium;
+    else if(acf.video_image || acf.post_header || acf.event_image){
+      let img = "";
+      if(is_video){
+        img = acf.video_image;
+      } else {
+        img = acf.post_header ? acf.post_header : acf.event_image
       }
-      return medium_large
+      if(img){
+        const { sizes: {medium, medium_large }} = img;
+        switch(type){
+          case "small":
+            return medium;
+        }
+        return medium_large
+      }
     }
-    else {
-      return defaultImage;
-    }
+    return defaultImage;
   }
 
   getCategories(categories) {

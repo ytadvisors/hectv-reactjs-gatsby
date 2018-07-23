@@ -14,6 +14,7 @@ export default ({data}) => {
   let description = data.wpPost.content || "On Demand Arts, Culture & Education Programming";
 
   let posts = getPosts(data, "wpPost", "related_posts", "related_post", "wpRelatedPosts");
+  let events = getPosts(data, "wpPost", "post_events", "related_event");
   posts = _.take(posts, 3);
   return <div>
     <SEO
@@ -47,6 +48,16 @@ export default ({data}) => {
           }}
           loadMore={null}
           resize_rows
+        />
+        <ListOfPosts
+          title="Related Events"
+          posts={events}
+          link={{ page: 'events' }}
+          num_results={ 0}
+          design={{
+            default_row_layout: 'Single Column',
+            default_display_type: 'Wallpaper'
+          }}
         />
       </div>
     </Layout>
@@ -92,7 +103,16 @@ query postQuery ($id: String! $categories: [Int]!){
       }
       post_events {
         related_event{
+          post_excerpt
+          post_title
+          post_name
           acf{
+          	venue
+            event_price
+            event_dates {
+            	start_time
+              end_time
+          	}
             event_image{
               sizes{
                 medium
