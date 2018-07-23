@@ -6,8 +6,6 @@ import Layout from "./../components/Layout"
 import CategoryNav from './../components/SubNavigation/CategoryNav';
 import ListOfPosts from "./../components/ListOfPosts";
 
-import "./../utils/cssDependencies";
-
 export default ({data}) => {
   data.wpCategory.content = "";
   if(data.wpCategory.description)

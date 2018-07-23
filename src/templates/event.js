@@ -5,8 +5,6 @@ import SEO from "./../components/SEO";
 import Layout from "./../components/Layout"
 import SinglePost from "./../components/SinglePost"
 
-import "./../utils/cssDependencies";
-
 export default ({data}) => {
 
   let description = data.wpEvent.content || "On Demand Arts, Culture & Education Programming";

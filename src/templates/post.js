@@ -8,8 +8,6 @@ import SinglePost from "./../components/SinglePost";
 import ListOfPosts from "./../components/ListOfPosts";
 import _ from "lodash"
 
-import "./../utils/cssDependencies";
-
 export default ({data}) => {
   let description = data.wpPost.content || "On Demand Arts, Culture & Education Programming";
 
