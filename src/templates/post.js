@@ -64,6 +64,7 @@ export const query = graphql`
         acf {
           youtube_id
           vimeo_id
+          is_video
           related_posts {
             related_post{
               post_title
