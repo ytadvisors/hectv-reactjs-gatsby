@@ -7,7 +7,7 @@ import "./../utils/cssDependencies";
 import SEO from "./../components/SEO";
 import Layout from "./../components/Layout"
 import EventNav from './../components/SubNavigation/EventNav';
-import { getCurrentEvents } from"./../components/ListOfEvents"
+import { getCurrentEvents } from"./../utils/helperFunctions"
 import ListOfPosts from "./../components/ListOfPosts";
 
 export default class Events extends Component{
@@ -20,7 +20,6 @@ export default class Events extends Component{
   }
 
   changeDate(new_date){
-    console.log("new date is", new_date);
     this.setState({current_date : moment(new_date)})
   }
 
