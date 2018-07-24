@@ -1,19 +1,24 @@
 import React from "react";
 import {graphql} from "gatsby"
+import moment from "moment";
 
 import "./../utils/cssDependencies";
 
 import SEO from "./../components/SEO";
 import Layout from "./../components/Layout"
 import EventNav from './../components/SubNavigation/EventNav';
+import { getCurrentEvents } from"./../components/ListOfEvents"
 import ListOfPosts from "./../components/ListOfPosts";
 
 export default ({data}) => {
   if (data.wpPage.acf)
     data.wpPage.acf.content = data.wpPage.content;
+  const current_day = moment(moment().format('MM/DD/YYYY'));
 
-  let posts = data.wpEvents && data.wpEvents.edges.map(obj => obj.node);
+  let current_events = getCurrentEvents(current_day, data.wpEvents.edges);
+  let posts = current_events && current_events.values && current_events.values.map(obj => obj.node);
   let description = data.wpPage.content || "On Demand Arts, Culture & Education Programming";
+
   return <div>
     <SEO
       {...{
@@ -34,7 +39,7 @@ export default ({data}) => {
         </div>
         <ListOfPosts
           posts={posts || []}
-          link={{ page: 'event' }}
+          link={{ page: 'events' }}
           num_results={0}
           design={data.wpPage.acf}
           loadMore={null}
@@ -68,16 +73,21 @@ query eventPageQuery {
     }
   }
   
- wpEvents: allWordpressWpEvent(limit: 10) {
-    edges {
-      node {
-        link
-        title
+  wpEvents: allWordpressWpEvent (
+  sort :{
+    fields: [acf___event_dates]
+    order:ASC
+  }){
+    edges{
+      node{
         slug
-        wordpress_id
+        title
         link
         thumbnail
-        acf {
+        acf{
+          venue
+          event_price
+          
           event_dates{
             start_time
             end_time

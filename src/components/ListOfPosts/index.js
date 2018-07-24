@@ -131,7 +131,9 @@ export default class ListOfPosts extends Component {
     );
   }
 
-  getTitle(display_type, title, link, layout) {
+  getTitle(display_type, layout, post) {
+    const { title } = post;
+    const link = this.getLink(post)
     let post_type = layout === '3 Columns' ? 'small_title' : '';
     if (display_type === 'Wallpaper') {
       return (
@@ -159,25 +161,30 @@ export default class ListOfPosts extends Component {
       );
   }
 
-  getExcerpt(display_type, layout, type, excerpt) {
+  getExcerpt(display_type, layout, post) {
+
+    const { excerpt, acf } = post;
+    let subtitle = excerpt;
     let icon = '';
-    if (excerpt) {
+
+    if( acf && acf.venue) {
+      subtitle = acf.venue;
+      icon = <Material.MdLocationOn size="25" color="#4ea2ea" />;
+    }
+
+    if (subtitle) {
       if (
         display_type === 'Wallpaper' ||
         (layout !== '2 Columns' && layout !== '3 Columns')
       ) {
-        switch (type) {
-          case 'events':
-            icon = <Material.MdLocationOn size="25" color="#4ea2ea" />;
-            break;
-        }
+
         return (
           <div>
             {icon}
             <span
               className="blog-content"
               dangerouslySetInnerHTML={{
-                __html: excerpt
+                __html: subtitle
               }}
             />
           </div>
@@ -187,7 +194,8 @@ export default class ListOfPosts extends Component {
     return '';
   }
 
-  getContentDetails(display_type, layout, content_details) {
+  getContentDetails(display_type, layout, post) {
+    const { content_details } = post;
     if (content_details) {
       if (
         display_type === 'Wallpaper' ||
@@ -206,22 +214,19 @@ export default class ListOfPosts extends Component {
     return '';
   }
 
-  getContent(display_type, layout, type, excerpt, content_details) {
+  getContent(display_type, layout, post) {
     return (
       <div>
-        {this.getExcerpt(display_type, layout, type, excerpt)}
-        {this.getContentDetails(display_type, layout, content_details)}
+        {this.getExcerpt(display_type, layout, post)}
+        {this.getContentDetails(display_type, layout, post)}
       </div>
     );
   }
 
-  getColumnContent(post, link, display_type, layout) {
+  getColumnContent(display_type, layout, post) {
     const {
       title,
-      excerpt,
-      content_details,
       categories,
-      type,
       date
     } = post;
     let category_list = !categories ? [] : categories;
@@ -234,13 +239,11 @@ export default class ListOfPosts extends Component {
         )}
         <div className="blog-excerpt">
           {this.getCategories(category_list)}
-          {this.getTitle(display_type, title, this.getLink(post), layout)}
+          {this.getTitle(display_type, layout, post)}
           {this.getContent(
             display_type,
             layout,
-            type,
-            excerpt,
-            content_details
+            post
           )}
         </div>
       </div>
@@ -394,8 +397,8 @@ export default class ListOfPosts extends Component {
     );
   }
 
-  getColumnLayout(layout, display_type, post, link, num_rows) {
-    let content = this.getColumnContent(post, link, display_type, layout);
+  getColumnLayout(display_type, layout, post, num_rows) {
+    let content = this.getColumnContent(display_type, layout, post);
     switch (layout) {
       case 'Single Column':
         switch (display_type) {
@@ -435,7 +438,6 @@ export default class ListOfPosts extends Component {
     layout,
     display_type,
     row_of_columns,
-    link,
     table_style,
     resize_rows
   ) {
@@ -449,10 +451,9 @@ export default class ListOfPosts extends Component {
                   <td key={`col ${x}${y}`} className="main-col col-xs-4">
                     <div className="no-padding post-preview">
                       {this.getColumnLayout(
-                        layout,
                         display_type,
+                        layout,
                         post,
-                        link,
                         resize_rows && current_row.length
                       )}
                     </div>
