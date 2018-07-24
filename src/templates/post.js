@@ -50,7 +50,7 @@ export default ({data}) => {
         <ListOfPosts
           title="Related Events"
           posts={events}
-          link={{ page: 'event' }}
+          link={{ page: 'events' }}
           num_results={ 0}
           design={{
             default_row_layout: 'Single Column',
