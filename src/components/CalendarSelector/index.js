@@ -17,10 +17,6 @@ export default class CalendarSelector extends Component {
     };
   }
 
-  componentDidMount() {
-    this.smallDevice = !isServer && window.matchMedia('(max-width: 400px)').matches;
-  }
-
   changeDefaultDate(date) {
     this.setState({ date: date });
   }
@@ -28,12 +24,13 @@ export default class CalendarSelector extends Component {
   componentDidUpdate(prevProps, prevState) {
     const { callback } = this.props;
     if (prevState.date !== this.state.date && prevState.date !== '') {
-      if (this.state.date) callback(this.state.date.format('MM/DD/YYYY'));
-      else callback(moment().format('MM/DD/YYYY'));
+      if (this.state.date) callback(this.state.date.format('MMMM/DD/YYYY'));
+      else callback(moment().format('MMMM/DD/YYYY'));
     }
   }
 
   render() {
+    const isMobile = !isServer && window.innerWidth <= 767;
     return (
       <div className="calendar-selector">
         <SingleDatePicker
@@ -42,9 +39,10 @@ export default class CalendarSelector extends Component {
           focused={this.state.focused} // PropTypes.bool
           isOutsideRange={() => false}
           onFocusChange={({ focused }) => this.setState({ focused })} // PropTypes.func.isRequired
-          withFullScreenPortal={this.smallDevice}
+          withFullScreenPortal={isMobile}
+          numberOfMonths={isMobile ? 1 : 2}
           orientation={VERTICAL_ORIENTATION}
-          displayFormat="MMM DD"
+          displayFormat="MMMM DD"
         />
       </div>
     );
