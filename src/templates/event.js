@@ -77,6 +77,7 @@ query eventQuery ($id: String!){
         event_post{
           post_title
           post_excerpt
+          post_name
           acf {
             is_video
             video_image{
