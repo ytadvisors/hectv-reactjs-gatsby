@@ -127,7 +127,7 @@ exports.createPages = ({ graphql, actions }) => {
             reject(result.errors)
           }
           const eventTemplate = path.resolve("./src/templates/event.js");
-          createPostHelper(createPage, result.data.allWordpressWpEvent.edges, eventTemplate, "event", "event_category");
+          createPostHelper(createPage, result.data.allWordpressWpEvent.edges, eventTemplate, "events", "event_category");
         })
       })
       .then(() => {
