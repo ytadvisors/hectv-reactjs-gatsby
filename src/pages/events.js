@@ -10,6 +10,10 @@ import EventNav from './../components/SubNavigation/EventNav';
 import { getCurrentEvents } from"./../components/ListOfEvents"
 import ListOfPosts from "./../components/ListOfPosts";
 
+function changeDate(current_date) {
+  console.log("Change date: ", current_date);
+}
+
 export default ({data}) => {
   if (data.wpPage.acf)
     data.wpPage.acf.content = data.wpPage.content;

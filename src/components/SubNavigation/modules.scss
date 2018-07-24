@@ -1,5 +1,28 @@
 .sub-navigation{
   list-style: none;
+  &.event-nav {
+    .DateInput_input{
+      background:#ddd !important;
+      border: 0;
+      color: #337ab7 !important;
+      text-align: center;
+    }
+    .calendar-container{
+      a{
+        padding: 0;
+        margin: 10px 15px;
+        border: 1px solid #bbbb;
+      }
+    }
+    a{
+      &.dropdown-toggle{
+        background:#ddd !important
+      }
+      &.dropdown-toggle:hover{
+        background:#ddd !important
+      }
+    }
+  }
   h2{
     a{
       text-decoration: none;
@@ -88,5 +111,18 @@
       }
     }
 
+  }
+}
+
+
+
+@media (max-width: 767px) {
+  .sub-navigation {
+    list-style: none;
+    &.event-nav {
+      .event-nav-links{
+        clear:both;
+      }
+    }
   }
 }

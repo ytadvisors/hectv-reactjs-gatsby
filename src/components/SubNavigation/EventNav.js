@@ -1,9 +1,15 @@
 import React from 'react';
 import { Link, StaticQuery, graphql  } from 'gatsby';
-import NavWrap from './../../components/NavWrap';
 import PropTypes from 'prop-types';
 import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
+import NavWrap from './../../components/NavWrap';
+import 'react-dates/initialize';
+import CalendarSelector from './../../components/CalendarSelector';
 import './modules.scss';
+
+function changeDate(current_date) {
+  console.log("Change date: ", current_date);
+}
 
 export default (props) => {
   const { slug, link, title } = props;
@@ -25,7 +31,7 @@ export default (props) => {
       render={
         data => {
           const menus = data.allWordpressWpEventCategory.edges;
-          return <section className="sub-navigation">
+          return <section className="sub-navigation event-nav">
             <div className="pull-left">
               <h2>
                 <Link to={link.replace(/https?:\/\/[^/]+/, '')}
@@ -33,18 +39,23 @@ export default (props) => {
                 />
               </h2>
             </div>
-            <NavDropdown id = "filter" className="drop-down-menu-list pull-right" title="Filter Events">
-              {menus.map((menu, x) => (
-                <NavWrap
-                  key={`menu-${x}`}
-                >
-                  <Link to={menu.node.link.replace(/https?:\/\/[^/]+/, '')} dangerouslySetInnerHTML={{
-                    __html: menu.node.name
-                  }}>
-                  </Link>
-              </NavWrap>
-              ))}
-            </NavDropdown>
+            <Nav className = "event-nav-links">
+              <NavDropdown id = "filter" className="drop-down-menu-list pull-right" title="Filter Events">
+                {menus.map((menu, x) => (
+                  <NavWrap
+                    key={`menu-${x}`}
+                  >
+                    <Link to={menu.node.link.replace(/https?:\/\/[^/]+/, '')} dangerouslySetInnerHTML={{
+                      __html: menu.node.name
+                    }}>
+                    </Link>
+                </NavWrap>
+                ))}
+              </NavDropdown>
+              <NavItem className="pull-right calendar-container" >
+                <CalendarSelector callback={changeDate} />
+              </NavItem>
+            </Nav>
           </section>
         }
       }
