@@ -1,6 +1,5 @@
-import React, { Component } from 'react';
+import React from 'react';
 import * as FontAwesome from 'react-icons/lib/fa';
-import _ from "lodash";
 
 // A nice helper to tell us if we're on the server
 export const isServer = !(
