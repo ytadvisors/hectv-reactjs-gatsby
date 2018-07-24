@@ -7,12 +7,8 @@ import 'react-dates/initialize';
 import CalendarSelector from './../../components/CalendarSelector';
 import './modules.scss';
 
-function changeDate(current_date) {
-  console.log("Change date: ", current_date);
-}
-
 export default (props) => {
-  const { slug, link, title } = props;
+  const { link, title, changeDate } = props;
   return (
     <StaticQuery
       query={graphql`
