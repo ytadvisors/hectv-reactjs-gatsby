@@ -27,6 +27,7 @@ export default class CalendarSelector extends Component {
   render() {
     return <DatePicker
       selected={this.state.startDate}
+      dateFormat="MMMM DD"
       onChange={this.handleChange}
     />;
   }
