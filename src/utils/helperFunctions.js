@@ -101,7 +101,7 @@ export function getTransitionStyle({ timeout, status }){
   return getTransitions(timeout)[status] || {};
 }
 
-export const getCurrentEvents = (current_day, events, num_entries) => {
+export function getCurrentEvents(current_day, events, num_entries){
   return events.reduce(
     (result, item) => {
       const {
@@ -143,4 +143,4 @@ export const getCurrentEvents = (current_day, events, num_entries) => {
     },
     { values: [], started: 0 }
   );
-};
+}
