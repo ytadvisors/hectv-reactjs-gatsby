@@ -535,7 +535,6 @@ export default class ListOfPosts extends Component {
                 current_layout,
                 current_display,
                 row_of_columns,
-                link,
                 table_style,
                 !!resize_rows
               )}
@@ -557,7 +556,6 @@ export default class ListOfPosts extends Component {
               current_layout,
               current_display,
               [row],
-              link,
               table_style,
               !!resize_rows
             )}
