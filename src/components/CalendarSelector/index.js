@@ -1,51 +1,34 @@
 import React, { Component } from 'react';
 import moment from 'moment';
 import PropTypes from 'prop-types';
-import 'react-dates/initialize';
-import VERTICAL_ORIENTATION from 'react-dates/constants';
-import { SingleDatePicker } from 'react-dates';
-import { isServer } from './../../utils/helperFunctions';
-import 'react-dates/lib/css/_datepicker.css';
+import DatePicker from 'react-datepicker';
+
+import 'react-datepicker/dist/react-datepicker.css';
 import './modules.scss';
 
 export default class CalendarSelector extends Component {
-  constructor(props, context) {
-    super(props, context);
-    this.changeDefaultDate = this.changeDefaultDate.bind(this);
+  constructor (props) {
+    super(props);
     this.state = {
-      date: moment()
+      startDate: moment()
     };
+    this.handleChange = this.handleChange.bind(this);
   }
 
-  changeDefaultDate(date) {
-    this.setState({ date: date });
-  }
+  handleChange(date) {
+    const {callback} = this.props;
+    this.setState({
+      startDate: date
+    });
 
-  componentDidUpdate(prevProps, prevState) {
-    const { callback } = this.props;
-    if (prevState.date !== this.state.date && prevState.date !== '') {
-      if (this.state.date) callback(this.state.date.format('MM/DD/YYYY'));
-      else callback(moment().format('MM/DD/YYYY'));
-    }
+    callback(date);
   }
 
   render() {
-    const isMobile = !isServer && window.innerWidth <= 767;
-    return (
-      <div className="calendar-selector">
-        <SingleDatePicker
-          date={this.state.date} // momentPropTypes.momentObj or null
-          onDateChange={date => this.setState({ date })} // PropTypes.func.isRequired
-          focused={this.state.focused} // PropTypes.bool
-          isOutsideRange={() => false}
-          onFocusChange={({ focused }) => this.setState({ focused })} // PropTypes.func.isRequired
-          withFullScreenPortal={isMobile}
-          numberOfMonths={isMobile ? 1 : 2}
-          orientation={VERTICAL_ORIENTATION}
-          displayFormat="MMMM DD"
-        />
-      </div>
-    );
+    return <DatePicker
+      selected={this.state.startDate}
+      onChange={this.handleChange}
+    />;
   }
 }
 

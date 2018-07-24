@@ -1,9 +1,7 @@
 import React from 'react';
 import { Link, StaticQuery, graphql  } from 'gatsby';
-import PropTypes from 'prop-types';
 import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
 import NavWrap from './../../components/NavWrap';
-import 'react-dates/initialize';
 import CalendarSelector from './../../components/CalendarSelector';
 import './modules.scss';
 
