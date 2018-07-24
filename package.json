@@ -3,7 +3,7 @@
   "description": "HEC-TV website",
   "license": "MIT",
   "scripts": {
-    "build:dev": "ACTIVE_ENV=staging  node --max_old_space_size=2084  ./node_modules/.bin/gatsby build --prefix-paths --verbose",
+    "build:dev": "ACTIVE_ENV=staging  node --max_old_space_size=2084  ./node_modules/.bin/gatsby build --prefix-paths --verbose --noUglify",
     "build:staging": "ACTIVE_ENV=staging node --max_old_space_size=12000  --stack-size=100000 ./node_modules/.bin/gatsby build --prefix-paths --verbose",
     "build:production": "ACTIVE_ENV=production node  --max_old_space_size=12000  --stack-size=100000 ./node_modules/.bin/gatsby build --prefix-paths --verbose",
     "sync-dynamic:staging": "aws --profile eb-cli2 s3 sync public/ s3://hectv-gatsby --exclude 'static/*' --exclude  'favicons/*'  --cache-control 'max-age=0'",
@@ -59,6 +59,7 @@
     "react-router-dom": "4.3.1",
     "react-stripe-elements": "2.0.0",
     "react-transition-group": "2.4.0",
+    "react-with-styles": "3.2.1",
     "redux": "4.0.0",
     "redux-form": "7.4.2",
     "redux-logger": "3.0.6",
