@@ -128,93 +128,10 @@ exports.createPages = ({ graphql, actions }) => {
           }
           const eventTemplate = path.resolve("./src/templates/event.js");
           createPostHelper(createPage, result.data.allWordpressWpEvent.edges, eventTemplate, "events", "event_category");
+          resolve();
         })
       })
-      .then(() => {
-        graphql(
-          `
-          {
-             allWordpressCategory{
-              edges{
-                node {
-                  name
-                  slug
-                  link
-                  wordpress_parent
-                  wordpress_id
-                  parent_element{
-                    name
-                    slug
-                  }
-                }
-              }
-            }
-          }
-          `
-        ).then(result => {
-          if (result.errors) {
-            console.log(result.errors)
-            reject(result.errors)
-          }
-          const pageTemplate = path.resolve("./src/templates/category.js");
-          createCategoryPageHelper(createPage, result.data.allWordpressCategory.edges, pageTemplate);
-        })
-      })
-      .then(() => {
-        graphql(
-          `
-            {
-             allWordpressWpMagazine {
-                edges {
-                  node {
-                    id
-                    slug
-                    title
-                    type
-                  }
-                }
-              }
-           }
-          `
-        ).then(result => {
-          if (result.errors) {
-            console.log(result.errors)
-            reject(result.errors)
-          }
-          const magazineTemplate = path.resolve("./src/templates/magazine.js");
-          createPostHelper(createPage, result.data.allWordpressWpMagazine.edges, magazineTemplate, "magazine", "type");
-        })
-      })
-      .then(() => {
-        graphql(
-          `
-            {
-              allWordpressPost {
-                edges {
-                  node {
-                    id
-                    slug
-                    status
-                    template
-                    format
-                    categories{
-                      wordpress_id
-                    }
-                  }
-                }
-              }
-            }
-          `
-        ).then(result => {
-          if (result.errors) {
-            console.log(result.errors)
-            reject(result.errors)
-          }
-          const postTemplate = path.resolve("./src/templates/post.js");
-          createPostHelper(createPage, result.data.allWordpressPost.edges, postTemplate, "posts", "categories", "wordpress_id");
-          resolve()
-        })
-      })
+
       .catch(err => {
         console.log(err.message)
         reject(err)
