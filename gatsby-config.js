@@ -63,6 +63,20 @@ module.exports = {
         head: false,
         anonymize: true,
         respectDNT: true,
+      }
+    },
+    {
+      resolve: `gatsby-plugin-google-tagmanager`,
+      options: {
+        id: process.env.GA_TAGMANAGER_ID,
+
+        // Include GTM in development.
+        // Defaults to false meaning GTM will only be loaded in production.
+        includeInDevelopment: false,
+
+        // Specify optional GTM environment details.
+        gtmAuth: process.env.GA_TAGMANAGER_ENV_AUTH_STRING,
+        gtmPreview: process.env.GA_TAGMANAGER_ENV_PREVIEW_NAME,
       },
     }
   ]
