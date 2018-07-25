@@ -14,7 +14,7 @@ export default ({data, props}) => {
   let image = "";
   if(posts.length > 0 && posts[0].acf){
     let imgContainer = posts[0].acf.video_image || posts[0].acf.post_header;
-    image = imgContainer.sizes  ? imgContainer.sizes.medium : "";
+    image = imgContainer && imgContainer.sizes  ? imgContainer.sizes.medium : "";
   }
 
   return <div>

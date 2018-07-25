@@ -7,7 +7,7 @@ import "./../utils/cssDependencies";
 import SEO from "./../components/SEO";
 import Layout from "./../components/Layout"
 import EventNav from './../components/SubNavigation/EventNav';
-import { getCurrentEvents } from"./../utils/helperFunctions"
+import { getCurrentEvents, getFirstImageFromWpList } from "./../utils/helperFunctions"
 import ListOfPosts from "./../components/ListOfPosts";
 
 export default class Events extends Component{
@@ -39,7 +39,7 @@ export default class Events extends Component{
       <SEO
         {...{
           title: `HEC-TV | ${data.wpPage.title}`,
-          image: "",
+          image: getFirstImageFromWpList(posts),
           description: description.replace(/<\/?[^>]+(>|$)/g, '').substring(0, 130) + '...',
           url: data.wpSite.siteMetadata.siteUrl,
           pathname: data.wpPage.link.replace(/https?:\/\/[^/]+/, ''),
