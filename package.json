@@ -27,6 +27,7 @@
     "gatsby": "next",
     "gatsby-plugin-google-analytics": "next",
     "gatsby-plugin-google-fonts": "0.0.4",
+    "gatsby-plugin-google-tagmanager": "1.0.19",
     "gatsby-plugin-react-helmet": "next",
     "gatsby-plugin-react-next": "next",
     "gatsby-plugin-sass": "next",
