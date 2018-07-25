@@ -3,7 +3,7 @@ import { graphql } from "gatsby"
 
 import "./../utils/cssDependencies";
 
-import { removeDuplicates, getPosts } from "./../utils/helperFunctions"
+import { removeDuplicates, getPosts, getFirstImageFromWpList } from "./../utils/helperFunctions"
 import SEO from "./../components/SEO";
 import Layout from "./../components/Layout";
 import ListOfPosts from "./../components/ListOfPosts";
@@ -12,17 +12,12 @@ export default ({data, props}) => {
   let description = data.wpPage.content || "On Demand Arts, Culture & Education Programming";
   let posts = getPosts(data, "wpPage", "post_list", "post", "wpPosts");
   posts = removeDuplicates(posts, "wordpress_id");
-  let image = "";
-  if(posts.length > 0){
-    let imgContainer = posts[0].acf.video_image || posts[0].acf.post_header;
-    image = imgContainer.sizes.medium;
-  }
 
   return <div>
     <SEO
       {...{
         title : `HEC-TV | ${data.wpPage.title}`,
-        image : image,
+        image : getFirstImageFromWpList(posts),
         description : description.replace(/<\/?[^>]+(>|$)/g, '').substring(0, 130) + '...',
         url: data.wpSite.siteMetadata.siteUrl,
         pathname: data.wpPage.link.replace(/https?:\/\/[^/]+/, ''),

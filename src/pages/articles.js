@@ -2,6 +2,7 @@ import React from "react";
 import {graphql} from "gatsby"
 
 import "./../utils/cssDependencies";
+import { removeDuplicates, getPosts, getFirstImageFromWpList } from "./../utils/helperFunctions"
 
 import SEO from "./../components/SEO";
 import Layout from "./../components/Layout"
@@ -11,14 +12,15 @@ import ListOfPosts from "./../components/ListOfPosts";
 export default ({data}) => {
   if (data.wpPage.acf)
     data.wpPage.acf.content = data.wpPage.content;
+  let posts = getPosts(data, "wpPage", "post_list", "post", "wpPosts");
+  posts = removeDuplicates(posts, "wordpress_id");
 
-  let posts = data.wpPosts && data.wpPosts.edges.map(obj => obj.node);
   let description = data.wpPage.content || "On Demand Arts, Culture & Education Programming";
   return <div>
     <SEO
       {...{
         title: `HEC-TV | ${data.wpPage.title}`,
-        image: "",
+        image: getFirstImageFromWpList(posts),
         description: description.replace(/<\/?[^>]+(>|$)/g, '').substring(0, 130) + '...',
         url: data.wpSite.siteMetadata.siteUrl,
         pathname: data.wpPage.link.replace(/https?:\/\/[^/]+/, ''),
@@ -51,21 +53,47 @@ query articlesPageQuery {
       siteUrl
     }
   }
-  wpPage: wordpressPage(slug: {eq: "articles"}) {
-    slug
-    title
-    content
-    link
-    acf {
-      video_id
-      default_row_layout
-      default_display_type
-      new_row_layout {
-        row_layout
-        display_type
+ wpPage: wordpressPage (slug : { eq : "articles" }) {
+   title
+   content
+   link
+   slug
+   acf{
+     default_row_layout
+     default_display_type
+     new_row_layout {
+       row_layout
+       display_type
+     }
+     post_list{
+      post{
+        post_title
+        post_name
+        post_excerpt
+        wordpress_id
+        categories {
+          link
+          name
+        }
+        acf{
+          is_video
+          video_image{
+            sizes{
+              medium
+              medium_large
+            }
+          }
+          post_header{
+            sizes{
+              medium
+              medium_large
+            }
+          }
+        }
       }
     }
-  }
+   }
+ }
   wpPosts: allWordpressPost (
     filter : {
       acf : {

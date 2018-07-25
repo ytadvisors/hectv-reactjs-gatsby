@@ -2,6 +2,7 @@ import React from "react";
 import {graphql} from "gatsby"
 
 import "./../utils/cssDependencies";
+import { getFirstImageFromWpList } from "./../utils/helperFunctions"
 
 import SEO from "./../components/SEO";
 import Layout from "./../components/Layout"
@@ -18,7 +19,7 @@ export default ({data}) => {
     <SEO
       {...{
         title: `HEC-TV | ${data.wpPage.title}`,
-        image: "",
+        image: getFirstImageFromWpList(posts),
         description: description.replace(/<\/?[^>]+(>|$)/g, '').substring(0, 130) + '...',
         url: data.wpSite.siteMetadata.siteUrl,
         pathname: data.wpPage.link.replace(/https?:\/\/[^/]+/, ''),

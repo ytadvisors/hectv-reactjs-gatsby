@@ -65,7 +65,7 @@ export function  removeDuplicates(myArr, prop){
 }
 
 export function getPosts(data, listIndex, postIndex, postName, extraIndex){
-  let posts = data[listIndex].acf
+  let posts = data[listIndex] && data[listIndex].acf
     && data[listIndex].acf[postIndex]
     && data[listIndex].acf[postIndex].map(obj =>  (
       obj[postName] &&
@@ -79,6 +79,20 @@ export function getPosts(data, listIndex, postIndex, postName, extraIndex){
 
 
   return posts.filter( n => n );
+}
+
+export function getFirstImageFromWpList(posts){
+
+  let image = "";
+  if(posts.length > 0 && posts[0].acf){
+    let imgContainer = posts[0].acf.video_image || posts[0].acf.post_header;
+    if(imgContainer)
+      image = imgContainer && imgContainer.sizes  ? imgContainer.sizes.medium : "";
+    else {
+      image = posts[0].cover_image || posts[0].thumbnail;
+    }
+  }
+  return image;
 }
 
 export function getTransitions(timeout) {
