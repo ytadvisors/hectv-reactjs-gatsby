@@ -12,9 +12,9 @@ export default ({data, props}) => {
   let posts = getPosts(data, "wpPage", "post_list", "post", "wpPosts");
   posts = removeDuplicates(posts, "wordpress_id");
   let image = "";
-  if(posts.length > 0){
+  if(posts.length > 0 && posts[0].acf){
     let imgContainer = posts[0].acf.video_image || posts[0].acf.post_header;
-    image = imgContainer.sizes.medium;
+    image = imgContainer.sizes  ? imgContainer.sizes.medium : "";
   }
 
   return <div>
