@@ -6,7 +6,7 @@ import CalendarSelector from './../../components/CalendarSelector';
 import './modules.scss';
 
 export default (props) => {
-  const { link, title, changeDate } = props;
+  const { link, title, changeDate, select_title } = props;
   return (
     <StaticQuery
       query={graphql`
@@ -24,7 +24,8 @@ export default (props) => {
         `}
       render={
         data => {
-          const menus = data.allWordpressWpEventCategory.edges;
+          let menus = data.allWordpressWpEventCategory.edges.map(obj => obj.node) ;
+          menus = [ {name : "All Events", link : "/events"}, ...menus ];
           return <section className="sub-navigation event-nav">
             <div className="pull-left">
               <h2>
@@ -34,13 +35,13 @@ export default (props) => {
               </h2>
             </div>
             <Nav className = "event-nav-links">
-              <NavDropdown id = "filter" className="drop-down-menu-list pull-right" title="Filter Events">
+              <NavDropdown id = "filter" className="drop-down-menu-list pull-right" title={select_title} >
                 {menus.map((menu, x) => (
                   <NavWrap
                     key={`menu-${x}`}
                   >
-                    <Link to={menu.node.link.replace(/https?:\/\/[^/]+/, '')} dangerouslySetInnerHTML={{
-                      __html: menu.node.name
+                    <Link to={menu.link.replace(/https?:\/\/[^/]+/, '')} dangerouslySetInnerHTML={{
+                      __html: menu.name
                     }}>
                     </Link>
                 </NavWrap>

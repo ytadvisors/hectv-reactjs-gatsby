@@ -35,6 +35,7 @@ export default class Events extends Component{
     let current_events = getCurrentEvents(this.state.current_date, events);
     let posts = current_events && current_events.values && current_events.values.map(obj => obj.node);
     let description = data.wpPage.content || "On Demand Arts, Culture & Education Programming";
+    let select_title =  data.wpEventCategory && data.wpEventCategory.name || "Filter Events";
 
     return <div>
       <SEO
@@ -52,7 +53,7 @@ export default class Events extends Component{
       <Layout slug={data.wpPage.slug}>
         <div>
           <div className="col-md-12">
-            <EventNav {...data.wpPage} changeDate={this.changeDate.bind(this)} select_title="Filter Events"/>
+            <EventNav {...data.wpPage} changeDate={this.changeDate.bind(this)}  select_title={select_title} />
           </div>
           <ListOfPosts
             posts={posts || []}
@@ -69,7 +70,7 @@ export default class Events extends Component{
 }
 
 export const query = graphql`
-query eventPageQuery {
+query eventTypeQuery ($categories: [ Int ] $wordpress_id : Int){
   wpSite: site {
     siteMetadata{
       siteUrl
@@ -90,12 +91,15 @@ query eventPageQuery {
       }
     }
   }
-  
-  wpEvents: allWordpressWpEvent (
-  sort :{
-    fields: [acf___event_dates]
-    order:ASC
-  }){
+ wpEvents: allWordpressWpEvent(
+    filter: {
+        event_category : { in : $categories }
+    }
+    sort :{
+      fields: [acf___event_dates]
+      order:ASC
+    }
+  ){
     edges{
       node{
         slug
@@ -105,7 +109,6 @@ query eventPageQuery {
         acf{
           venue
           event_price
-          
           event_dates{
             start_time
             end_time
@@ -114,4 +117,9 @@ query eventPageQuery {
       }
     }
   }
-}`;
+  wpEventCategory: wordpressWpEventCategory ( wordpress_id : {eq: $wordpress_id}){
+    name
+    wordpress_id
+  }
+}
+`;
