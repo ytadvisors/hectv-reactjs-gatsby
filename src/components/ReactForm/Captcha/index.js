@@ -1,47 +1,55 @@
-import React, { Component } from 'react';
+import React from 'react';
+import { StaticQuery, graphql  } from 'gatsby';
 import Recaptcha from 'react-recaptcha';
 import './modules.scss';
 
-export default class Captcha extends Component {
-  constructor(props) {
-    super(props);
-    this.captchaKey = process.env.RE_CAPTCHA_SITE_KEY;
-  }
+const verifyCallback = (props) => {
+  const { input: { name }, change } = props;
+  change(name, true);
+};
 
-  verifyCallback = () => {
-    const { input: { name }, change } = this.props;
-    change(name, true);
-  };
+const callback = () => {
+  console.log('Done!!!!');
+};
 
-  callback = () => {
-    console.log('Done!!!!');
-  };
-
-  render() {
-    const {
-      input,
-      display_errors,
-      meta: { touched, error },
-      options
-    } = this.props;
-    return (
-      <div className="captcha">
-        <Recaptcha
-          sitekey={this.captchaKey}
-          render="explicit"
-          verifyCallback={this.verifyCallback}
-          onloadCallback={this.callback}
-          elementID={input.name}
-        />
-        {display_errors && (
-          <div
-            className="errors"
-            dangerouslySetInnerHTML={{
-              __html: touched && error ? error : '&nbsp;'
-            }}
-          />
-        )}
-      </div>
-    );
-  }
+export default (props) => {
+  const {
+    input,
+    display_errors,
+    meta: { touched, error }
+  } = props;
+  return (
+    <StaticQuery
+      query={graphql`
+         query captchaKeyQuery{
+          wpSite: site {
+            siteMetadata{
+              captchaKey
+            }
+          }
+        }
+      `}
+      render={
+        data => {
+          return <div className="captcha">
+            <Recaptcha
+              sitekey={data.wpSite.siteMetadata.captchaKey}
+              render="explicit"
+              verifyCallback={() => verifyCallback(props)}
+              onloadCallback={callback}
+              elementID={input.name}
+            />
+            {display_errors && (
+              <div
+                className="errors"
+                dangerouslySetInnerHTML={{
+                  __html: touched && error ? error : '&nbsp;'
+                }}
+              />
+            )}
+          </div>
+        }
+      }
+    />
+  );
 }
