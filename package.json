@@ -16,10 +16,6 @@
     "serve": "gatsby serve"
   },
   "dependencies": {
-    "apollo-boost": "0.1.10",
-    "apollo-cache-inmemory": "1.2.5",
-    "apollo-client": "2.3.5",
-    "apollo-link-http": "1.5.4",
     "axios": "0.18.0",
     "bluebird": "3.5.1",
     "bootstrap": "^3.3.7",
@@ -60,7 +56,6 @@
     "react-router-dom": "4.3.1",
     "react-stripe-elements": "2.0.0",
     "react-transition-group": "2.4.0",
-    "react-with-styles": "3.2.1",
     "redux": "4.0.0",
     "redux-form": "7.4.2",
     "redux-logger": "3.0.6",
