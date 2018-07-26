@@ -6,7 +6,7 @@ import _ from 'lodash';
 import { Button } from 'react-bootstrap';
 import defaultImage from './../../assets/nothumbnail.png';
 import playButton from './../../assets/play-button.png';
-import { isServer } from './../../utils/helperFunctions';
+import { isServer, getEventDate } from './../../utils/helperFunctions';
 import * as Material from 'react-icons/lib/md';
 import * as Ionicons from 'react-icons/lib/io';
 import LazyLoad from 'react-lazyload';
@@ -227,14 +227,14 @@ export default class ListOfPosts extends Component {
     const {
       title,
       categories,
-      date
+      acf
     } = post;
     let category_list = !categories ? [] : categories;
     return (
       <div>
-        {date && (
+        {acf && acf.event_dates && (
           <div className="blog-meta">
-            {this.getDate(post)}
+            {this.getDate(acf.event_dates)}
           </div>
         )}
         <div className="blog-excerpt">
@@ -250,16 +250,15 @@ export default class ListOfPosts extends Component {
     );
   }
 
-  getDate(post) {
-    const { date } = post;
-    if (date) {
+  getDate(event_dates) {
+    if (event_dates) {
       return (
         <div className="blog-info">
           <Ionicons.IoCalendar size="20" color="white" />
           <span
             className="date"
             dangerouslySetInnerHTML={{
-              __html: date
+              __html: getEventDate(event_dates)
             }}
           />
         </div>
