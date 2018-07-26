@@ -4,7 +4,6 @@ const path = require(`path`);
 const slash = require(`slash`);
 const moment = require(`moment`);
 const fs = require(`fs`);
-let day = moment().format('MMMM-YYYY').toLowerCase();
 const util = require('util');
 
 function createPostHelper(createPage, links, template, prefix,
@@ -21,8 +20,7 @@ function createPostHelper(createPage, links, template, prefix,
       context: {
         id: link.node.id,
         categories : categories,
-        slug : link.node.slug,
-        day : day
+        slug : link.node.slug
       },
     };
 
@@ -39,8 +37,10 @@ function createCategoryPageHelper(createPage, links, template){
       path: newLink,
       component: slash(template),
       context: {
-        slug : obj.node.slug,
-        day : day
+        id: obj.node.id,
+        wordpress_id: obj.node.wordpress_id ,
+        categories: [ obj.node.wordpress_id ],
+        slug : obj.node.slug
       }
     };
 
@@ -68,8 +68,7 @@ function createPageHelper(createPage, links){
       component: slash(path.resolve(templatePath)),
       context: {
         id: obj.node.id,
-        slug : obj.node.slug,
-        day : day
+        slug : obj.node.slug
       }
     };
 
@@ -123,11 +122,37 @@ exports.createPages = ({ graphql, actions }) => {
           `
         ).then(result => {
           if (result.errors) {
-            console.log(result.errors)
+            console.log(result.errors);
             reject(result.errors)
           }
           const eventTemplate = path.resolve("./src/templates/event.js");
           createPostHelper(createPage, result.data.allWordpressWpEvent.edges, eventTemplate, "events", "event_category");
+        })
+      })
+      .then(() => {
+        graphql(
+          `
+            {
+             allWordpressWpEventCategory {
+              edges{
+                node{
+                  wordpress_id
+                  id
+                  slug
+                  name
+                  link
+                }
+              }
+            }
+           }
+          `
+        ).then(result => {
+          if (result.errors) {
+            console.log(result.errors)
+            reject(result.errors)
+          }
+          const eventTemplate = path.resolve("./src/templates/event_type.js");
+          createCategoryPageHelper(createPage, result.data.allWordpressWpEventCategory.edges, eventTemplate);
         })
       })
       .then(() => {
@@ -140,6 +165,7 @@ exports.createPages = ({ graphql, actions }) => {
                   name
                   slug
                   link
+                  id
                   wordpress_parent
                   wordpress_id
                   parent_element{
