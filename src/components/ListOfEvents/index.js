@@ -34,7 +34,8 @@ export default () => {
       data => {
 
         const current_day = moment(moment().format('MM/DD/YYYY'));
-        const events = getCurrentEvents(current_day, data.allWordpressWpEvent.edges, 5);
+        let events = getCurrentEvents(current_day, data.allWordpressWpEvent.edges, 5);
+
         return <section className="list-of-events">
           <div className="title">
             <div>
