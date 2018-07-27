@@ -11,14 +11,21 @@ import $ from 'jquery';
 
 const fields = [
   {
-    name: 'name',
+    name: 'FNAME',
     component: 'input',
     type: 'text',
-    placeholder: 'Full Name*',
+    placeholder: 'First Name*',
     validation: ['required']
   },
   {
-    name: 'email',
+    name: 'LNAME',
+    component: 'input',
+    type: 'text',
+    placeholder: 'Last Name*',
+    validation: ['required']
+  },
+  {
+    name: 'EMAIL',
     component: 'input',
     type: 'email',
     placeholder: 'Email*',
@@ -43,7 +50,7 @@ class NewsLetterForm extends Component {
   }
 
   onSubmit() {
-    const { callbackFunc, terms } = this.props;
+    const { callbackFunc, terms, values } = this.props;
     const valid_submit =
       !terms || (terms && $('.terms-and-conditions').is(':checked'));
 
@@ -54,7 +61,7 @@ class NewsLetterForm extends Component {
       });
     }
 
-    callbackFunc.call(this);
+    callbackFunc.call(null, values);
   }
   render() {
     return (

@@ -3,6 +3,7 @@ import * as Material from 'react-icons/lib/md';
 
 import './modules.scss';
 import VideoPlayer from '../VideoPlayer/index';
+import {  getEventDate } from './../../utils/helperFunctions';
 import LazyLoad from 'react-lazyload';
 
 export default class SinglePost extends Component {
@@ -13,17 +14,16 @@ export default class SinglePost extends Component {
     const container_style = { padding: '0' };
     const {
       post: {
-        date,
         title,
         thumbnail,
         content,
-        event_link,
         acf : {
           youtube_id,
           web_address,
           event_price,
           venue,
           vimeo_id,
+          event_dates
         } = {}
       },
       hideTitle,
@@ -50,9 +50,9 @@ export default class SinglePost extends Component {
               </span>
               </li>
             )}
-            {date && (
+            {event_dates && (
               <li>
-                <span>{date}</span>
+                <span>{getEventDate(event_dates)}</span>
               </li>
             )}
             {event_price && (
