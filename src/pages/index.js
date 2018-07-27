@@ -8,7 +8,7 @@ import SEO from "./../components/SEO";
 import Layout from "./../components/Layout";
 import ListOfPosts from "./../components/ListOfPosts";
 
-export default ({data, props}) => {
+export default ({data}) => {
   let description = data.wpPage.content || "On Demand Arts, Culture & Education Programming";
   let posts = getPosts(data, "wpPage", "post_list", "post", "wpPosts");
   posts = removeDuplicates(posts, "wordpress_id");
