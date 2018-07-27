@@ -78,6 +78,14 @@ function createPageHelper(createPage, links){
   });
 }
 
+exports.onCreateWebpackConfig = ({ actions }) => {
+  actions.setWebpackConfig({
+    node : {
+      fs : "empty"
+    }
+  })
+};
+
 exports.createPages = ({ graphql, actions }) => {
   const { createPage } = actions;
   return new Promise((resolve, reject) => {
