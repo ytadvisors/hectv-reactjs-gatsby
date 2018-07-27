@@ -117,12 +117,13 @@ export default class ListOfPosts extends Component {
       <p>
         {categories.map((category, x) => (
           <span className="category-info" key={`category-${x}`}>
-            <Link
+            {category.link && <Link
               to={category.link.replace(/https?:\/\/[^/]+/, '')}
               dangerouslySetInnerHTML={{
                 __html: category.name
               }}
-            />
+            />}
+
           </span>
         ))}
       </p>

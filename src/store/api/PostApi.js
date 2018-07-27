@@ -37,12 +37,12 @@ export default class PostApi extends MainApi {
     }
   }
 
-  findPosts(terms = '', page = 1) {
+  findPosts(terms = '', page = 1, per_page=10) {
     if (terms === '')
-      return this.json_api.get(`posts?per_page=10&page=${page}`);
+      return this.json_api.get(`posts?per_page=${per_page}&page=${page}`);
     else {
       return this.json_api.get(
-        `posts?per_page=10&page=${page}&search=${terms}`
+        `posts?per_page=${per_page}&page=${page}&search=${terms}`
       );
     }
   }
