@@ -1,4 +1,6 @@
-import { put, takeLatest, all, call } from 'redux-saga/effects';
+import { put, select, takeLatest, all, call } from 'redux-saga/effects';
+import { delay } from 'redux-saga';
+
 import _ from 'lodash';
 
 import PostApi from './../api/PostApi';
@@ -42,71 +44,63 @@ function mapComments(result) {
 
 function mapPost(result) {
   let response = {};
-  response.excerpt = '';
-  response.content = '';
-  response.thumbnail = '';
-  response.title = '';
-  response.video_url = '';
-  response.slug = result.slug;
-  response.type = 'posts';
-  response.format = 'blog';
-  response.post_name = result.slug;
+  if(result) {
+    response.excerpt = '';
+    response.content = '';
+    response.thumbnail = '';
+    response.title = '';
+    response.video_url = '';
+    response.slug = result.slug;
+    response.type = 'posts';
+    response.format = 'blog';
+    response.post_name = result.slug;
 
-  if (result.title) {
-    response.title = result.title.rendered;
+    if (result.title) {
+      response.title = result.title.rendered;
+    }
+
+    if (result.excerpt) {
+      response.excerpt = result.excerpt.rendered;
+      response.excerpt = response.excerpt.replace('[&hellip;]', '');
+    }
+
+    if (result.content) {
+      response.content = result.content.rendered;
+      response.content = response.content
+        .replace(/http:\/\/s3(.+amazon)/g, 'https://s3$1')
+        .replace(/srcset="[^"]+/g, '');
+    }
+
+    if (result.acf) {
+      if (result.acf.video_image) {
+        response.thumbnail = result.acf.video_image.sizes.medium_large;
+        response.small_thumbnail = result.acf.video_image.sizes.medium;
+        response.format = 'video';
+      }
+      if (result.acf.post_header) {
+        response.thumbnail = result.acf.post_header.sizes.medium_large;
+        response.small_thumbnail = result.acf.post_header.sizes.medium;
+        response.small_thumbnail = response.small_thumbnail.replace(
+          /http:\/\/s3(.+amazon)/g,
+          'https://s3$1'
+        );
+        response.thumbnail = response.thumbnail.replace(
+          /http:\/\/s3(.+amazon)/g,
+          'https://s3$1'
+        );
+        response.format = 'blog';
+      }
+      if (result.acf.youtube_id) {
+        response.video_url = `https://youtu.be/${result.acf.youtube_id}`;
+      }
+      if (result.acf.vimeo_id) {
+        response.video_url = `https://vimeo.com/${result.acf.vimeo_id}`;
+      }
+
+    }
+
+    response.categories = result.category_list;
   }
-
-  if (result.excerpt) {
-    response.excerpt = result.excerpt.rendered;
-    response.excerpt = response.excerpt.replace('[&hellip;]', '');
-  }
-
-  if (result.content) {
-    response.content = result.content.rendered;
-    response.content = response.content
-      .replace(/http:\/\/s3(.+amazon)/g, 'https://s3$1')
-      .replace(/srcset="[^"]+/g, '');
-  }
-
-  if (result.acf) {
-    if (result.acf.video_image) {
-      response.thumbnail = result.acf.video_image.sizes.medium_large;
-      response.small_thumbnail = result.acf.video_image.sizes.medium;
-      response.format = 'video';
-    }
-    if (result.acf.post_header) {
-      response.thumbnail = result.acf.post_header.sizes.medium_large;
-      response.small_thumbnail = result.acf.post_header.sizes.medium;
-      response.small_thumbnail = response.small_thumbnail.replace(
-        /http:\/\/s3(.+amazon)/g,
-        'https://s3$1'
-      );
-      response.thumbnail = response.thumbnail.replace(
-        /http:\/\/s3(.+amazon)/g,
-        'https://s3$1'
-      );
-      response.format = 'blog';
-    }
-    if (result.acf.youtube_id) {
-      response.video_url = `https://youtu.be/${result.acf.youtube_id}`;
-    }
-    if (result.acf.vimeo_id) {
-      response.video_url = `https://vimeo.com/${result.acf.vimeo_id}`;
-    }
-    if (result.acf.post_events) {
-      response.events = result.acf.post_events.map(
-        event => event.event.post_name
-      );
-    }
-    if (result.acf.related_posts) {
-      response.post_list = result.acf.related_posts.map(
-        post => post.post.post_name
-      );
-    }
-  }
-
-  response.categories = result.category_list;
-
   return response;
 }
 
@@ -356,23 +350,50 @@ function* loadSearchPosts(payload) {
   try {
     yield put(showLoading());
     let api = new PostApi();
+    let current_page = payload.page || 1;
     let terms = payload.terms.toLowerCase();
-    let posts = yield call(api.findPosts.bind(api), terms, payload.page);
+    let posts = yield call(api.findPosts.bind(api), terms, current_page);
 
-    const data = posts.data.map(mapPost);
-    yield put({
-      type: types.SET_ALL_POSTS,
-      posts: data,
-      category: `search_${terms}`,
-      load_more: payload.load_more,
-      current_page: payload.page || 1,
-      num_results: getNumAPIResults(posts)
-    });
+    let data = [];
+    let num_results = getNumAPIResults(posts);
+    if(posts && posts.data){
+      const data = posts.data.map(mapPost);
 
-    yield put({
-      type: pageTypes.SET_PAGE_TITLE,
-      title: `RESULTS: <span class="sub-title">${terms}</span>`
-    });
+      yield put({
+        type: types.SET_ALL_POSTS,
+        posts: data,
+        category: `search_${terms}`,
+        load_more: payload.load_more,
+        current_page: current_page,
+        num_results: num_results
+      });
+    } else {
+      yield put({
+        type: types.SET_ALL_POSTS,
+        posts: data,
+        category: `search_${terms}`,
+        load_more: payload.load_more,
+        current_page: current_page,
+        num_results: 0
+      });
+    }
+
+
+    if(data.length > 0 && num_results > 10){
+      const state = yield select();
+      let reducer = state.postReducers;
+
+      //automate load more.
+      if(reducer.posts.length < reducer.num_results.posts){
+        yield call(delay, 300);
+        yield put({
+          type: types.LOAD_SEARCH_POSTS,
+          terms : terms,
+          page: current_page + 1,
+          load_more : true
+        });
+      }
+    }
 
     yield put(hideLoading());
   } catch (error) {

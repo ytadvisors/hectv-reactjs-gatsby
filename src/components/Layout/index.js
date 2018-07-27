@@ -3,7 +3,7 @@ import { StaticQuery, graphql } from "gatsby"
 import "./../../utils/cssDependencies";
 import "./modules.scss"
 import ProgramViewer from './../ProgramViewer';
-import Header from "./../Header";
+import HeaderContainer from "./../../containers/HeaderContainer";
 import Footer from "./../Footer";
 import Transition from "./../Transition"
 import BottomNav from "../BottomNav/index";
@@ -41,13 +41,13 @@ export default ({children, style, slug , showBottomNav}) => {
         const social = menus.reduce((result, menu) => menu.node.name === "Social" ? menu.node.items : result);
         const bottomNav = menus.reduce((result, menu) => menu.node.name === "BottomNav" ? menu.node.items : result);
         return <section>
-          <Header header={header} social={social} page={slug}/>
-            <ProgramViewer style={style}>
-              <Transition>
-                {children}
-                {showBottomNav && <BottomNav menus={bottomNav && bottomNav.node.items} title="more from"/>}
-              </Transition>
-            </ProgramViewer>
+          <HeaderContainer header={header} social={social} page={slug}/>
+          <ProgramViewer style={style}>
+            <Transition>
+              {children}
+              {showBottomNav && <BottomNav menus={bottomNav && bottomNav.node.items} title="more from"/>}
+            </Transition>
+          </ProgramViewer>
           <Footer footer={footer} social={social}/>
         </section>
       }
