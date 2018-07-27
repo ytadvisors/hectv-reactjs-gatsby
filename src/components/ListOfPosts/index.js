@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'gatsby';
 import PropTypes from 'prop-types';
-import moment from 'moment';
 import _ from 'lodash';
 import { Button } from 'react-bootstrap';
 import defaultImage from './../../assets/nothumbnail.png';
@@ -10,7 +9,6 @@ import { isServer, getEventDate } from './../../utils/helperFunctions';
 import * as Material from 'react-icons/lib/md';
 import * as Ionicons from 'react-icons/lib/io';
 import LazyLoad from 'react-lazyload';
-import texture from './../../assets/texture.jpg';
 
 import './modules.scss';
 
@@ -225,7 +223,6 @@ export default class ListOfPosts extends Component {
 
   getColumnContent(display_type, layout, post) {
     const {
-      title,
       categories,
       acf
     } = post;
