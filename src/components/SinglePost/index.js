@@ -52,7 +52,7 @@ export default class SinglePost extends Component {
             )}
             {event_dates && (
               <li>
-                <span>{getEventDate(event_dates)}</span>
+                <span dangerouslySetInnerHTML={{ __html: getEventDate(event_dates) }} />
               </li>
             )}
             {event_price && (
