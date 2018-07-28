@@ -1,8 +1,8 @@
 import MainApi from './index';
 
 export default class ScheduleApi extends MainApi {
-  constructor() {
-    super();
+  constructor({ apiUrl }) {
+    super(apiUrl);
   }
 
   getAllSchedules(page = 1, per_page) {

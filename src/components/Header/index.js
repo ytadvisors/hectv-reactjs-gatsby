@@ -35,12 +35,9 @@ export default class Header extends Component {
     };
   }
   search() {
-    const { page_form, openLink } = this.props;
-    let values = page_form.search.values;
-    if (values && values.search) {
-      this.close('#');
-      openLink(`/search/${values.search}`);
-    }
+    this.close('#');
+    const { searchFunc } = this.props;
+    searchFunc();
   }
 
   open(url) {
@@ -167,7 +164,6 @@ export default class Header extends Component {
 
   render() {
     const {
-      live_video,
       current_page,
       header,
       social,
