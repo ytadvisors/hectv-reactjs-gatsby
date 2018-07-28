@@ -1,8 +1,8 @@
 import MainApi from './index';
 
 export default class DonateApi extends MainApi {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
   }
 
   getAllDonations(page = 1, per_page) {

@@ -86,7 +86,7 @@ exports.onCreateWebpackConfig = ({ actions }) => {
   })
 };
 
-exports.createPages = ({ graphql, actions }) => {
+exports.createPages = ({ graphql, actions, page }) => {
   const { createPage } = actions;
   return new Promise((resolve, reject) => {
     graphql(
@@ -241,16 +241,25 @@ exports.createPages = ({ graphql, actions }) => {
           `
         ).then(result => {
           if (result.errors) {
-            console.log(result.errors)
+            console.log(result.errors);
             reject(result.errors)
           }
           const postTemplate = path.resolve("./src/templates/post.js");
           createPostHelper(createPage, result.data.allWordpressPost.edges, postTemplate, "posts", "categories", "wordpress_id");
-          resolve()
+
         })
       })
+      .then(() => {
+        const searchInfo = {
+          path: "/search/:path",
+          component: slash(path.resolve("./src/templates/search.js")),
+          context: {}
+        };
+        createPage(searchInfo);
+        resolve();
+      })
       .catch(err => {
-        console.log(err.message)
+        console.log(err.message);
         reject(err)
       })
   })

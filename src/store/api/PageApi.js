@@ -1,8 +1,8 @@
 import MainApi from './index';
 
 export default class PageApi extends MainApi {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
   }
 
   getAboutUs() {

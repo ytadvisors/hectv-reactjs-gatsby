@@ -3,8 +3,8 @@ import _ from 'lodash';
 import MainApi from './index';
 
 export default class AccountApi extends MainApi {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
   }
 
   login(email, password) {

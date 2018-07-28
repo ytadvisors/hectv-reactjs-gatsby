@@ -31,13 +31,10 @@ export default function reducer(state = initialState, action) {
       };
 
     case types.SET_ALL_POSTS:
-      let posts = state.posts;
-      posts[action.category] = action.load_more
-        ? [...state.posts[action.category], ...action.posts]
-        : action.posts;
       return {
         ...state,
-        posts: posts,
+        posts: action.load_more ? [...state.posts, ...action.posts]
+          : action.posts,
         current_page: action.current_page,
         num_results: {
           ...state.num_results,
