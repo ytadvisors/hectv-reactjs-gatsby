@@ -47,5 +47,5 @@ export default ({
   <link rel="mask-icon" href={withPrefix("/favicons/safari-pinned-tab.svg")} color="#5bbad5" />
   <meta name="msapplication-TileColor" content="#da532c" />
   <meta name="theme-color" content="#ffffff" />
-  <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer />
+  <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" />
 </Helmet>
