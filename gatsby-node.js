@@ -6,6 +6,17 @@ const moment = require(`moment`);
 const fs = require(`fs`);
 const util = require('util');
 
+let activeEnv = process.env.ACTIVE_ENV;
+
+if (!activeEnv) {
+  activeEnv = "development";
+}
+
+require("dotenv").config({
+  path: `.env.${activeEnv}`,
+  silent : true
+});
+
 function createPostHelper(createPage, links, template, prefix,
                           categories_index, categories_subindex){
   _.each(links, link => {
