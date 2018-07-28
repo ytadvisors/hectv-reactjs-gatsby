@@ -5,7 +5,7 @@ import './modules.scss';
 
 
 export default (props) => {
-  
+
   const verifyCallback = (props) => {
     const { input: { name }, change } = props;
     change(name, true);
