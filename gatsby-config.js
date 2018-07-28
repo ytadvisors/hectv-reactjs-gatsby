@@ -21,7 +21,8 @@ module.exports = {
     title: 'HEC-TV | Home',
     siteUrl: process.env.SITE_HOST,
     mapKey : process.env.GOOGLE_API_KEY,
-    captchaKey : process.env.RE_CAPTCHA_SITE_KEY
+    captchaKey : process.env.RE_CAPTCHA_SITE_KEY,
+    apiUrl : process.env.WP_HOST
   },
   plugins: [
     `gatsby-plugin-react-helmet`,

@@ -2,8 +2,8 @@ import querystring from 'query-string';
 import MainApi from './index';
 
 export default class PostApi extends MainApi {
-  constructor() {
-    super();
+  constructor({ apiUrl }) {
+    super(apiUrl);
   }
 
   getComments(slug, page = 1) {
@@ -37,7 +37,10 @@ export default class PostApi extends MainApi {
     }
   }
 
-  findPosts(terms = '', page = 1, per_page=10) {
+  findPosts({terms, page, per_page}) {
+    page = page || 1;
+    per_page = per_page || 10;
+
     if (terms === '')
       return this.json_api.get(`posts?per_page=${per_page}&page=${page}`);
     else {

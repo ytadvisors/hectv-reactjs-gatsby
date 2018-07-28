@@ -31,11 +31,18 @@ class Search extends Component {
 
   loadPage(pathname){
     const {
-      dispatch
+      dispatch,
+      data : {
+        wpSite: {
+          siteMetadata : {
+            apiUrl
+          }
+        }
+      }
     } = this.props;
 
     const [,searchText, searchValue] = pathname.split("/");
-    dispatch(loadSearchPostsAction(searchValue));
+    dispatch(loadSearchPostsAction(apiUrl, searchValue));
   }
 
   render(){
@@ -89,6 +96,7 @@ query searchPageQuery{
   wpSite: site {
     siteMetadata{
       siteUrl
+      apiUrl
     }
   }
 }
