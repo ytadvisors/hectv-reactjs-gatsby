@@ -7,9 +7,10 @@ export function loadPostAction(post_id) {
   };
 }
 
-export function loadSearchPostsAction(terms, page, load_more = false) {
+export function loadSearchPostsAction(apiUrl, terms, page, load_more = false) {
   return {
     type: types.LOAD_SEARCH_POSTS,
+    apiUrl,
     terms,
     page,
     load_more

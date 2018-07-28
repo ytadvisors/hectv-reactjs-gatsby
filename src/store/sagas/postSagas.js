@@ -349,10 +349,10 @@ function* loadAllPosts(payload) {
 function* loadSearchPosts(payload) {
   try {
     yield put(showLoading());
-    let api = new PostApi();
+    let api = new PostApi(payload);
     let current_page = payload.page || 1;
     let terms = payload.terms.toLowerCase();
-    let posts = yield call(api.findPosts.bind(api), terms, current_page);
+    let posts = yield call(api.findPosts.bind(api), payload);
 
     let data = [];
     let num_results = getNumAPIResults(posts);

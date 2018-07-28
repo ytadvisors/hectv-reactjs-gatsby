@@ -1,8 +1,8 @@
 import MainApi from './index';
 
 export default class MagazineApi extends MainApi {
-  constructor() {
-    super();
+  constructor({ apiUrl }) {
+    super(apiUrl);
   }
 
   getType(slug) {
