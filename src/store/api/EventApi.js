@@ -1,8 +1,8 @@
 import MainApi from './index';
 
 export default class EventApi extends MainApi {
-  constructor({ apiUrl }) {
-    super(apiUrl);
+  constructor(props) {
+    super(props);
   }
 
   getEventType(event_categories = []) {

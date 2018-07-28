@@ -2,8 +2,8 @@ import querystring from 'query-string';
 import MainApi from './index';
 
 export default class PostApi extends MainApi {
-  constructor({ apiUrl }) {
-    super(apiUrl);
+  constructor(props) {
+    super(props);
   }
 
   getComments(slug, page = 1) {
