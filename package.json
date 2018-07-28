@@ -16,7 +16,6 @@
     "serve": "gatsby serve"
   },
   "dependencies": {
-    "axios": "0.18.0",
     "bluebird": "3.5.1",
     "bootstrap": "^3.3.7",
     "dotenv": "6.0.0",
