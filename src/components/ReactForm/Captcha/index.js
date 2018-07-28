@@ -3,16 +3,19 @@ import { StaticQuery, graphql  } from 'gatsby';
 import Recaptcha from 'react-recaptcha';
 import './modules.scss';
 
-const verifyCallback = (props) => {
-  const { input: { name }, change } = props;
-  change(name, true);
-};
-
-const callback = () => {
-  console.log('Done!!!!');
-};
 
 export default (props) => {
+  
+  const verifyCallback = (props) => {
+    const { input: { name }, change } = props;
+    change(name, true);
+  };
+
+  const callback = () => {
+    console.log('Done!!!!');
+  };
+
+
   const {
     input,
     display_errors,
