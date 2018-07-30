@@ -13,7 +13,7 @@ const loadingBar = loadingBarMiddleware({
 
 let middlewares = [ sagaMiddleware, loadingBar ];
 
-if(process.env.ACTIVE_ENV !== 'production')
+if(process.env.NODE_ENV !== 'production')
   middlewares.push(logger);
 
 export default function configureStore(initialState = {}) {
