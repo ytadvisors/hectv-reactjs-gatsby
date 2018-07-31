@@ -55,7 +55,7 @@ export default () => {
         return <section className="schedule">
           <h4 className="title">Playing Now</h4>
           <ul className="program">
-            {programs.values &&
+            {programs && programs.values &&
             programs.values.map((program, x) => (
               <li
                 key={`program-${x}`}
