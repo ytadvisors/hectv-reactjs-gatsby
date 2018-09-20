@@ -5,25 +5,24 @@ import {isServer, getExcerpt} from "./../../utils/helperFunctions"
 
 import './styles.scss';
 
-
-const getLiveVideos = (live_videos) => {
-  const current_time = moment();
-  return live_videos && live_videos.reduce((result, item) => {
-      const {
-        start_date,
-        end_date
-      } = item;
-      let end_time = moment(new Date(end_date));
-      let start_time = moment(new Date(start_date));
-      if(current_time.isBetween(start_time, end_time)) {
-        result = item;
-        return result;
-      }
-      return result;
-    }, {});
-};
-
 export default class Banner extends Component{
+
+  getLiveVideos = (live_videos) => {
+    const current_time = moment();
+    return live_videos && live_videos.reduce((result, item) => {
+        const {
+          start_date,
+          end_date
+        } = item;
+        let end_time = moment(new Date(end_date));
+        let start_time = moment(new Date(start_date));
+        if(current_time.isBetween(start_time, end_time)) {
+          result = item;
+          return result;
+        }
+        return result;
+      }, {});
+  };
 
   constructor(props){
     super(props);
@@ -57,7 +56,7 @@ export default class Banner extends Component{
       title,
       start_date,
       url
-    } = getLiveVideos(live_videos);
+    } = this.getLiveVideos(live_videos);
 
     return (
       <section className="banner">
