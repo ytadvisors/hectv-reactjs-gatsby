@@ -8,14 +8,14 @@ import './styles.scss';
 export default class Banner extends Component{
 
   getLiveVideos = (live_videos) => {
-    const current_time = moment(moment().toDate());
+    const current_time = moment();
     return live_videos && live_videos.reduce((result, item) => {
         const {
           start_date,
           end_date
         } = item;
-        let end_time = moment(new Date(end_date));
-        let start_time = moment(new Date(start_date));
+        let end_time = moment(new Date(end_date), "MM/DD/YYYY");
+        let start_time = moment(new Date(start_date), "MM/DD/YYYY");
         if(current_time.isBetween(start_time, end_time)) {
           result = item;
           return result;
