@@ -54,7 +54,7 @@ export default class Banner extends Component{
       title,
       start_date,
       url
-    } = videos;
+    } = videos || {};
 
     return (
       <section className="banner">
