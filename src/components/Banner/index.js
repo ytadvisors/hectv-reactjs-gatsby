@@ -62,10 +62,20 @@ export default class Banner extends Component{
         <div className="content">
           <div className="container">
             <ul className="live-info">
-              <li className="watch vcenter no-mobile"><i>Watch</i></li>
-              <li className="live vcenter">Live</li>
+              <li className="watch vcenter no-mobile">
+                <a href={url} target="_blank">
+                  <i>Watch</i>
+                </a>
+              </li>
+              <li className="live vcenter">
+                <a href={url} target="_blank">
+                  Live
+                </a>
+              </li>
               <li className="play vcenter no-mobile">
-                <img src={playButton} className="play-icon"/>
+                <a href={url} target="_blank">
+                  <img src={playButton} className="play-icon"/>
+                </a>
               </li>
               <li className="banner-link vcenter">
                 <a href={url} target="_blank">
