@@ -121,8 +121,8 @@ exports.createPages = ({ graphql, actions, page }) => {
     )
     .then(result => new Promise((resolve, reject) => {
       let air_times = [];
-      if (!result.errors) {
-        const air_times = result.data.allWordpressWpLivevideos.edges.map(obj =>
+      if(result.data && result.data.allWordpressWpLivevideos && result.data.allWordpressWpLivevideos.edges){
+        air_times = result.data.allWordpressWpLivevideos.edges.map(obj =>
           obj.node.acf.start_date && ({
             link : obj.node.link,
             title : obj.node.title,
@@ -132,9 +132,9 @@ exports.createPages = ({ graphql, actions, page }) => {
             end_date: obj.node.acf.end_date
           })
         ).filter(n=>n);
-
-        console.log("AIR TIMES", air_times);
       }
+
+      console.log("AIR TIMES", air_times);
       resolve({live_videos: air_times});
     }))
 
