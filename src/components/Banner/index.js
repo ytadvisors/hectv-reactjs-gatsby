@@ -41,8 +41,8 @@ export default class Banner extends Component{
           start_date,
           end_date
         } = item;
-        let end_time = moment(new Date(end_date));
-        let start_time = moment(new Date(start_date));
+        let end_time = moment(end_date, "MM/DD/YYYY h:mm a", true);
+        let start_time = moment(start_date, "MM/DD/YYYY h:mm a", true);
         if(current_time.isBetween(start_time, end_time)) {
           result = item;
           return result;
