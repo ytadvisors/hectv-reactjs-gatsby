@@ -120,21 +120,21 @@ exports.createPages = ({ graphql, actions, page }) => {
     `
     )
     .then(result => new Promise((resolve, reject) => {
-      if (result.errors) {
-        reject(result.errors)
-      }
-      const air_times = result.data.allWordpressWpLivevideos.edges.map(obj =>
-        obj.node.acf.start_date && ({
-          link : obj.node.link,
-          title : obj.node.title,
-          url : obj.node.acf.url,
-          id : obj.node.wordpress_id,
-          start_date: obj.node.acf.start_date,
-          end_date: obj.node.acf.end_date
-        })
-      ).filter(n=>n);
+      let air_times = [];
+      if (!result.errors) {
+        const air_times = result.data.allWordpressWpLivevideos.edges.map(obj =>
+          obj.node.acf.start_date && ({
+            link : obj.node.link,
+            title : obj.node.title,
+            url : obj.node.acf.url,
+            id : obj.node.wordpress_id,
+            start_date: obj.node.acf.start_date,
+            end_date: obj.node.acf.end_date
+          })
+        ).filter(n=>n);
 
-      console.log("AIR TIMES", air_times);
+        console.log("AIR TIMES", air_times);
+      }
       resolve({live_videos: air_times});
     }))
 
