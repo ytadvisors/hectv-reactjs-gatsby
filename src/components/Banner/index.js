@@ -36,7 +36,7 @@ export default class Banner extends Component{
     } = this.props;
 
     const current_time  = moment(moment().format('MM/DD/YYYY h:mm a'));
-    let videos = live_videos.reduce((result, item) => {
+    let videos = live_videos && live_videos.reduce((result, item) => {
         const {
           start_date,
           end_date
