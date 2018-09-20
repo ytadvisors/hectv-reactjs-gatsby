@@ -8,7 +8,7 @@ import './styles.scss';
 export default class Banner extends Component{
 
   getLiveVideos = (live_videos) => {
-    const current_time = moment();
+    const current_time = moment(new Date());
     return live_videos && live_videos.reduce((result, item) => {
         const {
           start_date,
