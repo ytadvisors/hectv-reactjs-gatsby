@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './modules.scss';
+import './styles.scss';
 
 export default class SideNavigation extends Component {
   constructor(props) {

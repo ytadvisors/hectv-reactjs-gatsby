@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import main_bg from './../../../assets/transparent-bg-2.png';
-import './modules.scss';
+import './styles.scss';
 
 export default class CompletedForm extends Component {
   constructor(props) {

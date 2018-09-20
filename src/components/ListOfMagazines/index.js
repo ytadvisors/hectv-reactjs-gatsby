@@ -1,9 +1,9 @@
 import React  from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'gatsby';
 import { StaticQuery, graphql } from "gatsby"
 import LazyLoad from 'react-lazyload';
 
-import './modules.scss';
+import './styles.scss';
 
 export default () => {
   return (

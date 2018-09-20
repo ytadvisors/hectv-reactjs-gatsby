@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import SideNavigation from './../../components/SideNavigation';
 import ListOfSideTabs from './../../components/ListOfSideTabs';
 import ListOfMagazines from './../../components/ListOfMagazines';
@@ -7,7 +7,7 @@ import Schedule from './../../components/Schedule';
 import ListOfEvents from './../../components/ListOfEvents';
 import NewsLetter from './../../components/NewsLetter';
 import SignUp from './../../components/SignUp';
-import './module.scss';
+import './styles.scss';
 
 export default ({style, schedule, children}) => {
 

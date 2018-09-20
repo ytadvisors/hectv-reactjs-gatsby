@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import VideoPlayer from '../VideoPlayer/index';
-import './modules.scss';
+import './styles.scss';
 
 export default class Content extends Component {
   constructor(props) {

@@ -2,6 +2,7 @@ import React, {Component} from "react";
 import { push } from "gatsby"
 import { connect } from 'react-redux';
 import Header from "./../components/Header";
+import Banner from "./../components/Banner";
 
 class HeaderContainer extends Component {
   constructor(props) {
@@ -20,6 +21,7 @@ class HeaderContainer extends Component {
   render() {
     return <section>
       <Header {...this.props} searchFunc={this.searchFunc}/>
+      <Banner {...this.props} />
     </section>
   }
 }

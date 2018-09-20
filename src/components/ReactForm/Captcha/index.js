@@ -1,7 +1,7 @@
 import React from 'react';
 import { StaticQuery, graphql  } from 'gatsby';
 import Recaptcha from 'react-recaptcha';
-import './modules.scss';
+import './styles.scss';
 
 
 export default (props) => {

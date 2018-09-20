@@ -3,7 +3,7 @@ import moment from 'moment';
 import { StaticQuery, graphql, Link } from "gatsby"
 import { getCurrentEvents } from"./../../utils/helperFunctions"
 
-import './modules.scss';
+import './styles.scss';
 
 export default () => {
   return <StaticQuery

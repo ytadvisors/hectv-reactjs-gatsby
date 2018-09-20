@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { Transition as ReactTransition } from "react-transition-group";
 import { getTransitionStyle } from "../../utils/helperFunctions";
 import { historyExitingEventType, timeout } from "../../../gatsby-browser";
+import { isServer } from "./../../utils/helperFunctions"
+import $ from "jquery";
 
 export default class Transition extends Component {
   constructor(props) {
@@ -13,16 +15,14 @@ export default class Transition extends Component {
   }
 
   listenerHandler(event) {
-    this.setState({ exiting: true })
+    this.setState({ exiting: true });
+
   }
 
   componentDidMount() {
-    window.addEventListener(historyExitingEventType, this.listenerHandler)
+    window.addEventListener(historyExitingEventType, this.listenerHandler);
   }
 
-  componentWillUnmount() {
-    window.removeEventListener(historyExitingEventType, this.listenerHandler)
-  }
 
   static getDerivedStateFromProps({ exiting }) {
     if (exiting) {
@@ -39,7 +39,7 @@ export default class Transition extends Component {
       },
       appear: true,
       in: !this.state.exiting,
-    }
+    };
 
     return (
       <ReactTransition {...transitionProps}>

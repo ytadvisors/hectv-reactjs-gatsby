@@ -1,7 +1,7 @@
 import React from 'react';
 import { StaticQuery, graphql } from "gatsby"
 import "./../../utils/cssDependencies";
-import "./modules.scss"
+import "./styles.scss"
 import ProgramViewer from './../ProgramViewer';
 import HeaderContainer from "./../../containers/HeaderContainer";
 import Footer from "./../Footer";
@@ -9,7 +9,14 @@ import Transition from "./../Transition"
 import BottomNav from "../BottomNav/index";
 
 
-export default ({children, style, slug , showBottomNav}) => {
+export default (props) => {
+  const {
+    children,
+    style,
+    slug ,
+    showBottomNav,
+    live_videos
+  } = props;
   return <StaticQuery
     query={graphql`
            query MenuQuery {
@@ -41,7 +48,12 @@ export default ({children, style, slug , showBottomNav}) => {
         const social = menus.reduce((result, menu) => menu.node.name === "Social" ? menu.node.items : result);
         const bottomNav = menus.reduce((result, menu) => menu.node.name === "BottomNav" ? menu.node.items : result);
         return <section>
-          <HeaderContainer header={header} social={social} page={slug}/>
+          <HeaderContainer
+            header={header}
+            social={social}
+            page={slug}
+            live_videos={live_videos}
+          />
           <ProgramViewer style={style}>
             <Transition>
               {children}

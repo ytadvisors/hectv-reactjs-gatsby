@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 import { CardElement } from 'react-stripe-elements';
-import './modules.scss';
+import './styles.scss';
 
 export default class DefaultSelect extends Component {
   constructor(props) {

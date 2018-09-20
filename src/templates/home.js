@@ -1,32 +1,29 @@
 import React from "react";
 import { graphql } from "gatsby"
 
-import { removeDuplicates, getPosts } from "./../utils/helperFunctions"
+import "./../utils/cssDependencies";
+
+import { removeDuplicates, getPosts, getFirstImageFromWpList } from "./../utils/helperFunctions"
 import SEO from "./../components/SEO";
 import Layout from "./../components/Layout";
 import ListOfPosts from "./../components/ListOfPosts";
 
-export default  (props) => {
+export default (props) => {
+
   const {
     data,
     pageContext: { live_videos}
   } = props;
 
   let description = data.wpPage.content || "On Demand Arts, Culture & Education Programming";
-
   let posts = getPosts(data, "wpPage", "post_list", "post", "wpPosts");
   posts = removeDuplicates(posts, "wordpress_id");
-  let image = "";
-  if(posts.length > 0 && posts[0].acf){
-    let imgContainer = posts[0].acf.video_image || posts[0].acf.post_header;
-    image = imgContainer && imgContainer.sizes  ? imgContainer.sizes.medium : "";
-  }
 
   return <div>
     <SEO
       {...{
         title : `HEC-TV | ${data.wpPage.title}`,
-        image : image,
+        image : getFirstImageFromWpList(posts),
         description : description.replace(/<\/?[^>]+(>|$)/g, '').substring(0, 130) + '...',
         url: data.wpSite.siteMetadata.siteUrl,
         pathname: data.wpPage.link.replace(/https?:\/\/[^/]+/, ''),
@@ -36,6 +33,7 @@ export default  (props) => {
       }}
     />
     <Layout
+      showBottomNav
       slug={data.wpPage.slug}
       live_videos={live_videos}
     >
@@ -52,13 +50,13 @@ export default  (props) => {
 };
 
 export const query = graphql`
-query sitePageQuery ($slug: String!){
+query homePageQuery {
   wpSite: site {
     siteMetadata{
       siteUrl
     }
   }
- wpPage: wordpressPage (slug : { eq : $slug }) {
+ wpPage: wordpressPage (slug : { eq : "home" }) {
    title
    content
    link
@@ -76,6 +74,10 @@ query sitePageQuery ($slug: String!){
         post_name
         post_excerpt
         wordpress_id
+        categories {
+          link
+          name
+        }
         acf{
           is_video
           video_image{
@@ -95,15 +97,7 @@ query sitePageQuery ($slug: String!){
     }
    }
  }
- wpPosts: allWordpressPost (
-  filter: {
-    categories : 
-      { 
-          slug :
-            { eq: $slug }
-      }
-  }
-){
+ wpPosts: allWordpressPost (limit:10){
     edges{
       node{
         link

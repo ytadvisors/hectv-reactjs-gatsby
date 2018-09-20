@@ -9,6 +9,12 @@ export const isServer = !(
   window.document.createElement
 );
 
+export const cleanUrl = (url, prefix = "") => url && prefix + url.replace(/https?:\/\/[^/]+/, "");
+export const cleanText = content => content.replace(/<\/?[^a]?[^>]+(>|$)/g, '');
+export const getExcerpt = (excerpt, length = 200) => (excerpt.length > length) ? excerpt
+    .replace(/<\/?[^>]+(>|$)/g, '')
+    .substring(0, length) + '...' : excerpt ;
+
 function getSocialIcon(title, size, color) {
   switch (title.toLowerCase()) {
     case 'facebook':

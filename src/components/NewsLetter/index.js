@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import addToMailchimp from 'gatsby-plugin-mailchimp'
 import NewsLetterForm from './../../components/Forms/NewsLetterForm';
-import './modules.scss';
+import './styles.scss';
 
 const subscribe = async (values) => {
   try {

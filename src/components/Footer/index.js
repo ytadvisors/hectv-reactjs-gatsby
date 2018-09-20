@@ -6,7 +6,7 @@ import { getSocialMenuObject, isServer } from './../../utils/helperFunctions';
 import SocialLinks from './../../components/SocialLinks';
 import _ from 'lodash';
 
-import './modules.scss';
+import './styles.scss';
 
 export default class Footer extends Component {
   constructor(props) {

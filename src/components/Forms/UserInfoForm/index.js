@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
-import { loadUserValues } from './../../../actions/formActions';
-import { saveUserInformation } from './../../../actions/accountActions';
+import { loadUserValues } from './../../../store/actions/formActions';
+import { saveUserInformation } from './../../../store/actions/accountActions';
 import { injectStripe } from 'react-stripe-elements';
 import { SubmissionError } from 'redux-form';
 import PropTypes from 'prop-types';

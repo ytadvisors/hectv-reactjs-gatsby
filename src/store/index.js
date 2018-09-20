@@ -1,17 +1,13 @@
-import { createStore as reduxCreateStore, applyMiddleware, compose } from 'redux';
+import { createStore as reduxCreateStore, applyMiddleware } from 'redux';
 import reducers from './reducers';
 import mainSaga from './sagas';
 import logger from 'redux-logger';
 import { composeWithDevTools } from 'redux-devtools-extension';
-import { loadingBarMiddleware } from 'react-redux-loading-bar'
 import createSagaMiddleware from 'redux-saga';
 
 const sagaMiddleware = createSagaMiddleware();
-const loadingBar = loadingBarMiddleware({
-  promiseTypeSuffixes: ['REQUEST', 'SUCCESS', 'FAILURE'],
-});
 
-let middlewares = [ sagaMiddleware, loadingBar ];
+let middlewares = [ sagaMiddleware ];
 
 if(process.env.NODE_ENV !== 'production')
   middlewares.push(logger);

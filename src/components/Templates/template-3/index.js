@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ContentBlock from '../../ContentBlock';
 import ContactForm from '../../Forms/ContactForm';
-import './modules.scss';
+import './styles.scss';
 
 export default class Template3 extends Component {
   constructor(props) {

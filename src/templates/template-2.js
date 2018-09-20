@@ -6,7 +6,12 @@ import Layout from "./../components/Layout"
 import SinglePost from "./../components/SinglePost"
 import DefaultNav from './../components/SubNavigation/DefaultNav';
 
-export default ({data}) => {
+export default (props) => {
+  const {
+    data,
+    pageContext: { live_videos}
+  } = props;
+
   let title = data.wpPage.title;
 
   if (data.wpPage.acf)
@@ -26,7 +31,10 @@ export default ({data}) => {
         twitter_handle: "@hec_tv"
       }}
     />
-    <Layout slug={data.wpPage.slug}>
+    <Layout
+      slug={data.wpPage.slug}
+      live_videos={live_videos}
+    >
       <div>
         <div className="col-md-12">
           <DefaultNav title={title} link={data.wpPage.link}/>

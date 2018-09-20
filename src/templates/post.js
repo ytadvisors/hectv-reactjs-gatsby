@@ -8,7 +8,13 @@ import SinglePost from "./../components/SinglePost";
 import ListOfPosts from "./../components/ListOfPosts";
 import _ from "lodash"
 
-export default ({data}) => {
+export default  (props) => {
+
+  const {
+    data,
+    pageContext: { live_videos}
+  } = props;
+
   let description = data.wpPost.content || "On Demand Arts, Culture & Education Programming";
 
   let posts = getPosts(data, "wpPost", "related_posts", "related_post", "wpRelatedPosts");
@@ -27,7 +33,11 @@ export default ({data}) => {
         twitter_handle : "@hec_tv"
       }}
     />
-    <Layout style={{ background: '#eee' }} slug={data.wpPost.slug} >
+    <Layout
+      style={{ background: '#eee' }}
+      slug={data.wpPost.slug}
+      live_videos={live_videos}
+    >
       <div className="col-md-12" style={{ background: '#eee' }}>
         <SinglePost {...{ post : data.wpPost}} />
         <ListOfPosts

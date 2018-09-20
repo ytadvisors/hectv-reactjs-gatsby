@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
-import './modules.scss';
+import './styles.scss';
 
 export default class CheckBoxInput extends Component {
   constructor(props) {

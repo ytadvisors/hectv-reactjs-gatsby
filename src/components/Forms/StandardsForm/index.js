@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
-import { loadAboutValues } from './../../../actions/formActions';
-import { saveUserInformation } from './../../../actions/accountActions';
+import { loadAboutValues } from './../../../store/actions/formActions';
+import { saveUserInformation } from './../../../store/actions/accountActions';
 import { SubmissionError } from 'redux-form';
 import ReactForm from './../../../components/ReactForm';
 import Validator from './../../../components/ReactForm/Validator';

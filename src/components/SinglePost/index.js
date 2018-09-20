@@ -1,7 +1,7 @@
 import React, {Component}  from 'react';
 import * as Material from 'react-icons/lib/md';
 
-import './modules.scss';
+import './styles.scss';
 import VideoPlayer from '../VideoPlayer/index';
 import {  getEventDate } from './../../utils/helperFunctions';
 import LazyLoad from 'react-lazyload';
