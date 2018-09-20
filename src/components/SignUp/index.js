@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import SignUpForm from './../../components/Forms/SignUpForm';
-import './modules.scss';
+import './styles.scss';
 
 export default class SignUp extends Component {
   constructor(props) {

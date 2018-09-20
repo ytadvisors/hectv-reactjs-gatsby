@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 import defaultImage from './../../assets/nothumbnail.png';
-import './modules.scss';
-import { Link } from 'react-router-dom';
+import './styles.scss';
+import { Link } from 'gatsby';
 import { Button } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import CommentForm from './../../components/Forms/CommentForm';

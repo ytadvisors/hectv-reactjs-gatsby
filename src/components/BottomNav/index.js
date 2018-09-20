@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import * as FontAwesome from 'react-icons/lib/fa';
-import { Link } from 'react-router-dom';
+import { Link } from 'gatsby';
 import PropTypes from 'prop-types';
 
-import './modules.scss';
+import './styles.scss';
 
 export default class BottomNav extends Component {
   constructor(props) {

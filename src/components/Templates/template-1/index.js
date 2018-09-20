@@ -3,7 +3,7 @@ import ContentBlock from '../../ContentBlock';
 import VideoPlayer from '../../VideoPlayer';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import './modules.scss';
+import './styles.scss';
 
 export default class Template1 extends Component {
   constructor(props) {

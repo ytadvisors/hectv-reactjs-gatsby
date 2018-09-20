@@ -14,7 +14,7 @@ import {
   getHeaderMenuObject,
   getSocialMenuObject
 } from './../../utils/helperFunctions';
-import './modules.scss';
+import './styles.scss';
 
 export default class Header extends Component {
   constructor(props) {

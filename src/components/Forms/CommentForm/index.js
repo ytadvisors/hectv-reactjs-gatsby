@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import ReactForm from './../../../components/ReactForm';
 import Validator from './../../../components/ReactForm/Validator';
 import { reduxForm } from 'redux-form';
-import './modules.scss';
+import './styles.scss';
 import { SubmissionError } from 'redux-form';
 import $ from 'jquery';
 

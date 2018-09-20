@@ -9,9 +9,9 @@ import DefaultSelect from './DefaultSelect';
 import DefaultDatePicker from './DefaultDatePicker';
 import CheckBoxInput from './CheckBoxInput';
 import DateTimeAdder from './DateTimeAdder';
-import { Link } from 'react-router-dom';
+import { Link } from 'gatsby';
 
-import './modules.scss';
+import './styles.scss';
 
 export default class ReactForm extends Component {
   constructor(props) {

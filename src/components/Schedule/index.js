@@ -2,7 +2,7 @@ import React from 'react';
 import moment from 'moment';
 import { StaticQuery, graphql } from "gatsby"
 import * as FontAwesome from 'react-icons/lib/fa';
-import './modules.scss';
+import './styles.scss';
 
 const day = moment().format('MMMM-YYYY').toLowerCase();
 

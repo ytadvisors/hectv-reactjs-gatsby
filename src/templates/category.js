@@ -6,7 +6,12 @@ import Layout from "./../components/Layout"
 import CategoryNav from './../components/SubNavigation/CategoryNav';
 import ListOfPosts from "./../components/ListOfPosts";
 
-export default ({data}) => {
+export default  (props) => {
+  const {
+    data,
+    pageContext: { live_videos}
+  } = props;
+
   data.wpCategory.content = "";
   if(data.wpCategory.description)
     data.wpCategory.content = data.wpCategory.description;
@@ -30,7 +35,10 @@ export default ({data}) => {
         twitter_handle : "@hec_tv"
       }}
     />
-    <Layout slug={data.wpCategory.slug} >
+    <Layout
+      slug={data.wpCategory.slug}
+      live_videos={live_videos}
+    >
       <section>
         <CategoryNav slug={data.wpCategory.slug} />
         <ListOfPosts

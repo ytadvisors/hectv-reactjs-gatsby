@@ -3,7 +3,7 @@ import { Link, StaticQuery, graphql  } from 'gatsby';
 import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
 import NavWrap from './../../components/NavWrap';
 import CalendarSelector from './../../components/CalendarSelector';
-import './modules.scss';
+import './styles.scss';
 
 export default (props) => {
   const { link, title, changeDate, select_title } = props;

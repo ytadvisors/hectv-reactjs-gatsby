@@ -1,52 +1,67 @@
 import React from "react";
-import { graphql } from "gatsby"
+import {graphql} from "gatsby"
 
 import "./../utils/cssDependencies";
-
 import { removeDuplicates, getPosts, getFirstImageFromWpList } from "./../utils/helperFunctions"
+
 import SEO from "./../components/SEO";
-import Layout from "./../components/Layout";
+import Layout from "./../components/Layout"
+import DefaultNav from './../components/SubNavigation/DefaultNav';
 import ListOfPosts from "./../components/ListOfPosts";
 
-export default ({data}) => {
-  let description = data.wpPage.content || "On Demand Arts, Culture & Education Programming";
+export default  (props) => {
+  const {
+    data,
+    pageContext: { live_videos}
+  } = props;
+
+  if (data.wpPage.acf)
+    data.wpPage.acf.content = data.wpPage.content;
   let posts = getPosts(data, "wpPage", "post_list", "post", "wpPosts");
   posts = removeDuplicates(posts, "wordpress_id");
 
+  let description = data.wpPage.content || "On Demand Arts, Culture & Education Programming";
   return <div>
     <SEO
       {...{
-        title : `HEC-TV | ${data.wpPage.title}`,
-        image : getFirstImageFromWpList(posts),
-        description : description.replace(/<\/?[^>]+(>|$)/g, '').substring(0, 130) + '...',
+        title: `HEC-TV | ${data.wpPage.title}`,
+        image: getFirstImageFromWpList(posts),
+        description: description.replace(/<\/?[^>]+(>|$)/g, '').substring(0, 130) + '...',
         url: data.wpSite.siteMetadata.siteUrl,
         pathname: data.wpPage.link.replace(/https?:\/\/[^/]+/, ''),
-        site_name : "hectv.org",
+        site_name: "hectv.org",
         author: "hectv",
-        twitter_handle : "@hec_tv"
+        twitter_handle: "@hec_tv"
       }}
     />
-    <Layout showBottomNav  slug={data.wpPage.slug}>
-      <ListOfPosts
-        posts={posts || []}
-        link={{ page: 'posts' }}
-        num_results={0}
-        design={data.wpPage.acf}
-        loadMore={null}
-        resize_rows
-      />
+    <Layout
+      slug={data.wpPage.slug}
+      live_videos={live_videos}
+    >
+      <div>
+        <div className="col-md-12">
+          <DefaultNav title="Articles" link="/articles"/>
+        </div>
+        <ListOfPosts
+          posts={posts || []}
+          link={{ page: 'posts' }}
+          num_results={0}
+          design={data.wpPage.acf}
+          loadMore={null}
+        />
+      </div>
     </Layout>
   </div>
 };
 
 export const query = graphql`
-query homePageQuery {
+query articlesPageQuery {
   wpSite: site {
     siteMetadata{
       siteUrl
     }
   }
- wpPage: wordpressPage (slug : { eq : "home" }) {
+ wpPage: wordpressPage (slug : { eq : "articles" }) {
    title
    content
    link
@@ -87,7 +102,13 @@ query homePageQuery {
     }
    }
  }
- wpPosts: allWordpressPost (limit:10){
+  wpPosts: allWordpressPost (
+    filter : {
+      acf : {
+        is_video : { eq : false }
+      }
+    }
+  ){
     edges{
       node{
         link
@@ -106,5 +127,4 @@ query homePageQuery {
       }
     }
   }
-}
-`;
+}`;

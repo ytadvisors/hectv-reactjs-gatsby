@@ -9,7 +9,7 @@ import Validator from './../../../components/ReactForm/Validator';
 import { SubmissionError } from 'redux-form';
 import countries from './../../../countries.json';
 import $ from 'jquery';
-import './modules.scss';
+import './styles.scss';
 
 const fields = [
   {

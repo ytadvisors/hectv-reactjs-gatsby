@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './modules.scss';
+import './styles.scss';
 import ReactPlayer from 'react-player';
 import PropTypes from 'prop-types';
 

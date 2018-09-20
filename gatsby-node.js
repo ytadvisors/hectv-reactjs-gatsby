@@ -6,8 +6,9 @@ const moment = require(`moment`);
 const fs = require(`fs`);
 const util = require('util');
 
-function createPostHelper(createPage, links, template, prefix,
+function createPostHelper(createPage, params, links, template, prefix,
                           categories_index, categories_subindex){
+  const { live_videos } = params;
   _.each(links, link => {
     const categories = link.node[categories_index]
       ? categories_subindex
@@ -18,6 +19,7 @@ function createPostHelper(createPage, links, template, prefix,
       path: `/${prefix}/${link.node.slug}/`,
       component: slash(template),
       context: {
+        live_videos: live_videos,
         id: link.node.id,
         categories : categories,
         slug : link.node.slug
@@ -29,7 +31,8 @@ function createPostHelper(createPage, links, template, prefix,
   })
 }
 
-function createCategoryPageHelper(createPage, links, template){
+function createCategoryPageHelper(createPage, params, links, template){
+  const { live_videos } = params;
   _.each(links, obj => {
     const newLink = obj.node.link.replace(/https?:\/\/[^/]+/, '');
 
@@ -37,6 +40,7 @@ function createCategoryPageHelper(createPage, links, template){
       path: newLink,
       component: slash(template),
       context: {
+        live_videos: live_videos,
         id: obj.node.id,
         wordpress_id: obj.node.wordpress_id ,
         categories: [ obj.node.wordpress_id ],
@@ -49,13 +53,18 @@ function createCategoryPageHelper(createPage, links, template){
   });
 }
 
-function createPageHelper(createPage, links){
+function createPageHelper(createPage, params, links){
+  const { live_videos } = params;
   _.each(links, obj => {
     const newLink = obj.node.link.replace(/https?:\/\/[^/]+/, '');
     let templatePath = "./src/templates/page.js";
+    let slug = obj.node.slug.toLowerCase();
+    if(!slug)
+      slug = "home";
+
     switch(obj.node.template){
       case "":
-        let filePath = `./src/pages/${obj.node.slug.toLowerCase()}.js`;
+        let filePath = `./src/templates/${slug}.js`;
         if(fs.existsSync(filePath))
           templatePath = filePath;
         break;
@@ -67,6 +76,7 @@ function createPageHelper(createPage, links){
       path: newLink,
       component: slash(path.resolve(templatePath)),
       context: {
+        live_videos: live_videos,
         id: obj.node.id,
         slug : obj.node.slug
       }
@@ -92,6 +102,46 @@ exports.createPages = ({ graphql, actions, page }) => {
     graphql(
       `
        {
+        allWordpressWpLivevideos{
+          edges{
+            node{
+              link
+              title
+              wordpress_id
+              acf{
+                start_date
+                end_date
+                url
+              }
+            }
+          }
+        }
+      }
+    `
+    )
+    .then(result => new Promise((resolve, reject) => {
+      if (result.errors) {
+        reject(result.errors)
+      }
+      const air_times = result.data.allWordpressWpLivevideos.edges.map(obj =>
+        obj.node.acf.start_date && ({
+          link : obj.node.link,
+          title : obj.node.title,
+          url : obj.node.acf.url,
+          id : obj.node.wordpress_id,
+          start_date: obj.node.acf.start_date,
+          end_date: obj.node.acf.end_date
+        })
+      ).filter(n=>n);
+
+      console.log("AIR TIMES", air_times);
+      resolve({live_videos: air_times});
+    }))
+
+    .then(params => new Promise((resolve, reject) => {
+      graphql(
+        `
+        {
           allWordpressPage {
             edges {
               node {
@@ -104,163 +154,213 @@ exports.createPages = ({ graphql, actions, page }) => {
             }
           }
         }
-    `
-    )
-      .then(result => {
-        if (result.errors) {
-          reject(result.errors)
-        }
-        createPageHelper(createPage, result.data.allWordpressPage.edges);
-      })
-      .then(() => {
-        graphql(
-          `
-            {
-             allWordpressWpEvent {
-                edges {
-                  node {
-                    id
-                    slug
-                    title
-                    event_category
-                  }
+      `
+      )
+        .then(result => {
+          if (result.errors) {
+            console.log(result.errors);
+            reject(result.errors)
+          }
+          createPageHelper(createPage, params, result.data.allWordpressPage.edges);
+          resolve(params);
+        })
+        .catch(err => {
+          console.log("ERRORS PROCESSING")
+          console.log(err.message);
+          reject(err)
+        })
+    }))
+
+    .then(params => new Promise((resolve, reject) => {
+      graphql(
+        `
+          {
+           allWordpressWpEvent {
+              edges {
+                node {
+                  id
+                  slug
+                  title
+                  event_category
                 }
               }
-           }
-          `
-        ).then(result => {
+            }
+         }
+        `
+      )
+        .then(result => {
           if (result.errors) {
             console.log(result.errors);
             reject(result.errors)
           }
           const eventTemplate = path.resolve("./src/templates/event.js");
-          createPostHelper(createPage, result.data.allWordpressWpEvent.edges, eventTemplate, "events", "event_category");
+          createPostHelper(createPage, params, result.data.allWordpressWpEvent.edges, eventTemplate, "events", "event_category");
+          resolve(params);
         })
-      })
-      .then(() => {
-        graphql(
-          `
-            {
-             allWordpressWpEventCategory {
-              edges{
-                node{
-                  wordpress_id
-                  id
-                  slug
-                  name
-                  link
-                }
+        .catch(err => {
+          console.log("ERRORS PROCESSING")
+          console.log(err.message);
+          reject(err)
+        })
+    }))
+    .then(params => new Promise((resolve, reject) => {
+      graphql(
+        `
+          {
+           allWordpressWpEventCategory {
+            edges{
+              node{
+                wordpress_id
+                id
+                slug
+                name
+                link
               }
             }
-           }
-          `
-        ).then(result => {
+          }
+         }
+        `
+      )
+        .then(result => {
           if (result.errors) {
             console.log(result.errors)
             reject(result.errors)
           }
           const eventTemplate = path.resolve("./src/templates/event_type.js");
-          createCategoryPageHelper(createPage, result.data.allWordpressWpEventCategory.edges, eventTemplate);
+          createCategoryPageHelper(createPage, params, result.data.allWordpressWpEventCategory.edges, eventTemplate);
+          resolve(params);
         })
-      })
-      .then(() => {
-        graphql(
-          `
-          {
-             allWordpressCategory{
-              edges{
-                node {
+        .catch(err => {
+          console.log("ERRORS PROCESSING");
+          console.log(err.message);
+          reject(err)
+        })
+    }))
+    .then(params => new Promise((resolve, reject) => {
+      graphql(
+        `
+        {
+           allWordpressCategory{
+            edges{
+              node {
+                name
+                slug
+                link
+                id
+                wordpress_parent
+                wordpress_id
+                parent_element{
                   name
                   slug
-                  link
-                  id
-                  wordpress_parent
-                  wordpress_id
-                  parent_element{
-                    name
-                    slug
-                  }
                 }
               }
             }
           }
-          `
-        ).then(result => {
+        }
+        `
+      )
+        .then(result => {
           if (result.errors) {
             console.log(result.errors)
             reject(result.errors)
           }
           const pageTemplate = path.resolve("./src/templates/category.js");
-          createCategoryPageHelper(createPage, result.data.allWordpressCategory.edges, pageTemplate);
+          createCategoryPageHelper(createPage, params, result.data.allWordpressCategory.edges, pageTemplate);
+          resolve(params);
         })
-      })
-      .then(() => {
-        graphql(
-          `
-            {
-             allWordpressWpMagazine {
-                edges {
-                  node {
-                    id
-                    slug
-                    title
-                    type
-                  }
+        .catch(err => {
+          console.log("ERRORS PROCESSING");
+          console.log(err.message);
+          reject(err)
+        })
+    }))
+    .then(params => new Promise((resolve, reject) => {
+      graphql(
+        `
+          {
+           allWordpressWpMagazine {
+              edges {
+                node {
+                  id
+                  slug
+                  title
+                  type
                 }
               }
-           }
-          `
-        ).then(result => {
+            }
+         }
+        `
+      )
+        .then(result => {
           if (result.errors) {
             console.log(result.errors)
             reject(result.errors)
           }
           const magazineTemplate = path.resolve("./src/templates/magazine.js");
-          createPostHelper(createPage, result.data.allWordpressWpMagazine.edges, magazineTemplate, "magazine", "type");
+          createPostHelper(createPage, params, result.data.allWordpressWpMagazine.edges, magazineTemplate, "magazine", "type");
+          resolve(params);
         })
-      })
-      .then(() => {
-        graphql(
-          `
-            {
-              allWordpressPost {
-                edges {
-                  node {
-                    id
-                    slug
-                    status
-                    template
-                    format
-                    categories{
-                      wordpress_id
-                    }
+        .catch(err => {
+          console.log("ERRORS PROCESSING");
+          console.log(err.message);
+          reject(err)
+        })
+    }))
+    .then(params => new Promise((resolve, reject) => {
+      graphql(
+        `
+          {
+            allWordpressPost {
+              edges {
+                node {
+                  id
+                  slug
+                  status
+                  template
+                  format
+                  categories{
+                    wordpress_id
                   }
                 }
               }
             }
-          `
-        ).then(result => {
+          }
+        `
+      )
+        .then(result => {
           if (result.errors) {
             console.log(result.errors);
             reject(result.errors)
           }
           const postTemplate = path.resolve("./src/templates/post.js");
-          createPostHelper(createPage, result.data.allWordpressPost.edges, postTemplate, "posts", "categories", "wordpress_id");
-
+          createPostHelper(createPage, params, result.data.allWordpressPost.edges, postTemplate, "posts", "categories", "wordpress_id");
+          resolve(params);
         })
-      })
-      .then(() => {
+        .catch(err => {
+          console.log("ERRORS PROCESSING");
+          console.log(err.message);
+          reject(err)
+        })
+    }))
+    .then(params => new Promise((resolve, reject) => {
+      try{
         const searchInfo = {
           path: "/search/:path",
           component: slash(path.resolve("./src/templates/search.js")),
           context: {}
         };
         createPage(searchInfo);
-        resolve();
-      })
-      .catch(err => {
-        console.log(err.message);
-        reject(err)
-      })
+      } catch(err){
+        console.log("ERROR WITH THE SEARCH", err)
+      }
+
+      resolve(params);
+    }))
+    .then(() => resolve())
+    .catch(err => {
+      console.log("ERRORS PROCESSING");
+      console.log(err.message);
+      reject(err)
+    })
   })
 }

@@ -49,8 +49,10 @@ class Search extends Component {
     const {
       data,
       posts,
+      pageContext: { live_videos},
       location : {pathname}
     } = this.props;
+
     let description = "On Demand Arts, Culture & Education Programming";
     const [,searchText, searchValue] = pathname.split("/");
 
@@ -67,7 +69,9 @@ class Search extends Component {
           twitter_handle : "@hec_tv"
         }}
       />
-      <Layout >
+      <Layout
+        live_videos={live_videos}
+      >
         <div className="col-md-12">
           <DefaultNav title={`Results: ${searchValue}`} link="/magazines"/>
         </div>

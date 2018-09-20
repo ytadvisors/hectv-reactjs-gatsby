@@ -25,7 +25,8 @@ export default class Events extends Component{
 
   render() {
     const {
-      data
+      data,
+      pageContext: { live_videos}
     } = this.props;
 
     if (data.wpPage.acf)
@@ -50,7 +51,10 @@ export default class Events extends Component{
           twitter_handle: "@hec_tv"
         }}
       />
-      <Layout slug={data.wpPage.slug}>
+      <Layout
+        slug={data.wpPage.slug}
+        live_videos={live_videos}
+      >
         <div>
           <div className="col-md-12">
             <EventNav {...data.wpPage} changeDate={this.changeDate.bind(this)}  select_title={select_title} />

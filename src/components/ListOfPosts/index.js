@@ -10,7 +10,7 @@ import * as Material from 'react-icons/lib/md';
 import * as Ionicons from 'react-icons/lib/io';
 import LazyLoad from 'react-lazyload';
 
-import './modules.scss';
+import './styles.scss';
 
 export default class ListOfPosts extends Component {
   constructor(props) {

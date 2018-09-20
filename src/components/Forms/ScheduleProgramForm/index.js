@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
-import { saveScheduleInformation } from './../../../actions/accountActions';
+import { saveScheduleInformation } from './../../../store/actions/accountActions';
 import PropTypes from 'prop-types';
 import ReactForm from './../../../components/ReactForm';
 import Validator from './../../../components/ReactForm/Validator';
