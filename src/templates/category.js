@@ -12,11 +12,18 @@ export default  (props) => {
     pageContext: { live_videos}
   } = props;
 
-  data.wpCategory.content = "";
-  if(data.wpCategory.description)
-    data.wpCategory.content = data.wpCategory.description;
+  let description = "";
+  let name = "";
+  let link = "";
+  let slug = "";
 
-  let description = data.wpCategory.content || "On Demand Arts, Culture & Education Programming";
+  if(data.wpCategory){
+    name = data.wpCategory.name;
+    description = data.wpCategory.description || "On Demand Arts, Culture & Education Programming";
+    link = data.wpCategory.link && data.wpCategory.link.replace(/https?:\/\/[^/]+/, '');
+    slug = data.wpCategory.slug || "";
+  }
+
   let posts = data.wpCategoryPosts && data.wpCategoryPosts.edges.map(obj => obj.node);
 
   let image = "";
@@ -25,22 +32,22 @@ export default  (props) => {
   return <div>
     <SEO
       {...{
-        title : `HEC-TV | ${data.wpCategory.name}`,
+        title : `HEC-TV | ${name}`,
         image : image,
         description : description.replace(/<\/?[^>]+(>|$)/g, '').substring(0, 130) + '...',
         url: data.wpSite.siteMetadata.siteUrl,
-        pathname: data.wpCategory.link.replace(/https?:\/\/[^/]+/, ''),
+        pathname: link,
         site_name : "hectv.org",
         author: "hectv",
         twitter_handle : "@hec_tv"
       }}
     />
     <Layout
-      slug={data.wpCategory.slug}
+      slug={slug}
       live_videos={live_videos}
     >
       <section>
-        <CategoryNav slug={data.wpCategory.slug} />
+        <CategoryNav slug={slug} />
         <ListOfPosts
           posts={posts || []}
           link={{ page: 'posts' }}
