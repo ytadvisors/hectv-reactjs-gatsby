@@ -2,8 +2,6 @@ import React, {Component} from "react";
 import {graphql} from "gatsby"
 import moment from "moment";
 
-import "./../utils/cssDependencies";
-
 import SEO from "./../components/SEO";
 import Layout from "./../components/Layout"
 import EventNav from './../components/SubNavigation/EventNav';
