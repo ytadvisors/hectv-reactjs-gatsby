@@ -1,7 +1,6 @@
 import React from "react";
 import {graphql} from "gatsby"
 
-import "./../utils/cssDependencies";
 import { removeDuplicates, getPosts, getFirstImageFromWpList } from "./../utils/helperFunctions"
 
 import SEO from "./../components/SEO";
