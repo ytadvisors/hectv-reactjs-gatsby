@@ -345,7 +345,7 @@ exports.createPages = ({ graphql, actions, page }) => {
     .then(params => new Promise((resolve, reject) => {
       try{
         const searchInfo = {
-          path: "/search/:path",
+          path: "/search/:searchpath",
           component: slash(path.resolve("./src/templates/search.js")),
           context: {}
         };
