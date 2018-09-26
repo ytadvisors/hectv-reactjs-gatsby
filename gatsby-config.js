@@ -55,7 +55,7 @@ module.exports = {
     {
       resolve : `gatsby-plugin-mailchimp`,
       options : {
-        endpoint : "https://hectv.us17.list-manage.com/subscribe/post?u=3ba5cb3441b0c6df467d5c65b&amp;id=d79ab076b3"
+        endpoint : "https://hectv.us17.list-manage.com/subscribe/post?u=3ba5cb3441b0c6df467d5c65b&amp;id=c4ddedb2ea"
       }
     },
     {
