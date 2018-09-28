@@ -1,6 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import { withPrefix } from 'gatsby'
+import { withPrefix } from 'gatsby';
+import {decodeHTML} from "./../../utils/helperFunctions";
 
 
 export default ({
@@ -13,12 +14,12 @@ export default ({
                   twitter_handle,
                   url
                 }) => <Helmet>
-  <title>{title}</title>
+  <title>{decodeHTML(title || '')}</title>
 
   <meta name="description" content={description || ''}  />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta property="og:image" content={image || ''}  />
-  <meta property="og:title" content={title || ''}  />
+  <meta property="og:title" content={decodeHTML(title || '')}  />
   <meta property="og:image:width" content="650"  />
   <meta property="og:image:height" content="497"  />
   <meta property="og:site_name" content={site_name || ''}  />
@@ -26,7 +27,7 @@ export default ({
   <meta property="og:url" content={`${url}${pathname}`}  />
   <meta property="og:type" content='article'  />
   <meta name="og:image" content={image || ''}  />
-  <meta name="og:title" content={title || ''}  />
+  <meta name="og:title" content={decodeHTML(title || '')}  />
   <meta name="og:image:width" content="650"  />
   <meta name="og:image:height" content="497"  />
   <meta name="og:site_name" content={site_name || ''}  />
@@ -35,7 +36,7 @@ export default ({
   <meta name="og:type" content='article'  />
 
   <meta name="twitter:image" content={image || ''}  />
-  <meta name="twitter:title" content={title || ''}  />
+  <meta name="twitter:title" content={decodeHTML(title || '')}  />
   <meta name="twitter:description" content={description || ''}  />
   <meta name="twitter:card" content="summary_large_image"  />
   <meta name="twitter:creator" content={twitter_handle || ''}  />

@@ -4,6 +4,10 @@ import { connect } from 'react-redux';
 import Header from "./../components/Header";
 import Banner from "./../components/Banner";
 
+import {
+  BasicModal
+} from "./Modals"
+
 class HeaderContainer extends Component {
   constructor(props) {
     super(props);
@@ -20,6 +24,7 @@ class HeaderContainer extends Component {
 
   render() {
     return <section>
+      <BasicModal {...this.props} />
       <Header {...this.props} searchFunc={this.searchFunc}/>
       <Banner {...this.props} />
     </section>
@@ -27,7 +32,9 @@ class HeaderContainer extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  page_form: state.form
+  page_form: state.form,
+  open_overlay : state.pageReducers.open_overlay,
+  overlay_settings : state.pageReducers.overlay_settings
 });
 
 export default connect(mapStateToProps)(HeaderContainer);

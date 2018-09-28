@@ -180,6 +180,13 @@ function* loadLiveVideos(payload) {
   }
 }
 
+function* openOverlay(payload) {
+  try {
+  } catch (error) {
+    yield put({ type: types.LOAD_ERROR, error });
+  }
+}
+
 /*-----------------
  *
  * UPDATE OPERATIONS
@@ -215,6 +222,10 @@ function* watchLoadLiveVideosAsync() {
   yield takeLatest(types.LOAD_LIVE_VIDEO, loadLiveVideos);
 }
 
+function* watchOpenOverlayAsync() {
+  yield takeLatest(types.OPEN_OVERLAY, openOverlay);
+}
+
 //CREATE
 
 //UPDATE
@@ -229,6 +240,7 @@ export default function* rootSaga() {
     watchLoadFooterMenuAsync(),
     watchLoadSocialMenuAsync(),
     watchLoadBottomNavMenuAsync(),
-    watchLoadLiveVideosAsync()
+    watchLoadLiveVideosAsync(),
+    watchOpenOverlayAsync()
   ]);
 }

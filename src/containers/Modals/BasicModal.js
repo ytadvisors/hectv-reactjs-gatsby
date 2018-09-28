@@ -1,12 +1,9 @@
 import React from 'react';
 import { Modal } from 'react-bootstrap';
-import under_construction from './../../assets/under-construction-2.png';
-import VideoPlayer from './../../components/Videos/Single/Player';
-import email_sent from './../../assets/email-sent-2.png';
-
+import VideoPlayer from './../../components/VideoPlayer';
 import { closeOverlayAction } from './../../store/actions/pageActions';
 
-import logo from './../../assets/white-logo.png';
+import logo from './../../assets/white_hec.png';
 
 export default (props) => {
 
@@ -33,8 +30,15 @@ export default (props) => {
     >
       <Modal.Header closeButton className="modal-header">
         <Modal.Title id="modal-header">
-          <div className="col-xs-6 col-xs-offset-3">
+          <div className="col-xs-2 no-padding col-xs-offset-1">
             <img src={logo} className="img-responsive" />
+          </div>
+
+          <div className="col-xs-8 brand-details no-padding">
+            <div className="brand-text" >
+              <div>St. Louis' home of Education</div>
+              <div>Arts, and Culture</div>
+            </div>
           </div>
         </Modal.Title>
       </Modal.Header>
@@ -57,7 +61,6 @@ export default (props) => {
           <div className="overlay-content">{content}</div>
         }
       </Modal.Body>
-      <Modal.Footer />
     </Modal>
   );
 };
