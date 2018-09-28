@@ -4,6 +4,10 @@ import { connect } from 'react-redux';
 import Header from "./../components/Header";
 import Banner from "./../components/Banner";
 
+import {
+  BasicModal
+} from "./Modals"
+
 class HeaderContainer extends Component {
   constructor(props) {
     super(props);
@@ -20,6 +24,7 @@ class HeaderContainer extends Component {
 
   render() {
     return <section>
+      <BasicModal {...this.props} />
       <Header {...this.props} searchFunc={this.searchFunc}/>
       <Banner {...this.props} />
     </section>

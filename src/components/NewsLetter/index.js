@@ -1,23 +1,15 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import addToMailchimp from 'gatsby-plugin-mailchimp'
+
 import NewsLetterForm from './../../components/Forms/NewsLetterForm';
 import './styles.scss';
 
-const subscribe = async (values) => {
-  try {
-    if (values["newsletter-captcha"])
-      delete(values["newsletter-captcha"]);
-    await addToMailchimp(values["EMAIL"], values);
+export default (props) => {
+  const {
+    subscribe
+  } = props;
 
-  } catch(err){
-
-  }
-
-};
-
-export default (props) => (
-  <section className="newsletter">
-    <NewsLetterForm callbackFunc={subscribe} />
+  return <section className="newsletter">
+    <NewsLetterForm callbackFunc={subscribe}/>
   </section>
-);
+};

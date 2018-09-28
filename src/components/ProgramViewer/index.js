@@ -1,15 +1,30 @@
-import React from 'react';
+import React, {Component} from 'react';
+
 import SideNavigation from './../../components/SideNavigation';
 import ListOfSideTabs from './../../components/ListOfSideTabs';
 import ListOfMagazines from './../../components/ListOfMagazines';
 
 import Schedule from './../../components/Schedule';
 import ListOfEvents from './../../components/ListOfEvents';
-import NewsLetter from './../../components/NewsLetter';
+import NewsLetterContainer from './../../containers/NewsLetterContainer';
 import SignUp from './../../components/SignUp';
 import './styles.scss';
 
-export default ({style, schedule, children}) => {
+
+
+export default class ProgramViewer extends Component{
+
+  constructor(props){
+    super(props)
+  }
+
+
+  render(){
+    const {
+      style,
+      schedule,
+      children
+    } = this.props;
 
     return (
       <section className="program-viewer">
@@ -39,7 +54,7 @@ export default ({style, schedule, children}) => {
                         },
                         {
                           title: 'HEC-TV NewsLetter',
-                          content: <NewsLetter />
+                          content: <NewsLetterContainer />
                         }
                       ]}
                     />
@@ -59,4 +74,5 @@ export default ({style, schedule, children}) => {
         </div>
       </section>
     )
+  }
 }

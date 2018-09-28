@@ -1,9 +1,6 @@
 import React from 'react';
 import { Modal } from 'react-bootstrap';
-import under_construction from './../../assets/under-construction-2.png';
-import VideoPlayer from './../../components/Videos/Single/Player';
-import email_sent from './../../assets/email-sent-2.png';
-
+import VideoPlayer from './../../components/VideoPlayer';
 import { closeOverlayAction } from './../../store/actions/pageActions';
 
 import logo from './../../assets/white-logo.png';

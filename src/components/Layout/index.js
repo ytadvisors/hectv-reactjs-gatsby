@@ -52,13 +52,14 @@ export default (props) => {
             social={social}
             page={slug}
             live_videos={live_videos}
+            {...props}
           />
           <ProgramViewer style={style}>
             <Transition>
               {children}
               {showBottomNav && <BottomNav menus={bottomNav && bottomNav.node.items} title="more from"/>}
             </Transition>
-          </ProgramViewer>
+          </ProgramViewer >
           <Footer footer={footer} social={social}/>
         </section>
       }
