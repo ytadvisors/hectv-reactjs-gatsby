@@ -28,6 +28,7 @@ module.exports = {
     `gatsby-plugin-react-helmet`,
     `gatsby-plugin-sitemap`,
     `gatsby-plugin-react-next`,
+    `gatsby-plugin-offline`,
     {
       resolve: `gatsby-source-wordpress`,
       options: {
@@ -77,6 +78,22 @@ module.exports = {
         gtmAuth: process.env.GA_TAGMANAGER_ENV_AUTH_STRING,
         gtmPreview: process.env.GA_TAGMANAGER_ENV_PREVIEW_NAME,
       },
+    },
+    {
+      resolve: 'gatsby-plugin-robots-txt',
+      options: {
+        host: process.env.SITE_HOST,
+        sitemap: `${process.env.SITE_HOST}/sitemap.xml`,
+        resolveEnv: () => process.env.GATSBY_ENV,
+        env: {
+          development: {
+            policy: [{ userAgent: '*', disallow: ['/'] }]
+          },
+          production: {
+            policy: [{ userAgent: '*', allow: '/' }]
+          }
+        }
+      }
     }
   ]
 };
