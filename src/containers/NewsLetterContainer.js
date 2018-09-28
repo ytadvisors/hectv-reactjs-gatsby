@@ -18,9 +18,9 @@ class NewsLetterContainer extends Component {
         dispatch
       } = this.props;
 
-      /*if (values["newsletter-captcha"])
+      if (values["newsletter-captcha"])
        delete(values["newsletter-captcha"]);
-       await addToMailchimp(values["EMAIL"], values);*/
+       await addToMailchimp(values["EMAIL"], values);
 
       dispatch(openOverlayAction('basic', {
         content : <div className="text-center" style={{
@@ -28,7 +28,10 @@ class NewsLetterContainer extends Component {
           lineHeight: "2em",
           background: "#ddecff"
         }}>
-          <div>Congratulations! You successfully subscribed to our newsletter.</div>
+          <div>
+            <p><b>Congratulations!</b> </p>
+            <p>You successfully subscribed to our newsletter.</p>
+          </div>
         </div>
       }));
     } catch(err){

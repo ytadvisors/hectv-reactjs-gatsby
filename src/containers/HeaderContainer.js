@@ -32,7 +32,9 @@ class HeaderContainer extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  page_form: state.form
+  page_form: state.form,
+  open_overlay : state.pageReducers.open_overlay,
+  overlay_settings : state.pageReducers.overlay_settings
 });
 
 export default connect(mapStateToProps)(HeaderContainer);
