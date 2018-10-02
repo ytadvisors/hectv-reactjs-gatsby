@@ -30,17 +30,19 @@ module.exports = {
     `gatsby-plugin-react-next`,
     `gatsby-plugin-offline`,
     {
-      resolve: `gatsby-source-wordpress`,
+      resolve: `gatsby-source-wordpress-fork`,
       options: {
         baseUrl: baseUrl,
         protocol: protocol,
         hostingWPCOM: false,
         useACF: false,
         // Set to true to debug endpoints on 'gatsby build'
-        verboseOutput: false,
+        verboseOutput: true,
         concurrentRequests: 10,
-        auth: {},
-        excludedRoutes: ["/jetpack/**", "/*/*/tags", "/*/*/settings", "/*/*/media", "/*/*/comments", "/*/*/users/*",  "/yoast/**"]
+        auth: {
+          jwt_token : ""
+        },
+        excludedRoutes: ["/jetpack/**", "/*/*/tags", "/*/*/settings", "/*/*/media", "/*/*/users/*",  "/yoast/**"]
       },
     },
     {
