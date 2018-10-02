@@ -50,12 +50,12 @@ export default () => {
     render={
       data => {
         const schedules = data.allWordpressWpSchedules.edges;
-        const schedule_programs = schedules.reduce((result, schedule) => schedule && schedule.node.slug === day ? schedule.node.acf.schedule_programs : result);
-        const programs = schedule_programs && getPrograms(schedule_programs, 5);
+        const schedule_programs = schedules.reduce((result, schedule) => schedule.node.slug === day ? schedule.node.acf.schedule_programs : result);
+        const programs = schedule_programs.node && getPrograms(schedule_programs.node.acf.schedule_programs, 5);
         return <section className="schedule">
           <h4 className="title">Playing Now</h4>
           <ul className="program">
-            {programs && programs.values &&
+            {programs.values &&
             programs.values.map((program, x) => (
               <li
                 key={`program-${x}`}
