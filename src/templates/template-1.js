@@ -69,16 +69,6 @@ query template1PageQuery($slug: String!) {
         provider
         channel
       }
-      partner_logos {
-        partner_logo {
-          title
-          filename
-        }
-        partner_link
-      }
-      higher_education_partners {
-        partner
-      }
       team {
         name
         position
