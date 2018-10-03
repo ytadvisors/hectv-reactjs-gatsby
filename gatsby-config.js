@@ -28,7 +28,6 @@ module.exports = {
     `gatsby-plugin-react-helmet`,
     `gatsby-plugin-sitemap`,
     `gatsby-plugin-react-next`,
-    `gatsby-plugin-offline`,
     {
       resolve: `gatsby-source-wordpress-fork`,
       options: {
