@@ -18,8 +18,6 @@ export default class Template1 extends Component {
         phone_number,
         fax_number,
         tv_providers,
-        public_school_partners,
-        higher_education_partners,
         team,
         video_id
       }
@@ -72,46 +70,6 @@ export default class Template1 extends Component {
                   ))}
                 </ul>
               ))}
-              type="white-block clearfix"
-            />
-          </div>
-          <div className="col-md-12 ">
-            <ContentBlock
-              header="Our Partners"
-              data={
-                <section className="block-list">
-                  <article>
-                    <h3>PUBLIC SCHOOL DISTRICT PARTNERS</h3>
-                    <div>
-                      {_.chunk(public_school_partners, 2).map((row, i) => (
-                        <ul key={`row-${i}`} className="row small-list">
-                          {' '}
-                          {row.map((partner, x) => (
-                            <li className="col-md-6" key={`partner-${x}`}>
-                              {partner.partner}
-                            </li>
-                          ))}
-                        </ul>
-                      ))}
-                    </div>
-                  </article>
-                  <article>
-                    <h3>HIGHER EDUCATION PARTNERS</h3>
-                    <div>
-                      {_.chunk(higher_education_partners, 2).map((row, i) => (
-                        <ul key={`row-${i}`} className="row small-list">
-                          {' '}
-                          {row.map((partner, x) => (
-                            <li className="col-md-6" key={`partner-${x}`}>
-                              {partner.partner}
-                            </li>
-                          ))}
-                        </ul>
-                      ))}
-                    </div>
-                  </article>
-                </section>
-              }
               type="white-block clearfix"
             />
           </div>
