@@ -26,7 +26,7 @@ function createPostHelper(createPage, params, links, template, prefix,
       },
     };
 
-    console.log("POST INFO: ", util.inspect(postInfo, true, 5));
+    //console.log("POST INFO: ", util.inspect(postInfo, true, 5));
     createPage(postInfo);
   })
 }
@@ -48,7 +48,7 @@ function createCategoryPageHelper(createPage, params, links, template){
       }
     };
 
-    console.log("CATEGORY INFO: ", util.inspect(categoryInfo, true, 5));
+    //console.log("CATEGORY INFO: ", util.inspect(categoryInfo, true, 5));
     createPage(categoryInfo);
   });
 }
@@ -82,7 +82,7 @@ function createPageHelper(createPage, params, links){
       }
     };
 
-    console.log("PAGE INFO: ", util.inspect(pageInfo, true, 5));
+    //console.log("PAGE INFO: ", util.inspect(pageInfo, true, 5));
     createPage(pageInfo);
 
   });
