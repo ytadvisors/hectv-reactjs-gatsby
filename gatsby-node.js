@@ -117,6 +117,7 @@ async function getAirTimes(graphql) {
       }
     `
   );
+
   if(result.data && result.data.allWordpressWpLivevideos && result.data.allWordpressWpLivevideos.edges) {
     air_times = result.data.allWordpressWpLivevideos.edges.map(obj =>
       obj.node.acf.start_date && ({
@@ -155,7 +156,7 @@ async function createSitePages(createPage, graphql, params) {
   if (result.errors)
     throw new Error(result.errors);
 
-  createPageHelper(createPage, params, result.data.wpPages.edges);
+  return createPageHelper(createPage, params, result.data.wpPages.edges);
 }
 
 async function createSiteEvents(createPage, graphql, params) {

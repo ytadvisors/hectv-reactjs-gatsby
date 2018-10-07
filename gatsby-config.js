@@ -37,7 +37,7 @@ module.exports = {
         useACF: false,
         // Set to true to debug endpoints on 'gatsby build'
         verboseOutput: true,
-        concurrentRequests: 10,
+        concurrentRequests: 40,
         auth: {
           jwt_token : ""
         },
