@@ -301,7 +301,6 @@ async function createSearch(createPage) {
 
 exports.createPages = async ({ graphql, actions, page }) => {
   const { createPage } = actions;
-  let result = [];
   let params = {};
   try{
     params.live_videos = await getAirTimes(graphql);
@@ -312,19 +311,19 @@ exports.createPages = async ({ graphql, actions, page }) => {
     const magazines = createSiteMagazines(createPage, graphql, params);
     const posts = createSitePosts(createPage, graphql, params);
     const search = createSearch(createPage);
-    result = [
-      await pages,
-      await events,
-      await eventCategories,
-      await categories,
-      await magazines,
-      await posts,
-      await search
-    ];
-
+    await Promise.all([
+      pages,
+      events,
+      eventCategories,
+      categories,
+      magazines,
+      posts,
+      search
+    ]);
+    return new Promise((resolve, reject) => resolve(true));
   } catch (err){
     console.log("ERRORS PROCESSING");
     console.log(err.message);
+    return new Promise((resolve, reject) => reject(err.message));
   }
-  return new Promise((resolve, reject) => resolve(true));
 };
