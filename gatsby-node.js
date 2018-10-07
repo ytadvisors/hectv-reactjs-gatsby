@@ -305,21 +305,14 @@ exports.createPages = async ({ graphql, actions, page }) => {
   let params = {};
   try{
     params.live_videos = await getAirTimes(graphql);
-    const pages = createSitePages(createPage, graphql, params);
-    const events = createSiteEvents(createPage, graphql, params);
-    const eventCategories = createSiteEventCategories(createPage, graphql, params);
-    const categories = createSiteCategories(createPage, graphql, params);
-    const magazines = createSiteMagazines(createPage, graphql, params);
-    const posts = createSitePosts(createPage, graphql, params);
-    const search = createSearch(createPage);
     await Promise.all([
-      pages,
-      events,
-      eventCategories,
-      categories,
-      magazines,
-      posts,
-      search
+      createSearch(createPage),
+      createSitePages(createPage, graphql, params),
+      createSiteEvents(createPage, graphql, params),
+      createSiteEventCategories(createPage, graphql, params),
+      createSiteCategories(createPage, graphql, params),
+      createSiteMagazines(createPage, graphql, params),
+      createSitePosts(createPage, graphql, params)
     ]);
     return new Promise((resolve, reject) => resolve(true));
   } catch (err){
