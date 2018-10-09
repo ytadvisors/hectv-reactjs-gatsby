@@ -31,13 +31,14 @@ export default ({
   <meta name="og:image:width" content="650"  />
   <meta name="og:image:height" content="497"  />
   <meta name="og:site_name" content={site_name || ''}  />
+  <meta name="og:description" content={decodeHTML(description || '')}  />
   <meta name="og:locale'" content="en_US"  />
   <meta name="og:url" content={`${url}${pathname}`}  />
   <meta name="og:type" content='article'  />
 
   <meta name="twitter:image" content={image || ''}  />
   <meta name="twitter:title" content={decodeHTML(title || '')}  />
-  <meta name="twitter:description" content={description || ''}  />
+  <meta name="twitter:description" content={decodeHTML(description || '')}  />
   <meta name="twitter:card" content="summary_large_image"  />
   <meta name="twitter:creator" content={twitter_handle || ''}  />
   <link rel="apple-touch-icon" sizes="180x180" href={withPrefix("/favicons/apple-touch-icon.png")} />
