@@ -15,7 +15,15 @@ export default  (props) => {
     pageContext: { live_videos}
   } = props;
 
-  let description = data.wpPost.content || "On Demand Arts, Culture & Education Programming";
+  const {
+    excerpt,
+    content,
+    title,
+    thumbnail,
+    slug,
+    link
+  } = data.wpPost;
+  let description = excerpt || content || "On Demand Arts, Culture & Education Programming";
 
   let posts = getPosts(data, "wpPost", "related_posts", "related_post", "wpRelatedPosts");
   let events = getPosts(data, "wpPost", "post_events", "related_event");
@@ -23,11 +31,11 @@ export default  (props) => {
   return <div>
     <SEO
       {...{
-        title : data.wpPost.title,
-        image : data.wpPost.thumbnail,
+        title : title,
+        image : thumbnail,
         description : description.replace(/<\/?[^>]+(>|$)/g, '').substring(0, 130) + '...',
         url: data.wpSite.siteMetadata.siteUrl,
-        pathname: data.wpPost.link.replace(/https?:\/\/[^/]+/, ''),
+        pathname: link.replace(/https?:\/\/[^/]+/, ''),
         site_name : "hectv.org",
         author: "hectv",
         twitter_handle : "@hec_tv"
@@ -35,7 +43,7 @@ export default  (props) => {
     />
     <Layout
       style={{ background: '#eee' }}
-      slug={data.wpPost.slug}
+      slug={slug}
       live_videos={live_videos}
     >
       <div className="col-md-12" style={{ background: '#eee' }}>
@@ -82,6 +90,7 @@ query postQuery ($id: String! $categories: [Int]!){
  wpPost: wordpressPost (id : { eq : $id }) {
     title
     content
+    excerpt
     thumbnail
     link
     slug
