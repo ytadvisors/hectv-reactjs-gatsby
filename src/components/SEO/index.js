@@ -27,15 +27,6 @@ export default ({
   <meta property="og:url" content={`${url}${pathname}`}  />
   <meta property="og:type" content='article'  />
   <meta property="og:description" content={decodeHTML(description || '')} />
-  <meta name="og:image" content={image || ''}  />
-  <meta name="og:title" content={decodeHTML(title || '')}  />
-  <meta name="og:image:width" content="650"  />
-  <meta name="og:image:height" content="497"  />
-  <meta name="og:site_name" content={site_name || ''}  />
-  <meta name="og:description" content={decodeHTML(description || '')}  />
-  <meta name="og:locale'" content="en_US"  />
-  <meta name="og:url" content={`${url}${pathname}`}  />
-  <meta name="og:type" content='article'  />
 
   <meta name="twitter:image" content={image || ''}  />
   <meta name="twitter:title" content={decodeHTML(title || '')}  />
