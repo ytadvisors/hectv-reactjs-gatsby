@@ -5,6 +5,7 @@ import {decodeHTML} from "./../../utils/helperFunctions";
 
 
 export default ({
+                  fb_app_id,
                   description,
                   image,
                   title,
@@ -27,6 +28,8 @@ export default ({
   <meta property="og:url" content={`${url}${pathname}`}  />
   <meta property="og:type" content='article'  />
   <meta property="og:description" content={decodeHTML(description || '')} />
+  <meta property="og:type" content='article'  />
+  <meta property="fb:app_id" content={fb_app_id || ""}  />
 
   <meta name="twitter:image" content={image || ''}  />
   <meta name="twitter:title" content={decodeHTML(title || '')}  />

@@ -63,6 +63,7 @@ class Search extends Component {
           image : "",
           description : description.replace(/<\/?[^>]+(>|$)/g, '').substring(0, 320) + '...',
           url: data.wpSite.siteMetadata.siteUrl,
+          fb_app_id: data.wpSite.siteMetadata.fbAppId,
           pathname: data.wpSite.siteMetadata.siteUrl + "/search",
           site_name : "hecmedia.org",
           author: "hectv",
@@ -101,6 +102,7 @@ query searchPageQuery{
     siteMetadata{
       siteUrl
       apiUrl
+      fbAppId
     }
   }
 }

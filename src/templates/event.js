@@ -25,6 +25,7 @@ export default  (props) => {
         image : data.wpEvent.thumbnail,
         description : description.replace(/<\/?[^>]+(>|$)/g, '').substring(0, 320) + '...',
         url: data.wpSite.siteMetadata.siteUrl,
+        fb_app_id: data.wpSite.siteMetadata.fbAppId,
         pathname: data.wpEvent.link.replace(/https?:\/\/[^/]+/, ''),
         site_name : "hecmedia.org",
         author: "hectv",
@@ -64,6 +65,7 @@ query eventQuery ($id: String!){
   wpSite: site {
     siteMetadata{
       siteUrl
+      fbAppId
     }
   }
  wpEvent: wordpressWpEvent (id : { eq : $id }) {

@@ -29,6 +29,7 @@ export default  (props) => {
         image : image,
         description : description.replace(/<\/?[^>]+(>|$)/g, '').substring(0, 320) + '...',
         url: data.wpSite.siteMetadata.siteUrl,
+        fb_app_id: data.wpSite.siteMetadata.fbAppId,
         pathname: data.wpPage.link.replace(/https?:\/\/[^/]+/, ''),
         site_name : "hecmedia.org",
         author: "hectv",
@@ -56,6 +57,7 @@ query sitePageQuery ($slug: String!){
   wpSite: site {
     siteMetadata{
       siteUrl
+      fbAppId
     }
   }
  wpPage: wordpressPage (slug : { eq : $slug }) {

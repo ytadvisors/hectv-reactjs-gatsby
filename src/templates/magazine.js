@@ -28,6 +28,7 @@ export default  (props) => {
         image : data.wpMagazine.thumbnail,
         description : description.replace(/<\/?[^>]+(>|$)/g, '').substring(0, 320) + '...',
         url: data.wpSite.siteMetadata.siteUrl,
+        fb_app_id: data.wpSite.siteMetadata.fbAppId,
         pathname: data.wpMagazine.link.replace(/https?:\/\/[^/]+/, ''),
         site_name : "hecmedia.org",
         author: "hectv",
@@ -73,6 +74,7 @@ query magazineQuery ($id: String!){
   wpSite: site {
     siteMetadata{
       siteUrl
+      fbAppId
     }
   }
  wpMagazine : wordpressWpMagazine (id : { eq : $id }) {
