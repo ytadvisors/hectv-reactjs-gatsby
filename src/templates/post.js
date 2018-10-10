@@ -35,6 +35,7 @@ export default  (props) => {
         image : thumbnail,
         description : description.replace(/<\/?[^>]+(>|$)/g, '').substring(0, 320) + '...',
         url: data.wpSite.siteMetadata.siteUrl,
+        fb_app_id: data.wpSite.siteMetadata.fbAppId,
         pathname: link.replace(/https?:\/\/[^/]+/, ''),
         site_name : "hecmedia.org",
         author: "hectv",
@@ -85,6 +86,7 @@ query postQuery ($id: String! $categories: [Int]!){
   wpSite: site {
     siteMetadata{
       siteUrl
+      fbAppId
     }
   }
  wpPost: wordpressPost (id : { eq : $id }) {

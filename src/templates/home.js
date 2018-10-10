@@ -13,6 +13,7 @@ export default (props) => {
     pageContext: { live_videos}
   } = props;
 
+
   let description = data.wpPage.content || "On Demand Arts, Culture & Education Programming";
   let posts = getPosts(data, "wpPage", "post_list", "post", "wpPosts");
   posts = removeDuplicates(posts, "wordpress_id");
@@ -24,6 +25,7 @@ export default (props) => {
         image : getFirstImageFromWpList(posts),
         description : description.replace(/<\/?[^>]+(>|$)/g, '').substring(0, 320) + '...',
         url: data.wpSite.siteMetadata.siteUrl,
+        fb_app_id: data.wpSite.siteMetadata.fbAppId,
         pathname: data.wpPage.link.replace(/https?:\/\/[^/]+/, ''),
         site_name : "hecmedia.org",
         author: "hectv",
@@ -52,6 +54,7 @@ query homePageQuery {
   wpSite: site {
     siteMetadata{
       siteUrl
+      fbAppId
     }
   }
  wpPage: wordpressPage (slug : { eq : "home" }) {
