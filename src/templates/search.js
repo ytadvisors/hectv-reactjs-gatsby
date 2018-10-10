@@ -61,10 +61,10 @@ class Search extends Component {
         {...{
           title : `HEC-TV | Search`,
           image : "",
-          description : description.replace(/<\/?[^>]+(>|$)/g, '').substring(0, 130) + '...',
+          description : description.replace(/<\/?[^>]+(>|$)/g, '').substring(0, 320) + '...',
           url: data.wpSite.siteMetadata.siteUrl,
           pathname: data.wpSite.siteMetadata.siteUrl + "/search",
-          site_name : "hectv.org",
+          site_name : "hecmedia.org",
           author: "hectv",
           twitter_handle : "@hec_tv"
         }}
