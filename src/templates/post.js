@@ -33,10 +33,10 @@ export default  (props) => {
       {...{
         title : title,
         image : thumbnail,
-        description : description.replace(/<\/?[^>]+(>|$)/g, '').substring(0, 130) + '...',
+        description : description.replace(/<\/?[^>]+(>|$)/g, '').substring(0, 320) + '...',
         url: data.wpSite.siteMetadata.siteUrl,
         pathname: link.replace(/https?:\/\/[^/]+/, ''),
-        site_name : "hectv.org",
+        site_name : "hecmedia.org",
         author: "hectv",
         twitter_handle : "@hec_tv"
       }}
