@@ -41,19 +41,21 @@ export default class VideoPlayer extends Component {
       );
     } else {
       video_preview = !is_live_video ? (
-        <div className="player-wrapper">
-          <ReactPlayer
-            key={url}
-            controls
-            url={url}
-            className="react-player"
-            height="100%"
-            width="100%"
-            style={video_style}
-            playing={playing || thumbnail}
-            onEnded={videoCallback}
-            data-vimeo-responsive="1"
-          />
+        <div className="video-container">
+          <div className="player-wrapper">
+            <ReactPlayer
+              key={url}
+              controls
+              url={url}
+              className="react-player"
+              height="100%"
+              width="100%"
+              style={video_style}
+              playing={playing || thumbnail}
+              onEnded={videoCallback}
+              data-vimeo-responsive="1"
+            />
+          </div>
         </div>
       ) : (
         <div className="video-stream" dangerouslySetInnerHTML={{ __html: embed_url }} />
