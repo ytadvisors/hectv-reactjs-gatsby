@@ -61,9 +61,8 @@ typings/
 .env.staging
 
 .idea
-.idea/*
 yarn.lock
 
 .cache/
 public
-yarn-error.log
+package-lock.json

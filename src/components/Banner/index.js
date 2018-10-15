@@ -1,30 +1,12 @@
 import React, { Component } from 'react';
 import moment from 'moment';
 import playButton from './../../assets/play-button.png';
-import {isServer, getExcerpt} from "./../../utils/helperFunctions"
+import {isServer, getExcerpt, getLiveVideos} from "./../../utils/helperFunctions"
 
 import './styles.scss';
 
 
 export default class Banner extends Component{
-
-  getLiveVideos = (live_videos) => {
-    const current_time  = moment(moment().format('MM/DD/YYYY h:mm a'));
-    return live_videos && live_videos.reduce((result, item) => {
-      const {
-        start_date,
-        end_date
-      } = item;
-      let end_time = moment(end_date, "MM/DD/YYYY h:mm a", true);
-      let start_time = moment(start_date, "MM/DD/YYYY h:mm a", true);
-      if(current_time.isBetween(start_time, end_time)) {
-        result = item;
-        return result;
-      }
-      return result;
-    }, {});
-
-  };
 
   constructor(props){
     super(props);
@@ -51,14 +33,14 @@ export default class Banner extends Component{
 
   render(){
     const {
-      live_videos
+      live_videos = []
     } = this.props;
 
     const {
       title,
       start_date,
       url
-    } = this.getLiveVideos(live_videos) || {};
+    } = getLiveVideos(live_videos) || {};
 
     return (
       <section className="banner">

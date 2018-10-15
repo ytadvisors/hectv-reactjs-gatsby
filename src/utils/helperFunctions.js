@@ -9,6 +9,24 @@ export const isServer = !(
   window.document.createElement
 );
 
+export const getLiveVideos = (live_videos) => {
+  const current_time  = moment(moment().format('MM/DD/YYYY h:mm a'));
+  return live_videos && live_videos.reduce((result, item) => {
+      const {
+        start_date,
+        end_date
+      } = item;
+      let end_time = moment(end_date, "MM/DD/YYYY h:mm a", true);
+      let start_time = moment(start_date, "MM/DD/YYYY h:mm a", true);
+      if(current_time.isBetween(start_time, end_time)) {
+        result = item;
+        return result;
+      }
+      return result;
+    }, {});
+
+};
+
 export const decodeHTML = function(text) {
   let map = {"gt":">" /* , … */};
   return text.replace(/&(#(?:x[0-9a-f]+|\d+)|[a-z]+);?/gi, function($0, $1) {

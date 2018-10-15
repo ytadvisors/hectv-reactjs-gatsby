@@ -7,29 +7,14 @@ export default class VideoPlayer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      video_started: false,
-      url: ''
+      video_started: false
     };
-    this.startVideo = this.startVideo.bind(this);
-    this.getLiveVideo = this.getLiveVideo.bind(this);
-    this.url = '';
   }
 
-  componentWillReceiveProps(newProps) {
-    //Navigation on the same route (with a different path)
-    if (this.props.url !== newProps.url) {
-      this.setState({ url: newProps.url });
-      console.log('Changing URL');
-    }
-  }
 
-  componentDidMount() {}
-
-  startVideo() {
+  startVideo = () => {
     this.setState({ video_started: true });
-  }
-
-  getLiveVideo() {}
+  };
 
   render() {
     const {
@@ -39,7 +24,8 @@ export default class VideoPlayer extends Component {
       url,
       playing,
       videoCallback,
-      is_live_video
+      is_live_video,
+      embed_url
     } = this.props;
     const { video_started } = this.state;
     let video_preview = '';
@@ -70,7 +56,7 @@ export default class VideoPlayer extends Component {
           />
         </div>
       ) : (
-        <div dangerouslySetInnerHTML={{ __html: this.state.url }} />
+        <div className="video-stream" dangerouslySetInnerHTML={{ __html: embed_url }} />
       );
     }
 

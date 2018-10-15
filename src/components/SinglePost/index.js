@@ -3,7 +3,7 @@ import * as Material from 'react-icons/lib/md';
 
 import './styles.scss';
 import VideoPlayer from '../VideoPlayer/index';
-import {  getEventDate } from './../../utils/helperFunctions';
+import {  getEventDate, getLiveVideos, cleanUrl } from './../../utils/helperFunctions';
 import LazyLoad from 'react-lazyload';
 
 export default class SinglePost extends Component {
@@ -17,19 +17,26 @@ export default class SinglePost extends Component {
         title,
         thumbnail,
         content,
+        link = "",
         acf : {
           youtube_id,
           web_address,
           event_price,
           venue,
           vimeo_id,
-          event_dates
+          event_dates,
+          embed_url = ""
         } = {}
       },
+      live_videos = [],
       hideTitle,
       classes
     } = this.props;
 
+    const {
+      url = ""
+    } = getLiveVideos(live_videos) || {};
+    const is_live_video = cleanUrl(url.replace(/\/$/, "")) === cleanUrl(link.replace(/\/$/, ""));
     return (
       <section className="post-container">
         <div className="col-md-12 no-padding">
@@ -62,13 +69,15 @@ export default class SinglePost extends Component {
             )}
           </ul>
         </div>
-        {youtube_id || vimeo_id ? (
+        {youtube_id || vimeo_id || embed_url ? (
           <div className={`video-post ${(classes && classes.video) || ''}`}>
-            <VideoPlayer url={
-              youtube_id
+            <VideoPlayer url={ youtube_id
                 ? `https://youtu.be/${youtube_id}`
-                : `https://vimeo.com/${vimeo_id}`
-            } container_style={container_style} />
+                : `https://vimeo.com/${vimeo_id}` }
+              container_style={container_style}
+              is_live_video={is_live_video}
+              embed_url={embed_url}
+            />
           </div>
         ) : (
           <div
