@@ -48,7 +48,12 @@ export default  (props) => {
       live_videos={live_videos}
     >
       <div className="col-md-12" style={{ background: '#eee' }}>
-        <SinglePost {...{ post : data.wpPost}} />
+        <SinglePost {
+          ...{
+            post : data.wpPost,
+            live_videos : live_videos
+          }
+        } />
         <ListOfPosts
           title="Related Posts"
           posts={posts || []}
@@ -100,6 +105,7 @@ query postQuery ($id: String! $categories: [Int]!){
       youtube_id
       vimeo_id
       is_video
+      embed_url
       related_posts {
         related_post{
           post_title
