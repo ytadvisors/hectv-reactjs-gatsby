@@ -8,6 +8,7 @@
 }
 .modal-body{
   .video-container{
+    height:335px;
   }
 }
 
@@ -30,7 +31,7 @@
 }
 .player-wrapper {
   position: relative;
-  padding: 56.25% /* Player ratio: 100 / (1280 / 720) */
+  padding-top: 56.25% /* Player ratio: 100 / (1280 / 720) */
 }
 .video-stream{
   position: relative;
@@ -46,7 +47,7 @@
   background:none;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 1200px) {
   .video-player{
     height:auto;
   }
