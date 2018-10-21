@@ -21,13 +21,17 @@ class Events extends Component{
     }
   }
 
-  componentDidMount() {
+  componentDidMount(){
+    this.loadLive();
+  }
+
+  loadLive = () => {
     const {
       dispatch
     } = this.props;
-
     dispatch(loadLiveVideosAction());
-  }
+    setTimeout(this.loadLive, 30000);
+  };
 
   changeDate(new_date){
     this.setState({current_date : moment(new_date)})

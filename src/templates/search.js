@@ -20,12 +20,19 @@ class Search extends Component {
 
   componentDidMount(){
     const {
-      location : {pathname},
+      location : {pathname}
+    } = this.props;
+    this.loadPage(pathname);
+    this.loadLive();
+  }
+
+  loadLive = () => {
+    const {
       dispatch
     } = this.props;
     dispatch(loadLiveVideosAction());
-    this.loadPage(pathname);
-  }
+    setTimeout(this.loadLive, 30000);
+  };
 
   componentDidUpdate(prevProps){
     if(prevProps.location.pathname !== this.props.location.pathname){

@@ -258,7 +258,6 @@ function* loadPostsWithSlug(payload) {
 
 function* loadLiveVideos() {
   try {
-    yield put(showLoading());
     let api = new PostApi();
     let live_videos = yield call(api.getLiveVideos);
     const data = live_videos.data;
@@ -266,10 +265,8 @@ function* loadLiveVideos() {
       type: types.SET_LIVE_VIDEOS,
       live_videos: data
     });
-    yield put(hideLoading());
   } catch (error) {
     yield put({ type: types.LOAD_ERROR, error });
-    yield put(hideLoading());
   }
 }
 
