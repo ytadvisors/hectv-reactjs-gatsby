@@ -45,10 +45,21 @@ export default class Banner extends Component{
       } = {}
     } = live_videos.length > 0 ? live_videos[0] : {};
     let formated_url = url;
+    let redirect = true;
     if(url && url.indexOf(process.env.GATSBY_SITE_HOST) !== -1) {
       formated_url = cleanUrl(url);
+      redirect = false;
     }
 
+    const excerpt = <div>
+      <div>
+        {getExcerpt(post_title, this.state.isMobile ? 25 : 150)}
+      </div>
+      <div className="breaker">.&nbsp;</div>
+      <div>
+        {moment(new Date(start_date)).format('MMM, Do hh:mm a z')} CT
+      </div>
+    </div>
     return (
       <section className="banner">
         {post_title && url && start_date &&
@@ -56,31 +67,33 @@ export default class Banner extends Component{
           <div className="container">
             <ul className="live-info">
               <li className="watch vcenter no-mobile">
-                <Link to={formated_url}>
-                  <i>Watch</i>
-                </Link>
+                {
+                  redirect ? <a href = {formated_url} target="_blank"><i>Watch</i></a>
+                    : <Link to={formated_url}><i>Watch</i></Link>
+                }
+
               </li>
               <li className="live vcenter">
-                <Link to={formated_url}>
-                  Live
-                </Link>
+                {
+                  redirect ? <a href = {formated_url} target="_blank">Live</a>
+                    : <Link to={formated_url}>Live</Link>
+                }
               </li>
               <li className="play vcenter no-mobile">
-
-                <Link to={formated_url}>
-                  <img src={playButton} className="play-icon"/>
-                </Link>
+                {
+                  redirect ? <a href = {formated_url} target="_blank">
+                    <img src={playButton} className="play-icon"/>
+                  </a>
+                  : <Link to={formated_url}>
+                    <img src={playButton} className="play-icon"/>
+                  </Link>
+                }
               </li>
               <li className="banner-link vcenter">
-                <Link to={formated_url}>
-                  <div>
-                    {getExcerpt(post_title, this.state.isMobile ? 25 : 150)}
-                  </div>
-                  <div className="breaker">.&nbsp;</div>
-                  <div>
-                    {moment(new Date(start_date)).format('MMM, Do hh:mm a z')} CT
-                  </div>
-                </Link>
+                {
+                  redirect ? <a href = {formated_url} target="_blank"> {excerpt} </a>
+                    : <Link to={formated_url}> {excerpt} </Link>
+                }
               </li>
             </ul>
           </div>
