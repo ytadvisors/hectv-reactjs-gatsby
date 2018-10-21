@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import moment from 'moment';
 import playButton from './../../assets/play-button.png';
-import {isServer, getExcerpt, getLiveVideos} from "./../../utils/helperFunctions"
+import {isServer, getExcerpt, cleanUrl} from "./../../utils/helperFunctions"
 import {Link} from "gatsby";
 
 import './styles.scss';
@@ -44,7 +44,7 @@ export default class Banner extends Component{
         url
       } = {}
     } = live_videos.length > 0 ? live_videos[0] : {};
-
+    const formated_url = cleanUrl(url);
     return (
       <section className="banner">
         {post_title && url && start_date &&
@@ -52,22 +52,22 @@ export default class Banner extends Component{
           <div className="container">
             <ul className="live-info">
               <li className="watch vcenter no-mobile">
-                <a href={url} target="_blank">
+                <Link to={formated_url}>
                   <i>Watch</i>
-                </a>
+                </Link>
               </li>
               <li className="live vcenter">
-                <Link to={url}>
+                <Link to={formated_url}>
                   Live
                 </Link>
               </li>
               <li className="play vcenter no-mobile">
-                <Link to={url}>
+                <Link to={formated_url}>
                   <img src={playButton} className="play-icon"/>
                 </Link>
               </li>
               <li className="banner-link vcenter">
-                <Link to={url}>
+                <Link to={formated_url}>
                   <div>
                     {getExcerpt(post_title, this.state.isMobile ? 25 : 150)}
                   </div>
