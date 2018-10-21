@@ -1,4 +1,5 @@
 import React, {Component}  from 'react';
+import moment from 'moment';
 import * as Material from 'react-icons/lib/md';
 
 import './styles.scss';
@@ -34,9 +35,19 @@ export default class SinglePost extends Component {
     } = this.props;
 
     const {
-      url = ""
-    } = getLiveVideos(live_videos) || {};
-    const is_live_video = cleanUrl(url.replace(/\/$/, "")) === cleanUrl(link.replace(/\/$/, ""));
+      acf: {
+        start_date,
+        end_date,
+        url
+      } = {}
+    } = live_videos.length > 0 ? live_videos[0] : {};
+
+
+    let formated_start_time = moment(start_date, "MM/DD/YYYY h:mm a", true);
+    let formated_end_time = moment(end_date, "MM/DD/YYYY h:mm a", true);
+    const is_playing = moment().isBetween(formated_start_time, formated_end_time);
+    const is_live_video = is_playing && url && cleanUrl(url.replace(/\/$/, "")) === cleanUrl(link.replace(/\/$/, ""));
+
     return (
       <section className="post-container">
         <div className="col-md-12 no-padding">
@@ -75,8 +86,7 @@ export default class SinglePost extends Component {
                 ? `https://youtu.be/${youtube_id}`
                 : `https://vimeo.com/${vimeo_id}` }
               container_style={container_style}
-              is_live_video={is_live_video}
-              embed_url={embed_url}
+              embed_url={is_live_video && embed_url}
             />
           </div>
         ) : (

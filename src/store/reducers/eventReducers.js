@@ -13,7 +13,7 @@ const initialState = {
   }
 };
 
-export default function reducer(state = initialState, action) {
+export default (state = initialState, action) => {
   switch (action.type) {
     case types.LOAD_ALL_EVENTS:
     case types.LOAD_EVENT:

@@ -24,7 +24,6 @@ export default class VideoPlayer extends Component {
       url,
       playing,
       videoCallback,
-      is_live_video,
       embed_url
     } = this.props;
     const { video_started } = this.state;
@@ -40,7 +39,7 @@ export default class VideoPlayer extends Component {
         />
       );
     } else {
-      video_preview = !is_live_video ? (
+      video_preview = !embed_url ? (
         <div className="video-container">
           <div className="player-wrapper">
             <ReactPlayer

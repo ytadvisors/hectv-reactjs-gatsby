@@ -1,6 +1,10 @@
 import React, {Component} from "react";
 import {graphql} from "gatsby"
+import { connect } from 'react-redux';
 import moment from "moment";
+import {
+  loadLiveVideosAction
+} from "./../store/actions/postActions"
 
 import SEO from "./../components/SEO";
 import Layout from "./../components/Layout"
@@ -8,13 +12,21 @@ import EventNav from './../components/SubNavigation/EventNav';
 import { getCurrentEvents, getFirstImageFromWpList } from "./../utils/helperFunctions"
 import ListOfPosts from "./../components/ListOfPosts";
 
-export default class Events extends Component{
+class EventType extends Component{
 
   constructor(props) {
     super(props);
     this.state = {
       current_date: moment(moment().format('MM/DD/YYYY'))
     }
+  }
+
+  componentDidMount() {
+    const {
+      dispatch
+    } = this.props;
+
+    dispatch(loadLiveVideosAction());
   }
 
   changeDate(new_date){
@@ -24,7 +36,7 @@ export default class Events extends Component{
   render() {
     const {
       data,
-      pageContext: { live_videos}
+      live_videos
     } = this.props;
 
     if (data.wpPage.acf)
@@ -71,6 +83,12 @@ export default class Events extends Component{
     </div>
   }
 }
+
+const mapStateToProps = (state, ownProps) => ({
+  live_videos: state.postReducers.live_videos
+});
+
+export default connect(mapStateToProps)(EventType);
 
 export const query = graphql`
 query eventTypeQuery ($categories: [ Int ] $wordpress_id : Int){

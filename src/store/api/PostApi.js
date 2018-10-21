@@ -2,32 +2,32 @@ import querystring from 'query-string';
 import MainApi from './index';
 
 export default class PostApi extends MainApi {
-  constructor(props) {
+  constructor(props = {}) {
     super(props);
   }
 
-  getComments(slug, page = 1) {
+  getComments = (slug, page = 1) =>{
     return this.json_api.get(`comments?post=${slug}&page=${page}&order=desc`);
-  }
+  };
 
-  addComment(params) {
+  addComment = (params) =>{
     let query = querystring.stringify(params);
     return this.json_api.post(`comments`, query);
-  }
+  };
 
-  getSubCategories(parent) {
+  getSubCategories = (parent) =>{
     return this.json_api.get(`category_list?parent=${parent}`);
-  }
+  };
 
-  getCategory(slug) {
+  getCategory = (slug) => {
     return this.json_api.get(`category_list?slug=${slug}`);
-  }
+  };
 
-  getCategoryById(id) {
+  getCategoryById = (id) =>{
     return this.json_api.get(`category_list/${id}`);
-  }
+  };
 
-  getAllPosts(page_category = '', page = 1) {
+  getAllPosts = (page_category = '', page = 1) => {
     if (page_category === '')
       return this.json_api.get(`posts?per_page=10&page=${page}`);
     else {
@@ -35,9 +35,9 @@ export default class PostApi extends MainApi {
         `posts?per_page=10&page=${page}&category_list=${page_category}`
       );
     }
-  }
+  };
 
-  findPosts({terms, page, per_page}) {
+  findPosts = ({terms, page, per_page}) =>{
     page = page || 1;
     per_page = per_page || 10;
 
@@ -48,34 +48,38 @@ export default class PostApi extends MainApi {
         `posts?per_page=${per_page}&page=${page}&search=${terms}`
       );
     }
-  }
+  };
 
-  getPostList(posts) {
+  getPostList = (posts) =>{
     return this.json_api.get(`posts?slug[]=${posts.join('&slug[]=')}`);
-  }
+  };
 
-  getPost(post_id) {
+  getPost = (post_id) =>{
     return this.json_api.get(`posts/${post_id}`);
-  }
+  };
 
-  getCategoriesPosts(category_list = [], page = 1, per_page = 3) {
+  getCategoriesPosts = (category_list = [], page = 1, per_page = 3) =>{
     return this.json_api.get(
       `posts?per_page=${per_page}&page=${page}&category_list[]=${category_list.join(
         '&category_list[]='
       )}`
     );
-  }
+  };
 
-  getPostsBySlugs(slugs) {
+  getPostsBySlugs = (slugs) =>{
     const query = slugs.join('&slug[]=');
     return this.json_api.get(`posts?slug[]=${query}`);
-  }
+  };
 
-  getPostBySlug(slug) {
+  getPostBySlug = (slug) => {
     return this.json_api.get(`posts?slug=${slug}`);
-  }
+  };
 
-  getArticles(page = 1) {
+  getArticles = (page = 1) =>{
     return this.json_api.get(`posts?articles=1&page=${page}`);
-  }
+  };
+
+  getLiveVideos = () => {
+    return this.root_api.get(`/wp-json/hectv/v1/livevideos/live`);
+  };
 }

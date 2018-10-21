@@ -77,17 +77,8 @@ function* handleErrors(payload) {
   }
 }
 
-//LOAD
-
-//CREATE
-//DELETE
-
-//SUCCESS
-function* watchHandleLoadErrorAsync() {
-  //TODO: Error handling
-  yield takeLatest(types.LOAD_ERROR, handleErrors);
-}
-
 export default function* rootSaga() {
-  yield all([watchHandleLoadErrorAsync()]);
+  yield all([
+    yield takeLatest(types.LOAD_ERROR, handleErrors)
+  ]);
 }

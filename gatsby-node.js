@@ -6,9 +6,18 @@ const moment = require(`moment`);
 const fs = require(`fs`);
 const util = require('util');
 
-function createPostHelper(createPage, params, links, template, prefix,
+let activeEnv = process.env.ACTIVE_ENV;
+if (!activeEnv) {
+  activeEnv = "development";
+}
+
+require("dotenv").config({
+  path: `.env.${activeEnv}`,
+  silent : true
+});
+
+function createPostHelper(createPage, links, template, prefix,
                           categories_index, categories_subindex){
-  const { live_videos } = params;
   _.each(links, link => {
     const categories = link.node[categories_index]
       ? categories_subindex
@@ -19,10 +28,10 @@ function createPostHelper(createPage, params, links, template, prefix,
       path: `/${prefix}/${link.node.slug}/`,
       component: slash(template),
       context: {
-        live_videos: live_videos,
         id: link.node.id,
         categories : categories,
-        slug : link.node.slug
+        slug : link.node.slug,
+        env: process.env
       },
     };
 
@@ -31,8 +40,7 @@ function createPostHelper(createPage, params, links, template, prefix,
   })
 }
 
-function createCategoryPageHelper(createPage, params, links, template){
-  const { live_videos } = params;
+function createCategoryPageHelper(createPage, links, template){
   _.each(links, obj => {
     const newLink = obj.node.link.replace(/https?:\/\/[^/]+/, '');
 
@@ -40,11 +48,11 @@ function createCategoryPageHelper(createPage, params, links, template){
       path: newLink,
       component: slash(template),
       context: {
-        live_videos: live_videos,
         id: obj.node.id,
         wordpress_id: obj.node.wordpress_id ,
         categories: [ obj.node.wordpress_id ],
-        slug : obj.node.slug
+        slug : obj.node.slug,
+        env: process.env
       }
     };
 
@@ -53,8 +61,7 @@ function createCategoryPageHelper(createPage, params, links, template){
   });
 }
 
-function createPageHelper(createPage, params, links){
-  const { live_videos } = params;
+function createPageHelper(createPage, links){
   _.each(links, obj => {
     const newLink = obj.node.link.replace(/https?:\/\/[^/]+/, '');
     let templatePath = "./src/templates/page.js";
@@ -76,9 +83,9 @@ function createPageHelper(createPage, params, links){
       path: newLink,
       component: slash(path.resolve(templatePath)),
       context: {
-        live_videos: live_videos,
         id: obj.node.id,
-        slug : obj.node.slug
+        slug : obj.node.slug,
+        env: process.env
       }
     };
 
@@ -135,7 +142,7 @@ async function getAirTimes(graphql) {
   return air_times;
 }
 
-async function createSitePages(createPage, graphql, params) {
+async function createSitePages(createPage, graphql) {
   const result = await graphql(
     `
       {
@@ -156,10 +163,10 @@ async function createSitePages(createPage, graphql, params) {
   if (result.errors)
     throw new Error(result.errors);
 
-  return createPageHelper(createPage, params, result.data.wpPages.edges);
+  return createPageHelper(createPage, result.data.wpPages.edges);
 }
 
-async function createSiteEvents(createPage, graphql, params) {
+async function createSiteEvents(createPage, graphql) {
   const result = await graphql(
     `
       {
@@ -180,10 +187,10 @@ async function createSiteEvents(createPage, graphql, params) {
     throw new Error(result.errors);
 
   const eventTemplate = path.resolve("./src/templates/event.js");
-  return createPostHelper(createPage, params, result.data.wpEvents.edges, eventTemplate, "events", "event_category");
+  return createPostHelper(createPage, result.data.wpEvents.edges, eventTemplate, "events", "event_category");
 }
 
-async function createSiteEventCategories(createPage, graphql, params) {
+async function createSiteEventCategories(createPage, graphql) {
   const result = await graphql(
     `
       {
@@ -205,10 +212,10 @@ async function createSiteEventCategories(createPage, graphql, params) {
     throw new Error(result.errors);
 
   const eventTemplate = path.resolve("./src/templates/event_type.js");
-  return createCategoryPageHelper(createPage, params, result.data.wpEventCategories.edges, eventTemplate);
+  return createCategoryPageHelper(createPage, result.data.wpEventCategories.edges, eventTemplate);
 }
 
-async function createSiteCategories(createPage, graphql, params) {
+async function createSiteCategories(createPage, graphql) {
   const result = await graphql(
     `
     {
@@ -235,10 +242,10 @@ async function createSiteCategories(createPage, graphql, params) {
     throw new Error(result.errors);
 
   const pageTemplate = path.resolve("./src/templates/category.js");
-  return createCategoryPageHelper(createPage, params, result.data.wpCategory.edges, pageTemplate);
+  return createCategoryPageHelper(createPage, result.data.wpCategory.edges, pageTemplate);
 }
 
-async function createSiteMagazines(createPage, graphql, params) {
+async function createSiteMagazines(createPage, graphql) {
   const result = await graphql(
     `
     {
@@ -259,10 +266,10 @@ async function createSiteMagazines(createPage, graphql, params) {
     throw new Error(result.errors);
 
   const magazineTemplate = path.resolve("./src/templates/magazine.js");
-  return createPostHelper(createPage, params, result.data.wpMagazine.edges, magazineTemplate, "magazine", "type");
+  return createPostHelper(createPage, result.data.wpMagazine.edges, magazineTemplate, "magazine", "type");
 }
 
-async function createSitePosts(createPage, graphql, params) {
+async function createSitePosts(createPage, graphql) {
   const result = await graphql(
     `
     {
@@ -287,7 +294,7 @@ async function createSitePosts(createPage, graphql, params) {
     throw new Error(result.errors);
 
   const postTemplate = path.resolve("./src/templates/post.js");
-  return createPostHelper(createPage, params, result.data.wpPosts.edges, postTemplate, "posts", "categories", "wordpress_id");
+  return createPostHelper(createPage, result.data.wpPosts.edges, postTemplate, "posts", "categories", "wordpress_id");
 }
 
 
@@ -300,19 +307,17 @@ async function createSearch(createPage) {
 }
 
 
-exports.createPages = async ({ graphql, actions, page }) => {
+exports.createPages = async ({ graphql, actions }) => {
   const { createPage } = actions;
-  let params = {};
   try{
-    params.live_videos = await getAirTimes(graphql);
     await Promise.all([
       createSearch(createPage),
-      createSitePages(createPage, graphql, params),
-      createSiteEvents(createPage, graphql, params),
-      createSiteEventCategories(createPage, graphql, params),
-      createSiteCategories(createPage, graphql, params),
-      createSiteMagazines(createPage, graphql, params),
-      createSitePosts(createPage, graphql, params)
+      createSitePages(createPage, graphql),
+      createSiteEvents(createPage, graphql),
+      createSiteEventCategories(createPage, graphql),
+      createSiteCategories(createPage, graphql),
+      createSiteMagazines(createPage, graphql),
+      createSitePosts(createPage, graphql)
     ]);
     return new Promise((resolve, reject) => resolve(true));
   } catch (err){

@@ -9,7 +9,7 @@ const initialState = {
   }
 };
 
-export default function reducer(state = initialState, action) {
+export default (state = initialState, action) => {
   switch (action.type) {
     case types.LOAD_ALL_MAGAZINES:
     case types.LOAD_MAGAZINE_LIST:

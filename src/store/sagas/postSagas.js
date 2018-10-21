@@ -8,7 +8,7 @@ import * as types from '../types/postTypes';
 import * as eventTypes from '../types/eventTypes';
 import * as pageTypes from '../types/pageTypes';
 import { showLoading, hideLoading } from 'react-redux-loading-bar';
-import { getUserToken } from './../../utils/token';
+import { getUserToken } from './../../utils/session';
 import { getNumAPIResults } from './../../utils/helperFunctions';
 
 function validateUser() {
@@ -114,7 +114,7 @@ function* loadPost(payload) {
   try {
     yield put(showLoading());
     let api = new PostApi();
-    const post = yield call(api.getPostBySlug.bind(api), payload.post_id);
+    const post = yield call(api.getPostBySlug, payload.post_id);
     if (post.data.length > 0) {
       const data = mapPost(post.data[0]);
       yield put({
@@ -166,7 +166,7 @@ function* loadSubcategories(payload) {
     yield put(showLoading());
     let api = new PostApi();
     const category_info = yield call(
-      api.getCategory.bind(api),
+      api.getCategory,
       payload.category
     );
     if (
@@ -180,7 +180,7 @@ function* loadSubcategories(payload) {
       });
     } else {
       const subcategories = yield call(
-        api.getSubCategories.bind(api),
+        api.getSubCategories,
         category_info.data[0].id
       );
       if (subcategories && subcategories.data.length > 0) {
@@ -214,7 +214,7 @@ function* loadCategoryPosts(payload) {
     let api = new PostApi();
 
     let posts = yield call(
-      api.getCategoriesPosts.bind(api),
+      api.getCategoriesPosts,
       payload.categories,
       payload.page,
       3
@@ -237,7 +237,7 @@ function* loadPostsWithSlug(payload) {
   try {
     yield put(showLoading());
     let api = new PostApi();
-    let posts = yield call(api.getPostsBySlugs.bind(api), payload.slugs);
+    let posts = yield call(api.getPostsBySlugs, payload.slugs);
 
     const data = posts.data.map(mapPost);
     let indexed_posts = _.keyBy(data, 'post_name');
@@ -248,6 +248,23 @@ function* loadPostsWithSlug(payload) {
       category: payload.category,
       load_more: payload.load_more,
       num_results: getNumAPIResults(posts)
+    });
+    yield put(hideLoading());
+  } catch (error) {
+    yield put({ type: types.LOAD_ERROR, error });
+    yield put(hideLoading());
+  }
+}
+
+function* loadLiveVideos() {
+  try {
+    yield put(showLoading());
+    let api = new PostApi();
+    let live_videos = yield call(api.getLiveVideos);
+    const data = live_videos.data;
+    yield put({
+      type: types.SET_LIVE_VIDEOS,
+      live_videos: data
     });
     yield put(hideLoading());
   } catch (error) {
@@ -273,7 +290,7 @@ function* loadAllPosts(payload) {
     });
     switch (payload.category) {
       case 'articles':
-        posts = yield call(api.getArticles.bind(api), payload.page);
+        posts = yield call(api.getArticles, payload.page);
         yield put({
           type: pageTypes.SET_PAGE_TITLE,
           title: 'Articles'
@@ -282,7 +299,7 @@ function* loadAllPosts(payload) {
       default:
         if (payload.category !== '') {
           const category = yield call(
-            api.getCategory.bind(api),
+            api.getCategory,
             payload.category
           );
           if (category.data.length === 0) {
@@ -305,7 +322,7 @@ function* loadAllPosts(payload) {
               });
             } else if (category.data[0].parent) {
               const temp_category = yield call(
-                api.getCategoryById.bind(api),
+                api.getCategoryById,
                 category.data[0].parent
               );
 
@@ -324,7 +341,7 @@ function* loadAllPosts(payload) {
         }
 
         posts = yield call(
-          api.getAllPosts.bind(api),
+          api.getAllPosts,
           page_category,
           payload.page
         );
@@ -352,7 +369,7 @@ function* loadSearchPosts(payload) {
     let api = new PostApi(payload);
     let current_page = payload.page || 1;
     let terms = payload.terms.toLowerCase();
-    let posts = yield call(api.findPosts.bind(api), payload);
+    let posts = yield call(api.findPosts, payload);
 
     let data = [];
     let num_results = getNumAPIResults(posts);
@@ -418,7 +435,7 @@ function* addComment(payload) {
     yield put(showLoading());
     validateUser();
     let api = new PostApi();
-    yield call(api.addComment.bind(api), payload.comment);
+    yield call(api.addComment, payload.comment);
 
     yield put({
       type: types.LOAD_COMMENTS,
@@ -482,56 +499,17 @@ function* handleErrors(payload) {
   }
 }
 
-//LOAD
-function* watchLoadPostsAsync() {
-  yield takeLatest(types.LOAD_ALL_POSTS, loadAllPosts);
-}
-
-function* watchLoadRelatedPostsAsync() {
-  yield takeLatest(types.LOAD_POSTS_IN_CATEGORY, loadCategoryPosts);
-}
-
-function* watchLoadSubcategoriesAsync() {
-  yield takeLatest(types.LOAD_SUBCATEGORIES, loadSubcategories);
-}
-function* watchLoadPostAsync() {
-  yield takeLatest(types.LOAD_POST, loadPost);
-}
-
-function* watchLoadPostsWithSlugAsync() {
-  yield takeLatest(types.LOAD_POSTS_SLUG, loadPostsWithSlug);
-}
-
-function* watchLoadSearchPostsWithSlugAsync() {
-  yield takeLatest(types.LOAD_SEARCH_POSTS, loadSearchPosts);
-}
-
-//
-
-//CREATE
-function* watchAddCommentAsync() {
-  yield takeLatest(types.ADD_COMMENT, addComment);
-}
-
-//UPDATE
-
-//SUCCESS
-
-//ERROR
-function* watchHandleCommentErrorAsync() {
-  //TODO: Error handling
-  yield takeLatest(types.LOAD_ERROR, handleErrors);
-}
 
 export default function* rootSaga() {
   yield all([
-    watchLoadPostsAsync(),
-    watchLoadRelatedPostsAsync(),
-    watchAddCommentAsync(),
-    watchLoadPostAsync(),
-    watchLoadSubcategoriesAsync(),
-    watchLoadPostsWithSlugAsync(),
-    watchHandleCommentErrorAsync(),
-    watchLoadSearchPostsWithSlugAsync()
+    yield takeLatest(types.LOAD_ALL_POSTS, loadAllPosts),
+    yield takeLatest(types.LOAD_LIVE_VIDEOS, loadLiveVideos),
+    yield takeLatest(types.LOAD_POSTS_IN_CATEGORY, loadCategoryPosts),
+    yield takeLatest(types.LOAD_SUBCATEGORIES, loadSubcategories),
+    yield takeLatest(types.LOAD_POST, loadPost),
+    yield takeLatest(types.LOAD_POSTS_SLUG, loadPostsWithSlug),
+    yield takeLatest(types.LOAD_SEARCH_POSTS, loadSearchPosts),
+    yield takeLatest(types.ADD_COMMENT, addComment),
+    yield takeLatest(types.LOAD_ERROR, handleErrors)
   ]);
 }

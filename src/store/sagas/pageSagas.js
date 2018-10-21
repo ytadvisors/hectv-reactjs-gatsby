@@ -67,7 +67,7 @@ function* loadPage(payload) {
   try {
     yield put(showLoading());
     let api = new PageApi();
-    const result = yield call(api.getPage.bind(api), payload.page_name);
+    const result = yield call(api.getPage, payload.page_name);
     let response = {
       content: '',
       video_url: '',
@@ -113,7 +113,7 @@ function* loadPricingPlans(payload) {
   try {
     yield put(showLoading());
     let api = new PageApi();
-    const plans = yield call(api.getPricingPlans.bind(api), payload.page);
+    const plans = yield call(api.getPricingPlans, payload.page);
     const pricing_plans = plans.data.map(mapPlan);
 
     yield put({
@@ -131,13 +131,13 @@ function* loadMenu(payload) {
   try {
     yield put(showLoading());
     let api = new PageApi();
-    const menus = yield call(api.getMenus.bind(api));
+    const menus = yield call(api.getMenus);
     const menu_id = menus.data.reduce((result, item) => {
       if (item.slug === payload.menu_slug) result = item.term_id;
       return result;
     }, '');
 
-    const menu_details = yield call(api.getMenus.bind(api), menu_id);
+    const menu_details = yield call(api.getMenus, menu_id);
 
     const menu = {};
     menu[payload.menu_slug] = menu_details.data.items;
@@ -161,7 +161,7 @@ function* loadMenu(payload) {
 function* loadLiveVideos(payload) {
   try {
     let api = new PageApi();
-    const live_videos = yield call(api.getLiveVideo.bind(api));
+    const live_videos = yield call(api.getLiveVideo);
     let data = {};
     if (live_videos && live_videos.data.length > 0) {
       data = mapLiveVideo(live_videos.data[0]);
@@ -187,60 +187,16 @@ function* openOverlay(payload) {
   }
 }
 
-/*-----------------
- *
- * UPDATE OPERATIONS
- *
- *------------------*/
-
-//LOAD
-function* watchLoadPricingPlansAsync() {
-  yield takeLatest(types.LOAD_PRICING, loadPricingPlans);
-}
-
-function* watchLoadPageAsync() {
-  yield takeLatest(types.LOAD_PAGE, loadPage);
-}
-
-function* watchLoadHeaderMenuAsync() {
-  yield takeLatest(types.LOAD_HEADER_MENU, loadMenu);
-}
-
-function* watchLoadBottomNavMenuAsync() {
-  yield takeLatest(types.LOAD_BOTTOM_NAV_MENU, loadMenu);
-}
-
-function* watchLoadFooterMenuAsync() {
-  yield takeLatest(types.LOAD_FOOTER_MENU, loadMenu);
-}
-
-function* watchLoadSocialMenuAsync() {
-  yield takeLatest(types.LOAD_SOCIAL_MENU, loadMenu);
-}
-
-function* watchLoadLiveVideosAsync() {
-  yield takeLatest(types.LOAD_LIVE_VIDEO, loadLiveVideos);
-}
-
-function* watchOpenOverlayAsync() {
-  yield takeLatest(types.OPEN_OVERLAY, openOverlay);
-}
-
-//CREATE
-
-//UPDATE
-
-//SUCCESS
 
 export default function* rootSaga() {
   yield all([
-    watchLoadPricingPlansAsync(),
-    watchLoadPageAsync(),
-    watchLoadHeaderMenuAsync(),
-    watchLoadFooterMenuAsync(),
-    watchLoadSocialMenuAsync(),
-    watchLoadBottomNavMenuAsync(),
-    watchLoadLiveVideosAsync(),
-    watchOpenOverlayAsync()
+    yield takeLatest(types.LOAD_PRICING, loadPricingPlans),
+    yield takeLatest(types.LOAD_PAGE, loadPage),
+    yield takeLatest(types.LOAD_HEADER_MENU, loadMenu),
+    yield takeLatest(types.LOAD_BOTTOM_NAV_MENU, loadMenu),
+    yield takeLatest(types.LOAD_FOOTER_MENU, loadMenu),
+    yield takeLatest(types.LOAD_SOCIAL_MENU, loadMenu),
+    yield takeLatest(types.LOAD_LIVE_VIDEO, loadLiveVideos),
+    yield takeLatest(types.OPEN_OVERLAY, openOverlay)
   ]);
 }
