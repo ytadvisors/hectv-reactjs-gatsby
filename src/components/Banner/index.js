@@ -45,7 +45,7 @@ export default class Banner extends Component{
       } = {}
     } = live_videos.length > 0 ? live_videos[0] : {};
     let formated_url = url;
-    if(url.indexOf(process.env.GATSBY_SITE_HOST) !== -1) {
+    if(url && url.indexOf(process.env.GATSBY_SITE_HOST) !== -1) {
       formated_url = cleanUrl(url);
     }
 
