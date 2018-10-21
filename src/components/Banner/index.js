@@ -38,7 +38,7 @@ export default class Banner extends Component{
     } = this.props;
 
     const {
-      post_title,
+      post_title = "",
       acf: {
         start_date,
         url
