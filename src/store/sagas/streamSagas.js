@@ -16,7 +16,7 @@ import {
 function setStream(){
 
   return eventChannel( emitter => {
-    const wsUrl = process.env.WS_URL;
+    const wsUrl = process.env.GATSBY_WS_URL;
     const ws = new WebSocket(wsUrl);
 
     ws.onopen = () => {

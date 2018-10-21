@@ -4,10 +4,10 @@ import { StaticQuery, graphql } from "gatsby"
 import * as FontAwesome from 'react-icons/lib/fa';
 import './styles.scss';
 
-const day = moment().format('MMMM-YYYY').toLowerCase();
+const day = moment(new Date()).format('MMMM-YYYY').toLowerCase();
 
 const getPrograms = (programs, num_entries) => {
-  const current_time = moment();
+  const current_time = moment(new Date());
   return programs.reduce(
     (result, item) => {
       if (result['started'] < num_entries) {

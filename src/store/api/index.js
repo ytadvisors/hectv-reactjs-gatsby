@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export default class MainApi {
   constructor({ apiUrl }) {
-    apiUrl = apiUrl || process.env.WP_HOST;
+    apiUrl = apiUrl || process.env.GATSBY_WP_HOST;
     const prefix = '/wp-json/wp/v2/';
 
     this.root_api = axios.create({
