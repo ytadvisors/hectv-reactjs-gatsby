@@ -44,7 +44,11 @@ export default class Banner extends Component{
         url
       } = {}
     } = live_videos.length > 0 ? live_videos[0] : {};
-    const formated_url = cleanUrl(url);
+    let formated_url = url;
+    if(url.indexOf(process.env.GATSBY_SITE_HOST) !== -1) {
+      formated_url = cleanUrl(url);
+    }
+    
     return (
       <section className="banner">
         {post_title && url && start_date &&
@@ -62,6 +66,7 @@ export default class Banner extends Component{
                 </Link>
               </li>
               <li className="play vcenter no-mobile">
+
                 <Link to={formated_url}>
                   <img src={playButton} className="play-icon"/>
                 </Link>
