@@ -45,7 +45,7 @@ export default class SinglePost extends Component {
 
     let formated_start_time = moment(start_date, "MM/DD/YYYY h:mm a", true);
     let formated_end_time = moment(end_date, "MM/DD/YYYY h:mm a", true);
-    const is_playing = moment().isBetween(formated_start_time, formated_end_time);
+    const is_playing = moment(new Date()).isBetween(formated_start_time, formated_end_time);
     const is_live_video = is_playing && url && cleanUrl(url.replace(/\/$/, "")) === cleanUrl(link.replace(/\/$/, ""));
 
     return (

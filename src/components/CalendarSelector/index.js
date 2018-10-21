@@ -10,7 +10,7 @@ export default class CalendarSelector extends Component {
   constructor (props) {
     super(props);
     this.state = {
-      startDate: moment()
+      startDate: moment(new Date())
     };
     this.handleChange = this.handleChange.bind(this);
   }

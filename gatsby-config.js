@@ -12,8 +12,8 @@ require("dotenv").config({
   silent : true
 });
 
-if(process.env.WP_HOST){
-  [ protocol, baseUrl ] = process.env.WP_HOST.split("://");
+if(process.env.GATSBY_WP_HOST){
+  [ protocol, baseUrl ] = process.env.GATSBY_WP_HOST.split("://");
 }
 
 module.exports = {
@@ -22,7 +22,7 @@ module.exports = {
     siteUrl: process.env.SITE_HOST,
     mapKey : process.env.GOOGLE_API_KEY,
     captchaKey : process.env.RE_CAPTCHA_SITE_KEY,
-    apiUrl : process.env.WP_HOST,
+    apiUrl : process.env.GATSBY_WP_HOST,
     fbAppId : process.env.FACEBOOK_APP_ID
   },
   plugins: [
