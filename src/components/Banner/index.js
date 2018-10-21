@@ -48,7 +48,7 @@ export default class Banner extends Component{
     if(url.indexOf(process.env.GATSBY_SITE_HOST) !== -1) {
       formated_url = cleanUrl(url);
     }
-    
+
     return (
       <section className="banner">
         {post_title && url && start_date &&
