@@ -15,13 +15,17 @@ class Home extends Component {
     super(props);
   }
 
-  componentDidMount() {
+  componentDidMount(){
+    this.loadLive();
+  }
+
+  loadLive = () => {
     const {
       dispatch
     } = this.props;
-
     dispatch(loadLiveVideosAction());
-  }
+    setTimeout(this.loadLive, 30000);
+  };
 
   render() {
 
