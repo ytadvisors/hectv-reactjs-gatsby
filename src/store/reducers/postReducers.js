@@ -10,6 +10,7 @@ const initialState = {
   subcategories: [],
   current_page: 1,
   post: {},
+  live_videos: [],
   num_results: {
     posts: 0,
     post_list: 0,
@@ -18,13 +19,14 @@ const initialState = {
   }
 };
 
-export default function reducer(state = initialState, action) {
+export default (state = initialState, action) => {
   switch (action.type) {
     case types.LOAD_COMMENTS:
     case types.LOAD_ALL_POSTS:
     case types.LOAD_POST:
     case types.LOAD_POSTS_IN_CATEGORY:
     case types.LOAD_SUBCATEGORIES:
+    case types.LOAD_LIVE_VIDEOS:
       return {
         ...state,
         error: false
@@ -71,6 +73,11 @@ export default function reducer(state = initialState, action) {
           category_posts: action.num_results
         },
         error: false
+      };
+    case types.SET_LIVE_VIDEOS:
+      return {
+        ...state,
+        live_videos: action.live_videos
       };
 
     //Errors

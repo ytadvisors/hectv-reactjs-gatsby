@@ -16,7 +16,7 @@ const initialState = {
   page_data: {}
 };
 
-export default function reducer(state = initialState, action) {
+export default (state = initialState, action) => {
   switch (action.type) {
     case types.LOAD_PAGE:
     case types.LOAD_PRICING:

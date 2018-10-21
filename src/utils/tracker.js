@@ -1,5 +1,5 @@
 import ReactGA from 'react-ga';
-import { isLoggedIn, getUserId } from './token';
+import { isLoggedIn, getUserId } from './session';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import gtmParts from 'react-google-tag-manager';

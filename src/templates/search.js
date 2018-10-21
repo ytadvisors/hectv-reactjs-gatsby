@@ -4,6 +4,9 @@ import { connect } from 'react-redux';
 import {
   loadSearchPostsAction
 } from './../store/actions/postActions';
+import {
+  loadLiveVideosAction
+} from "./../store/actions/postActions"
 import SEO from "./../components/SEO";
 import Layout from "./../components/Layout";
 import DefaultNav from './../components/SubNavigation/DefaultNav';
@@ -17,9 +20,10 @@ class Search extends Component {
 
   componentDidMount(){
     const {
-      location : {pathname}
+      location : {pathname},
+      dispatch
     } = this.props;
-
+    dispatch(loadLiveVideosAction());
     this.loadPage(pathname);
   }
 
@@ -41,7 +45,7 @@ class Search extends Component {
       }
     } = this.props;
 
-    const [,searchText, searchValue] = pathname.split("/");
+    const [,, searchValue] = pathname.split("/");
     dispatch(loadSearchPostsAction(apiUrl, searchValue));
   }
 
@@ -49,7 +53,7 @@ class Search extends Component {
     const {
       data,
       posts,
-      pageContext: { live_videos},
+      live_videos,
       location : {pathname}
     } = this.props;
 
@@ -91,7 +95,7 @@ class Search extends Component {
 
 const mapStateToProps = (state, ownProps) => ({
   posts: state.postReducers.posts,
-  current_page: state.postReducers.current_page
+  live_videos: state.postReducers.live_videos
 });
 
 export default connect(mapStateToProps)(Search);

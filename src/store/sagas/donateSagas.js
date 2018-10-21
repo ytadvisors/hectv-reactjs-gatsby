@@ -2,7 +2,7 @@ import { put, takeLatest, all, call } from 'redux-saga/effects';
 import DonationApi from './../api/DonateApi';
 import * as types from '../types/donateTypes';
 import { showLoading, hideLoading } from 'react-redux-loading-bar';
-import { getUserToken } from './../../utils/token';
+import { getUserToken } from './../../utils/session';
 import { getNumAPIResults } from './../../utils/helperFunctions';
 import moment from 'moment';
 
@@ -82,7 +82,7 @@ function* loadDonation(payload) {
   try {
     yield put(showLoading());
     let api = new DonationApi();
-    const donation = yield call(api.getDonation.bind(api), payload.donation_id);
+    const donation = yield call(api.getDonation, payload.donation_id);
     const data = mapDonation(donation.data);
     yield put({
       type: types.SET_DONATION,
@@ -106,7 +106,7 @@ function* loadAllDonations(payload) {
     let api = new DonationApi();
 
     let donations = yield call(
-      api.getAllDonations.bind(api),
+      api.getAllDonations,
       payload.page,
       payload.per_page
     );
@@ -155,21 +155,10 @@ function* handleErrors(payload) {
   }
 }
 
-//LOAD
-function* watchLoadDonationsAsync() {
-  yield takeLatest(types.LOAD_ALL_DONATIONS, loadAllDonations);
-}
-
-function* watchLoadDonationAsync() {
-  yield takeLatest(types.LOAD_DONATION, loadDonation);
-}
-
-//
-
-//UPDATE
-
-//SUCCESS
 
 export default function* rootSaga() {
-  yield all([watchLoadDonationsAsync(), watchLoadDonationAsync()]);
+  yield all([
+    yield takeLatest(types.LOAD_ALL_DONATIONS, loadAllDonations),
+    yield takeLatest(types.LOAD_DONATION, loadDonation)
+  ]);
 }

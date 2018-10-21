@@ -10,7 +10,7 @@ const initialState = {
   error: false
 };
 
-export default function reducer(state = initialState, action) {
+export default (state = initialState, action) => {
   switch (action.type) {
     case types.LOGIN:
     case types.LOAD_USER:

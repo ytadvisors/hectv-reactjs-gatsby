@@ -14,6 +14,7 @@ export default class MainApi {
       baseURL: apiUrl + prefix,
       timeout: 100000
     });
+
     const user = localStorage.getItem('user')
       ? JSON.parse(localStorage.getItem('user'))
       : {};

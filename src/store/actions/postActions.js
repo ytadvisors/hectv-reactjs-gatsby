@@ -1,13 +1,19 @@
 import * as types from '../types/postTypes';
 
-export function loadPostAction(post_id) {
+export const loadPostAction = (post_id) => {
   return {
     type: types.LOAD_POST,
     post_id
   };
-}
+};
 
-export function loadSearchPostsAction(apiUrl, terms, page, load_more = false) {
+export const loadLiveVideosAction = () => {
+  return {
+    type: types.LOAD_LIVE_VIDEOS
+  };
+};
+
+export const loadSearchPostsAction = (apiUrl, terms, page, load_more = false) => {
   return {
     type: types.LOAD_SEARCH_POSTS,
     apiUrl,
@@ -15,19 +21,20 @@ export function loadSearchPostsAction(apiUrl, terms, page, load_more = false) {
     page,
     load_more
   };
-}
-export function loadSubCategoriesAction(category) {
+};
+
+export const loadSubCategoriesAction = (category) => {
   return {
     type: types.LOAD_SUBCATEGORIES,
     category
   };
-}
+};
 
-export function loadAllPostsAction(category = '', page, load_more = false) {
+export const loadAllPostsAction = (category = '', page, load_more = false) => {
   return {
     type: types.LOAD_ALL_POSTS,
     category,
     page,
     load_more
   };
-}
+};

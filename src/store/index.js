@@ -8,7 +8,6 @@ import createSagaMiddleware from 'redux-saga';
 const sagaMiddleware = createSagaMiddleware();
 
 let middlewares = [ sagaMiddleware ];
-
 if(process.env.NODE_ENV !== 'production')
   middlewares.push(logger);
 

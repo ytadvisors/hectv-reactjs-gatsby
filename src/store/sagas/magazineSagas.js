@@ -3,7 +3,7 @@ import MagazineApi from './../api/MagazineApi';
 import * as types from '../types/magazineTypes';
 import * as postTypes from '../types/postTypes';
 import { showLoading, hideLoading } from 'react-redux-loading-bar';
-import { getUserToken } from './../../utils/token';
+import { getUserToken } from './../../utils/session';
 import { getNumAPIResults } from './../../utils/helperFunctions';
 
 function validateUser() {
@@ -59,7 +59,7 @@ function* loadMagazine(payload) {
     yield put(showLoading());
     let api = new MagazineApi();
     const magazine = yield call(
-      api.getMagazineBySlug.bind(api),
+      api.getMagazineBySlug,
       payload.magazine_id
     );
     if (magazine.data.length > 0) {
@@ -103,7 +103,7 @@ function* loadAllMagazines(payload) {
     yield put(showLoading());
     let api = new MagazineApi();
     let magazines = yield call(
-      api.getAllMagazines.bind(api),
+      api.getAllMagazines,
       payload.magazine_types,
       payload.page,
       12
@@ -133,7 +133,7 @@ function* loadMagazineList(payload) {
     yield put(showLoading());
     let api = new MagazineApi();
     let magazines = yield call(
-      api.getAllMagazines.bind(api),
+      api.getAllMagazines,
       [],
       payload.page,
       5
@@ -176,29 +176,10 @@ function* handleErrors(payload) {
   }
 }
 
-//LOAD
-function* watchLoadMagazinesAsync() {
-  yield takeLatest(types.LOAD_ALL_MAGAZINES, loadAllMagazines);
-}
-
-function* watchLoadMagazineListAsync() {
-  yield takeLatest(types.LOAD_MAGAZINE_LIST, loadMagazineList);
-}
-
-function* watchLoadMagazineAsync() {
-  yield takeLatest(types.LOAD_MAGAZINE, loadMagazine);
-}
-
-//
-
-//UPDATE
-
-//SUCCESS
-
 export default function* rootSaga() {
   yield all([
-    watchLoadMagazinesAsync(),
-    watchLoadMagazineAsync(),
-    watchLoadMagazineListAsync()
+    yield takeLatest(types.LOAD_ALL_MAGAZINES, loadAllMagazines),
+    yield takeLatest(types.LOAD_MAGAZINE_LIST, loadMagazineList),
+    yield takeLatest(types.LOAD_MAGAZINE, loadMagazine)
   ]);
 }

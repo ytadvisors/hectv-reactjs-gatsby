@@ -3,7 +3,7 @@ import EventApi from './../api/EventApi';
 import * as types from '../types/eventTypes';
 import * as postTypes from '../types/postTypes';
 import { showLoading, hideLoading } from 'react-redux-loading-bar';
-import { getUserToken } from './../../utils/token';
+import { getUserToken } from './../../utils/session';
 import { getNumAPIResults } from './../../utils/helperFunctions';
 import _ from 'lodash';
 import moment from 'moment';
@@ -129,7 +129,7 @@ function* loadEvent(payload) {
   try {
     yield put(showLoading());
     let api = new EventApi();
-    const event = yield call(api.getEventBySlug.bind(api), payload.event_id);
+    const event = yield call(api.getEventBySlug, payload.event_id);
     if (event.data.length > 0) {
       const data = mapEvent(event.data[0]);
       yield put({
@@ -161,7 +161,7 @@ function* loadEventCategories(payload) {
     let event_categories = [];
     let x = 0;
     do {
-      event_categories = yield call(api.getEventCategories.bind(api), ++x);
+      event_categories = yield call(api.getEventCategories, ++x);
       data = [...data, ...event_categories.data.map(mapEventCategories)];
     } while (event_categories.data.length > 0);
 
@@ -188,7 +188,7 @@ function* loadAllEvents(payload) {
     let event_types = [];
     if (payload.event_types.length > 0) {
       const ev_types = yield call(
-        api.getEventType.bind(api),
+        api.getEventType,
         payload.event_types
       );
       if (ev_types.data.length > 0) {
@@ -197,7 +197,7 @@ function* loadAllEvents(payload) {
     }
 
     let events = yield call(
-      api.getAllEvents.bind(api),
+      api.getAllEvents,
       event_types,
       payload.event_day,
       payload.page,
@@ -228,7 +228,7 @@ function* loadEventList(payload) {
     yield put(showLoading());
     let api = new EventApi();
     let events = yield call(
-      api.getAllEvents.bind(api),
+      api.getAllEvents,
       [],
       payload.event_day,
       1,
@@ -252,7 +252,7 @@ function* loadRelatedEvents(payload) {
   try {
     yield put(showLoading());
     let api = new EventApi();
-    let events = yield call(api.getEventsBySlugs.bind(api), payload.slugs);
+    let events = yield call(api.getEventsBySlugs, payload.slugs);
 
     const data = events.data.map(mapEvent);
     yield put({
@@ -292,38 +292,12 @@ function* handleErrors(payload) {
   }
 }
 
-//LOAD
-function* watchLoadEventsAsync() {
-  yield takeLatest(types.LOAD_ALL_EVENTS, loadAllEvents);
-}
-
-function* watchLoadRelatedEventsAsync() {
-  yield takeLatest(types.LOAD_RELATED_EVENTS, loadRelatedEvents);
-}
-
-function* watchLoadEventListAsync() {
-  yield takeLatest(types.LOAD_EVENT_LIST, loadEventList);
-}
-
-function* watchLoadEventAsync() {
-  yield takeLatest(types.LOAD_EVENT, loadEvent);
-}
-
-function* watchLoadEventCategoriesAsync() {
-  yield takeLatest(types.LOAD_EVENT_CATEGORIES, loadEventCategories);
-}
-//
-
-//UPDATE
-
-//SUCCESS
-
 export default function* rootSaga() {
   yield all([
-    watchLoadEventsAsync(),
-    watchLoadEventAsync(),
-    watchLoadEventCategoriesAsync(),
-    watchLoadEventListAsync(),
-    watchLoadRelatedEventsAsync()
+    yield takeLatest(types.LOAD_ALL_EVENTS, loadAllEvents),
+    yield takeLatest(types.LOAD_RELATED_EVENTS, loadRelatedEvents),
+    yield takeLatest(types.LOAD_EVENT_LIST, loadEventList),
+    yield takeLatest(types.LOAD_EVENT, loadEvent),
+    yield takeLatest(types.LOAD_EVENT_CATEGORIES, loadEventCategories)
   ]);
 }

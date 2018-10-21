@@ -2,7 +2,7 @@ import { put, takeLatest, all, call } from 'redux-saga/effects';
 import ScheduleApi from './../api/ScheduleApi';
 import * as types from '../types/scheduleTypes';
 import { showLoading, hideLoading } from 'react-redux-loading-bar';
-import { getUserToken } from './../../utils/token';
+import { getUserToken } from './../../utils/session';
 import { getNumAPIResults } from './../../utils/helperFunctions';
 
 function validateUser() {
@@ -29,7 +29,7 @@ function* loadDailySchedule(payload) {
   try {
     //yield put(showLoading());
     let api = new ScheduleApi();
-    const schedule = yield call(api.getScheduleByDay.bind(api), payload.day);
+    const schedule = yield call(api.getScheduleByDay, payload.day);
     if (schedule.data && schedule.data.length > 0) {
       const data = mapSchedule(schedule.data[0]);
       yield put({
@@ -54,7 +54,7 @@ function* loadSchedule(payload) {
   try {
     yield put(showLoading());
     let api = new ScheduleApi();
-    const schedule = yield call(api.getSchedule.bind(api), payload.schedule_id);
+    const schedule = yield call(api.getSchedule, payload.schedule_id);
     const data = mapSchedule(schedule.data);
     yield put({
       type: types.SET_SCHEDULE,
@@ -78,7 +78,7 @@ function* loadAllSchedules(payload) {
     let api = new ScheduleApi();
 
     let schedules = yield call(
-      api.getAllSchedules.bind(api),
+      api.getAllSchedules,
       payload.page,
       payload.per_page
     );
@@ -127,29 +127,11 @@ function* handleErrors(payload) {
   }
 }
 
-//LOAD
-function* watchLoadDailyScheduleAsync() {
-  yield takeLatest(types.LOAD_DAILY_SCHEDULE, loadDailySchedule);
-}
-
-function* watchLoadSchedulesAsync() {
-  yield takeLatest(types.LOAD_ALL_SCHEDULES, loadAllSchedules);
-}
-
-function* watchLoadScheduleAsync() {
-  yield takeLatest(types.LOAD_SCHEDULE, loadSchedule);
-}
-
-//
-
-//UPDATE
-
-//SUCCESS
 
 export default function* rootSaga() {
   yield all([
-    watchLoadDailyScheduleAsync(),
-    watchLoadSchedulesAsync(),
-    watchLoadScheduleAsync()
+    yield takeLatest(types.LOAD_DAILY_SCHEDULE, loadDailySchedule),
+    yield takeLatest(types.LOAD_ALL_SCHEDULES, loadAllSchedules),
+    yield takeLatest(types.LOAD_SCHEDULE, loadSchedule)
   ]);
 }
