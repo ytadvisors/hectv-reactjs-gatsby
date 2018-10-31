@@ -2,11 +2,13 @@ import React, {Component} from "react";
 import { graphql } from "gatsby";
 import { connect } from 'react-redux';
 import {
-  loadSearchPostsAction
+  loadSearchPostsAction, loadLiveVideosAction
 } from './../store/actions/postActions';
+
 import {
-  loadLiveVideosAction
-} from "./../store/actions/postActions"
+  getPrograms
+} from "./../utils/helperFunctions"
+
 import SEO from "./../components/SEO";
 import Layout from "./../components/Layout";
 import DefaultNav from './../components/SubNavigation/DefaultNav';
@@ -16,6 +18,9 @@ class Search extends Component {
   constructor(props){
     super(props);
     this.loadPage = this.loadPage.bind(this);
+    this.state = {
+      programs : {}
+    };
   }
 
   componentDidMount(){
@@ -26,19 +31,27 @@ class Search extends Component {
     this.loadLive();
   }
 
-  loadLive = () => {
-    const {
-      dispatch
-    } = this.props;
-    dispatch(loadLiveVideosAction());
-    setTimeout(this.loadLive, 30000);
-  };
-
   componentDidUpdate(prevProps){
     if(prevProps.location.pathname !== this.props.location.pathname){
       this.loadPage(this.props.location.pathname);
     }
   }
+
+  loadLive = () => {
+    const {
+      dispatch,
+      data : {
+        wpSchedule : {
+          edges
+        } = {}
+      } = {}
+    } = this.props;
+    dispatch(loadLiveVideosAction());
+    this.setState({
+      programs : getPrograms(edges, 5)
+    });
+    setTimeout(this.loadLive, 30000);
+  };
 
   loadPage(pathname){
     const {
@@ -83,6 +96,7 @@ class Search extends Component {
       />
       <Layout
         live_videos={live_videos}
+        programs={this.state.programs}
       >
         <div className="col-md-12">
           <DefaultNav title={`Results: ${searchValue}`} link="/magazines"/>
@@ -114,6 +128,23 @@ query searchPageQuery{
       siteUrl
       apiUrl
       fbAppId
+    }
+  }
+  wpSchedule : allWordpressWpSchedules {
+    edges{
+      node{
+        slug
+        title
+        link
+        acf{
+          schedule_programs{
+            program_start_time
+            program_end_time
+            program_title
+            program_start_date
+          }
+        }
+      }
     }
   }
 }

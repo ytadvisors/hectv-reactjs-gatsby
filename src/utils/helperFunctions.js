@@ -204,3 +204,32 @@ export function getCurrentEvents(current_day, events, num_entries){
     { values: [], started: 0 }
   );
 }
+
+export const getPrograms = (schedules, num_entries) => {
+  const current_time = moment(new Date());
+  const day = current_time.format('MMMM-YYYY').toLowerCase();
+
+  const programs = schedules.reduce((result, schedule) => {
+    if(schedule.node.slug === day)
+      result = schedule.node.acf.schedule_programs;
+    return result;
+  }, {});
+
+  return programs.reduce(
+    (result, item) => {
+      if (result['started'] < num_entries) {
+        let end_time = moment(
+          new Date(`${item.program_start_date} ${item.program_end_time}`)
+        );
+        if (current_time.isSameOrBefore(end_time) || result['started'] > 0) {
+          result['values'].push(item);
+          result['started']++;
+        }
+      }
+      return result;
+    },
+    { values: [], started: 0 }
+  );
+
+};
+
