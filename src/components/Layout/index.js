@@ -14,6 +14,7 @@ export default (props) => {
     style,
     slug ,
     showBottomNav,
+    programs,
     live_videos
   } = props;
   return <StaticQuery
@@ -54,7 +55,7 @@ export default (props) => {
             live_videos={live_videos}
             {...props}
           />
-          <ProgramViewer style={style}>
+          <ProgramViewer style={style} programs={programs}>
             <Transition>
               {children}
               {showBottomNav && <BottomNav menus={bottomNav && bottomNav.node.items} title="more from"/>}

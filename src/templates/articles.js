@@ -8,7 +8,8 @@ import {
 import {
   removeDuplicates,
   getPosts,
-  getFirstImageFromWpList
+  getFirstImageFromWpList,
+  getPrograms
 } from "./../utils/helperFunctions"
 
 import SEO from "./../components/SEO";
@@ -19,6 +20,9 @@ import ListOfPosts from "./../components/ListOfPosts";
 class Articles extends Component {
   constructor(props){
     super(props);
+    this.state = {
+      programs : {}
+    };
   }
 
   componentDidMount(){
@@ -27,9 +31,17 @@ class Articles extends Component {
 
   loadLive = () => {
     const {
-      dispatch
+      dispatch,
+      data : {
+        wpSchedule : {
+          edges
+        } = {}
+      } = {}
     } = this.props;
     dispatch(loadLiveVideosAction());
+    this.setState({
+      programs : getPrograms(edges, 5)
+    });
     setTimeout(this.loadLive, 30000);
   };
 
@@ -43,7 +55,6 @@ class Articles extends Component {
       data.wpPage.acf.content = data.wpPage.content;
     let posts = getPosts(data, "wpPage", "post_list", "post", "wpPosts");
     posts = removeDuplicates(posts, "wordpress_id");
-
     let description = data.wpPage.content || "On Demand Arts, Culture & Education Programming";
     return <div>
       <SEO
@@ -62,6 +73,7 @@ class Articles extends Component {
       <Layout
         slug={data.wpPage.slug}
         live_videos={live_videos}
+        programs={this.state.programs}
       >
         <div>
           <div className="col-md-12">
@@ -93,7 +105,24 @@ query articlesPageQuery {
       fbAppId
     }
   }
- wpPage: wordpressPage (slug : { eq : "articles" }) {
+  wpSchedule : allWordpressWpSchedules {
+    edges{
+      node{
+        slug
+        title
+        link
+        acf{
+          schedule_programs{
+            program_start_time
+            program_end_time
+            program_title
+            program_start_date
+          }
+        }
+      }
+    }
+  }
+  wpPage: wordpressPage (slug : { eq : "articles" }) {
    title
    content
    link
@@ -133,7 +162,7 @@ query articlesPageQuery {
       }
     }
    }
- }
+  }
   wpPosts: allWordpressPost (
     filter : {
       acf : {

@@ -1,8 +1,7 @@
 import React, { Component} from "react";
 import { graphql } from "gatsby"
 import { connect } from 'react-redux';
-import { getPosts } from "./../utils/helperFunctions"
-
+import { getPosts, getPrograms } from "./../utils/helperFunctions"
 import {
   loadLiveVideosAction
 } from "./../store/actions/postActions"
@@ -14,6 +13,9 @@ import ListOfPosts from "./../components/ListOfPosts";
 class Magazine extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      programs : {}
+    };
   }
 
   componentDidMount(){
@@ -22,9 +24,17 @@ class Magazine extends Component {
 
   loadLive = () => {
     const {
-      dispatch
+      dispatch,
+      data : {
+        wpSchedule : {
+          edges
+        } = {}
+      } = {}
     } = this.props;
     dispatch(loadLiveVideosAction());
+    this.setState({
+      programs : getPrograms(edges, 5)
+    });
     setTimeout(this.loadLive, 30000);
   };
 
@@ -59,6 +69,7 @@ class Magazine extends Component {
         style={{background: '#eee'}}
         slug={data.wpMagazine.slug}
         live_videos={live_videos}
+        programs={this.state.programs}
       >
         <div className="col-md-12" style={{background: '#eee'}}>
           <SinglePost {...
@@ -103,6 +114,23 @@ query magazineQuery ($id: String!){
     siteMetadata{
       siteUrl
       fbAppId
+    }
+  }
+  wpSchedule : allWordpressWpSchedules {
+    edges{
+      node{
+        slug
+        title
+        link
+        acf{
+          schedule_programs{
+            program_start_time
+            program_end_time
+            program_title
+            program_start_date
+          }
+        }
+      }
     }
   }
  wpMagazine : wordpressWpMagazine (id : { eq : $id }) {

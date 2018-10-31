@@ -6,6 +6,10 @@ import {
   loadLiveVideosAction
 } from "./../store/actions/postActions"
 
+import {
+  getPrograms
+} from "./../utils/helperFunctions"
+
 import SEO from "./../components/SEO";
 import Layout from "./../components/Layout"
 import EventNav from './../components/SubNavigation/EventNav';
@@ -17,8 +21,9 @@ class EventType extends Component{
   constructor(props) {
     super(props);
     this.state = {
-      current_date: moment(moment().format('MM/DD/YYYY'))
-    }
+      current_date: moment(moment().format('MM/DD/YYYY')),
+      programs : {}
+    };
   }
 
   componentDidMount(){
@@ -27,9 +32,17 @@ class EventType extends Component{
 
   loadLive = () => {
     const {
-      dispatch
+      dispatch,
+      data : {
+        wpSchedule : {
+          edges
+        } = {}
+      } = {}
     } = this.props;
     dispatch(loadLiveVideosAction());
+    this.setState({
+      programs : getPrograms(edges, 5)
+    });
     setTimeout(this.loadLive, 30000);
   };
 
@@ -69,6 +82,7 @@ class EventType extends Component{
       <Layout
         slug={data.wpPage.slug}
         live_videos={live_videos}
+        programs={this.state.programs}
       >
         <div>
           <div className="col-md-12">
@@ -100,6 +114,23 @@ query eventTypeQuery ($categories: [ Int ] $wordpress_id : Int){
     siteMetadata{
       siteUrl
       fbAppId
+    }
+  }
+  wpSchedule : allWordpressWpSchedules {
+    edges{
+      node{
+        slug
+        title
+        link
+        acf{
+          schedule_programs{
+            program_start_time
+            program_end_time
+            program_title
+            program_start_date
+          }
+        }
+      }
     }
   }
   wpPage: wordpressPage(slug: {eq: "events"}) {

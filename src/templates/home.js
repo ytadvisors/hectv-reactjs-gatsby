@@ -5,7 +5,8 @@ import { connect } from 'react-redux';
 import {
   loadLiveVideosAction
 } from "./../store/actions/postActions"
-import { removeDuplicates, getPosts, getFirstImageFromWpList } from "./../utils/helperFunctions"
+import { removeDuplicates, getPosts, getPrograms, getFirstImageFromWpList } from "./../utils/helperFunctions"
+
 import SEO from "./../components/SEO";
 import Layout from "./../components/Layout";
 import ListOfPosts from "./../components/ListOfPosts";
@@ -13,6 +14,9 @@ import ListOfPosts from "./../components/ListOfPosts";
 class Home extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      programs : {}
+    };
   }
 
   componentDidMount(){
@@ -21,9 +25,17 @@ class Home extends Component {
 
   loadLive = () => {
     const {
-      dispatch
+      dispatch,
+      data : {
+        wpSchedule : {
+          edges
+        } = {}
+      } = {}
     } = this.props;
     dispatch(loadLiveVideosAction());
+    this.setState({
+      programs : getPrograms(edges, 5)
+    });
     setTimeout(this.loadLive, 30000);
   };
 
@@ -57,6 +69,7 @@ class Home extends Component {
         showBottomNav
         slug={data.wpPage.slug}
         live_videos={live_videos}
+        programs={this.state.programs}
       >
         <ListOfPosts
           posts={posts || []}
@@ -83,6 +96,23 @@ query homePageQuery {
     siteMetadata{
       siteUrl
       fbAppId
+    }
+  }
+  wpSchedule : allWordpressWpSchedules {
+    edges{
+      node{
+        slug
+        title
+        link
+        acf{
+          schedule_programs{
+            program_start_time
+            program_end_time
+            program_title
+            program_start_date
+          }
+        }
+      }
     }
   }
  wpPage: wordpressPage (slug : { eq : "home" }) {

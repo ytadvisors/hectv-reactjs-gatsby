@@ -22,7 +22,7 @@ export default class ProgramViewer extends Component{
   render(){
     const {
       style,
-      schedule,
+      programs,
       children
     } = this.props;
 
@@ -62,7 +62,7 @@ export default class ProgramViewer extends Component{
                 </div>
                 <div className="row">
                   <div className="col-sm-4 col-sm-push-8 col-lg-12 col-lg-push-0 no-padding">
-                    <Schedule schedule={schedule}/>
+                    <Schedule programs={programs}/>
                   </div>
                   <div className="col-sm-8 col-sm-pull-4  col-lg-12 col-lg-pull-0  no-padding">
                     <ListOfMagazines />
