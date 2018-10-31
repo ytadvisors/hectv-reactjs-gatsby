@@ -33,7 +33,6 @@ function setStream(){
       let data = {};
       try {
         data = JSON.parse(event.data);
-        debugger;
         emitter({
           type: types.SET_STREAM,
           data :data,

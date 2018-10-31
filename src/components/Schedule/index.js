@@ -55,7 +55,6 @@ export default () => {
             result = schedule.node.acf.schedule_programs;
           return result;
         }, {});
-        debugger;
         const programs = schedule_programs && getPrograms(schedule_programs, 5);
         return <section className="schedule">
           <h4 className="title">Playing Now</h4>
