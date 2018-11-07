@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Field, Form as ReduxForm } from 'redux-form';
 import { Button } from 'react-bootstrap';
 import { CardElement } from 'react-stripe-elements';
+import { Link } from 'gatsby';
 import Captcha from './Captcha';
 import DefaultTextArea from './DefaultTextArea';
 import DefaultInput from './DefaultInput';
@@ -9,81 +10,86 @@ import DefaultSelect from './DefaultSelect';
 import DefaultDatePicker from './DefaultDatePicker';
 import CheckBoxInput from './CheckBoxInput';
 import DateTimeAdder from './DateTimeAdder';
-import { Link } from 'gatsby';
 
 import './styles.scss';
 
 export default class ReactForm extends Component {
   constructor(props) {
     super(props);
-    this.getFieldComponent = this.getFieldComponent.bind(this);
-    this.getFields = this.getFields.bind(this);
-    this.selectTerms = this.selectTerms.bind(this);
     this.state = {
-      terms_agreed: undefined
+      termsAgreed: undefined
     };
   }
 
-  selectTerms(event) {
-    this.setState({ terms_agreed: event.target.checked });
-  }
+  selectTerms = event => {
+    this.setState({ termsAgreed: event.target.checked });
+  };
 
-  getFieldComponent(field) {
-    const { display_label, display_errors } = this.props;
+  getFieldComponent = field => {
+    const { displayLabel, displayErrors, change } = this.props;
+    const {
+      name,
+      type,
+      disabled,
+      placeholder,
+      autofocus,
+      rows,
+      labels,
+      options
+    } = field;
     switch (field.component) {
       case 'input':
         return (
           <Field
-            name={field.name}
-            autofocus={field.autofocus}
+            name={name}
+            autofocus={autofocus}
             component={DefaultInput}
-            type={field.type}
-            label={field.placeholder}
-            disabled={field.disabled}
-            display_label={display_label}
-            display_errors={display_errors !== false}
+            type={type}
+            label={placeholder}
+            disabled={disabled}
+            displayLabel={displayLabel}
+            displayErrors={displayErrors !== false}
           />
         );
       case 'textarea':
         return (
           <Field
-            name={field.name}
-            autofocus={field.autofocus}
+            name={name}
+            autofocus={autofocus}
             component={DefaultTextArea}
-            type={field.type}
-            label={field.placeholder}
-            rows={field.rows}
-            disabled={field.disabled}
-            display_label={display_label}
-            display_errors={display_errors !== false}
+            type={type}
+            label={placeholder}
+            rows={rows}
+            disabled={disabled}
+            displayLabel={displayLabel}
+            displayErrors={displayErrors !== false}
           />
         );
       case 'captcha':
         return (
           <Field
-            name={field.name}
+            name={name}
             component={Captcha}
-            change={this.props.change}
-            type={field.type}
-            label={field.placeholder}
-            disabled={field.disabled}
-            display_errors={display_errors !== false}
+            change={change}
+            type={type}
+            label={placeholder}
+            disabled={disabled}
+            displayErrors={displayErrors !== false}
           />
         );
-        break;
       case 'checkbox':
         return (
           <div className="checkbox-container">
             <div className="title-header">
-              <span>{field.placeholder}</span>
+              <span>{placeholder}</span>
             </div>
             <Field
-              name={field.name}
-              type={field.type}
+              name={name}
+              type={type}
               component={CheckBoxInput}
-              options={field.options}
-              display_label={display_label}
-              display_errors={display_errors !== false}
+              options={options}
+              displayLabel={displayLabel}
+              displayErrors={displayErrors !== false}
             />
           </div>
         );
@@ -91,17 +97,17 @@ export default class ReactForm extends Component {
         return (
           <div>
             <Field
-              name={field.name}
+              name={name}
               component={DefaultSelect}
-              label={field.placeholder}
-              options={field.options}
-              disabled={field.disabled}
-              display_label={display_label}
-              display_errors={display_errors !== false}
+              label={placeholder}
+              options={options}
+              disabled={disabled}
+              displayLabel={displayLabel}
+              displayErrors={displayErrors !== false}
             >
-              {field.options.map((option, i) => (
+              {options.map(option => (
                 <option
-                  key={`field-options-${i}`}
+                  key={option.value}
                   value={option.value}
                   disabled={option.disabled}
                 >
@@ -114,10 +120,10 @@ export default class ReactForm extends Component {
       case 'stripe-card':
         return (
           <div className="stripe-card">
-            <label>{field.placeholder}</label>
+            <label htmlFor={placeholder}>{placeholder}</label>
             <CardElement
-              className={field.type}
-              display_errors={display_errors !== false}
+              className={type}
+              displayErrors={displayErrors !== false}
               style={{
                 base: {
                   fontSize: '14px'
@@ -130,14 +136,14 @@ export default class ReactForm extends Component {
         return (
           <div className="date-time-adder">
             <Field
-              name={field.name}
+              name={name}
               component={DateTimeAdder}
-              type={field.type}
-              labels={field.labels}
-              disabled={field.disabled}
-              change={this.props.change}
-              display_label={display_label}
-              display_errors={display_errors !== false}
+              type={type}
+              labels={labels}
+              disabled={disabled}
+              change={change}
+              displayLabel={displayLabel}
+              displayErrors={displayErrors !== false}
             />
           </div>
         );
@@ -145,32 +151,33 @@ export default class ReactForm extends Component {
         return (
           <div className="date-picker">
             <Field
-              name={field.name}
+              name={name}
               component={DefaultDatePicker}
-              type={field.type}
-              label={field.placeholder}
-              disabled={field.disabled}
-              change={this.props.change}
-              display_label={display_label}
-              display_errors={display_errors !== false}
+              type={type}
+              label={placeholder}
+              disabled={disabled}
+              change={change}
+              displayLabel={displayLabel}
+              displayErrors={displayErrors !== false}
             />
           </div>
         );
+      default:
+        return '';
     }
-  }
+  };
 
-  getFields(field) {
-    if (Array.isArray(field)) {
-      const num_cols = 12 / field.length;
-      return field.map((field_entry, i) => (
-        <div className={`col-md-${num_cols}`} key={`field-map-${i}`}>
-          {this.getFieldComponent(field_entry)}
+  getFields = fields => {
+    if (Array.isArray(fields)) {
+      const numCols = 12 / fields.length;
+      return fields.map(field => (
+        <div className={`col-md-${numCols}`} key={field.name}>
+          {this.getFieldComponent(field)}
         </div>
       ));
-    } else {
-      return <div className="col-md-12">{this.getFieldComponent(field)}</div>;
     }
-  }
+    return <div className="col-md-12">{this.getFieldComponent(fields)}</div>;
+  };
 
   render() {
     const {
@@ -185,9 +192,11 @@ export default class ReactForm extends Component {
       closeModal
     } = this.props;
 
+    const { termsAgreed } = this.state;
+
     return (
       <ReduxForm onSubmit={handleSubmit(onSubmit)} className="react-form">
-        {terms && !this.state.terms_agreed ? (
+        {terms && !termsAgreed ? (
           <div className="row">
             <div className="col-md-12">
               <div className="errors">
@@ -208,8 +217,8 @@ export default class ReactForm extends Component {
           ''
         )}
         <div className="form-fields">
-          {fields.map((field, i) => (
-            <div className="row" key={`prop-field-${i}`}>
+          {fields.map(field => (
+            <div className="row" key={field.name}>
               {this.getFields(field)}
             </div>
           ))}
@@ -223,7 +232,7 @@ export default class ReactForm extends Component {
                     className="terms-and-conditions"
                     onChange={this.selectTerms}
                   />
-                  <label>
+                  <label htmlFor="Terms">
                     I agree to the{' '}
                     <Link to="/terms-and-conditions"> Terms and Services </Link>
                   </label>

@@ -5,39 +5,33 @@ export default class EventApi extends MainApi {
     super(props);
   }
 
-  getEventType = (event_categories = []) => {
-    const query = event_categories.join('&slug[]=');
-    return this.json_api.get(`event_category?slug[]=${query}`);
+  getEventType = (eventCategories = []) => {
+    const query = eventCategories.join('&slug[]=');
+    return this.jsonApi.get(`eventCategory?slug[]=${query}`);
   };
 
-  getAllEvents = (type_list = [], day = '', page = 1, per_page) => {
-    let day_query = day === '' ? '' : `&day=${day}`;
+  getAllEvents = (type_list = [], day = '', page = 1, perPage) => {
+    const dayQuery = day === '' ? '' : `&day=${day}`;
     if (type_list.length === 0)
-      return this.json_api.get(
-        `event?per_page=${per_page}&page=${page}${day_query}`
+      return this.jsonApi.get(
+        `event?perPage=${perPage}&page=${page}${dayQuery}`
       );
-    else {
-      const query = type_list.join('&event_category[]=');
-      return this.json_api.get(
-        `event?per_page=${per_page}&page=${page}&event_category[]=${query}${day_query}`
-      );
-    }
+
+    const query = type_list.join('&eventCategory[]=');
+    return this.jsonApi.get(
+      `event?perPage=${perPage}&page=${page}&eventCategory[]=${query}${dayQuery}`
+    );
   };
 
-  getEventsBySlugs = (slugs) => {
+  getEventsBySlugs = slugs => {
     const query = slugs.join('&slug[]=');
-    return this.json_api.get(`event?slug[]=${query}`);
+    return this.jsonApi.get(`event?slug[]=${query}`);
   };
 
-  getEventBySlug = (slug) =>{
-    return this.json_api.get(`event?slug=${slug}`);
-  };
+  getEventBySlug = slug => this.jsonApi.get(`event?slug=${slug}`);
 
-  getEvent = (event_id) =>{
-    return this.json_api.get(`event/${event_id}`);
-  };
+  getEvent = eventId => this.jsonApi.get(`event/${eventId}`);
 
-  getEventCategories = (page = 1) => {
-    return this.json_api.get(`event_category?page=${page}`);
-  };
+  getEventCategories = (page = 1) =>
+    this.jsonApi.get(`eventCategory?page=${page}`);
 }

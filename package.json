@@ -17,10 +17,24 @@
     "build": " node --max_old_space_size=2084 ./node_modules/.bin/gatsby build",
     "serve": " node --max_old_space_size=2084 ./node_modules/.bin/gatsby serve"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "NODE_ENV=production lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,jsx,css}": [
+      "pretty-quick --staged",
+      "eslint src/ --fix ",
+      "git add"
+    ]
+  },
   "dependencies": {
+    "aws-sdk": "2.349.0",
     "axios": "0.18.0",
     "bluebird": "3.5.1",
     "bootstrap": "^3.3.7",
+    "deep-map-keys": "1.2.0",
     "dotenv": "6.0.0",
     "dotenv-webpack": "1.5.7",
     "gatsby": "2.0.22",
@@ -40,6 +54,7 @@
     "lodash": "4.17.10",
     "moment": "2.22.2",
     "node-sass": "4.9.2",
+    "prop-types": "15.6.2",
     "query-string": "6.1.0",
     "react": "16.5.2",
     "react-bootstrap": "0.32.1",
@@ -56,9 +71,11 @@
     "react-redux-form": "1.16.9",
     "react-redux-loading-bar": "4.0.5",
     "react-router-dom": "4.3.1",
+    "react-share": "2.3.1",
     "react-stripe-elements": "2.0.0",
     "react-transition-group": "2.4.0",
     "redux": "4.0.0",
+    "redux-devtools-extension": "2.13.5",
     "redux-form": "7.4.2",
     "redux-logger": "3.0.6",
     "redux-saga": "0.16.0",
@@ -73,13 +90,16 @@
     "@babel/preset-env": "7.0.0-beta.55",
     "@babel/preset-flow": "7.0.0-beta.55",
     "@babel/preset-react": "7.0.0-beta.55",
-    "eslint": "5.7.0",
+    "babel-eslint": "8",
+    "eslint": "4.19.1",
+    "eslint-config-airbnb": "17.1.0",
     "eslint-config-prettier": "3.1.0",
+    "eslint-plugin-import": "2.14.0",
+    "eslint-plugin-jsx-a11y": "6.1.2",
     "eslint-plugin-prettier": "3.0.0",
     "husky": "1.1.2",
     "lint-staged": "7.3.0",
     "prettier": "1.14.3",
-    "pretty-quick": "1.8.0",
-    "redux-devtools-extension": "2.13.5"
+    "pretty-quick": "1.8.0"
   }
 }

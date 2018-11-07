@@ -4,7 +4,7 @@ const initialState = {
   magazines: [],
   magazine: {},
   magazine_list: [],
-  num_results: {
+  numResults: {
     magazines: 0
   }
 };
@@ -22,19 +22,19 @@ export default (state = initialState, action) => {
     case types.SET_ALL_MAGAZINES:
       return {
         ...state,
-        magazines: action.load_more
+        magazines: action.loadMore
           ? [...state.magazines, ...action.magazines]
           : action.magazines,
-        num_results: {
-          ...state.num_results,
-          magazines: action.num_results
+        numResults: {
+          ...state.numResults,
+          magazines: action.numResults
         },
         error: false
       };
     case types.SET_MAGAZINE_LIST:
       return {
         ...state,
-        magazine_list: action.load_more
+        magazine_list: action.loadMore
           ? [...state.magazine_list, ...action.magazine_list]
           : action.magazine_list,
         error: false
@@ -42,13 +42,13 @@ export default (state = initialState, action) => {
     case types.SET_MAGAZINE:
       return {
         ...state,
-        magazine: action.load_more
+        magazine: action.loadMore
           ? [...state.magazine, ...action.magazine]
           : action.magazine,
         error: false
       };
 
-    //Errors
+    // Errors
     case types.LOAD_ERROR:
       return {
         ...state,
@@ -57,4 +57,4 @@ export default (state = initialState, action) => {
     default:
       return state;
   }
-}
+};

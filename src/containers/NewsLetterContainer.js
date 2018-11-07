@@ -1,51 +1,64 @@
-import React, {Component} from "react";
+import React from 'react';
 
 import { connect } from 'react-redux';
-import addToMailchimp from 'gatsby-plugin-mailchimp'
-import {
-  openOverlayAction
-} from './../store/actions/pageActions';
-import NewsLetter from './../components/NewsLetter';
+import addToMailchimp from 'gatsby-plugin-mailchimp';
+import { openOverlayAction } from '../store/actions/pageActions';
+import NewsLetter from '../components/NewsLetter';
 
-class NewsLetterContainer extends Component {
-  constructor(props) {
-    super(props);
-  }
+const NewsLetterContainer = ({ dispatch }) => {
+  const getSuccessMsg = () => (
+    <div
+      className="text-center"
+      style={{
+        padding: '1.2em 3em 2.8em',
+        lineHeight: '2em',
+        background: '#ddecff'
+      }}
+    >
+      <div>
+        <p>
+          <b>Congratulations!</b>{' '}
+        </p>
+        <p>You successfully subscribed to our newsletter.</p>
+      </div>
+    </div>
+  );
 
-  subscribe = async (values) => {
+  const getErrorMsg = () => (
+    <div
+      className="text-center"
+      style={{
+        padding: '1.2em 3em 2.8em',
+        lineHeight: '2em',
+        background: '#ddecff'
+      }}
+    >
+      <div>
+        <p>
+          <b>Oops!</b>{' '}
+        </p>
+        <p>We were unable to subscribe you at the time.</p>
+      </div>
+    </div>
+  );
+
+  const subscribe = async val => {
+    const values = { ...val };
     try {
-      const {
-        dispatch
-      } = this.props;
+      if (values['newsletter-captcha']) delete values['newsletter-captcha'];
+      await addToMailchimp(values.EMAIL, values);
 
-      if (values["newsletter-captcha"])
-       delete(values["newsletter-captcha"]);
-       await addToMailchimp(values["EMAIL"], values);
-
-      dispatch(openOverlayAction('basic', {
-        content : <div className="text-center" style={{
-          padding: "1.2em 3em 2.8em",
-          lineHeight: "2em",
-          background: "#ddecff"
-        }}>
-          <div>
-            <p><b>Congratulations!</b> </p>
-            <p>You successfully subscribed to our newsletter.</p>
-          </div>
-        </div>
-      }));
-    } catch(err){
-
+      dispatch(openOverlayAction('basic', { content: getSuccessMsg() }));
+    } catch (err) {
+      dispatch(openOverlayAction('basic', { content: getErrorMsg() }));
     }
   };
 
-  render() {
-    return <NewsLetter subscribe={this.subscribe} />
-  }
-}
+  return <NewsLetter subscribe={subscribe} />;
+};
 
-const mapStateToProps = (state) => ({
-  page_form: state.form
+const mapStateToProps = state => ({
+  pageForm: state.form
 });
 
 export default connect(mapStateToProps)(NewsLetterContainer);

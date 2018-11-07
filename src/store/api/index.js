@@ -1,16 +1,16 @@
 import axios from 'axios';
 
 export default class MainApi {
-  constructor({ apiUrl }) {
-    apiUrl = apiUrl || process.env.GATSBY_WP_HOST;
+  constructor({ url }) {
+    const apiUrl = url || process.env.GATSBY_WP_HOST;
     const prefix = '/wp-json/wp/v2/';
 
-    this.root_api = axios.create({
+    this.rootApi = axios.create({
       baseURL: apiUrl,
       timeout: 100000
     });
 
-    this.json_api = axios.create({
+    this.jsonApi = axios.create({
       baseURL: apiUrl + prefix,
       timeout: 100000
     });
@@ -20,10 +20,12 @@ export default class MainApi {
       : {};
 
     if (user.token && user.token !== '') {
-      this.root_api.defaults.headers.common['Authorization'] =
-        'Bearer ' + user.token;
-      this.json_api.defaults.headers.common['Authorization'] =
-        'Bearer ' + user.token;
+      this.rootApi.defaults.headers.common.Authorization = `Bearer ${
+        user.token
+      }`;
+      this.jsonApi.defaults.headers.common.Authorization = `Bearer ${
+        user.token
+      }`;
     }
   }
 }

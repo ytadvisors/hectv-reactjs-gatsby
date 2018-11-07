@@ -1,14 +1,6 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React from 'react';
 import './styles.scss';
 
-export default class SideNavigation extends Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    const { children } = this.props;
-    return <section className="side-navigation">{children}</section>;
-  }
-}
+export default ({ children }) => (
+  <section className="side-navigation">{children}</section>
+);

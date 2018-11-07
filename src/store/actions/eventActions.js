@@ -1,40 +1,32 @@
 import * as types from '../types/eventTypes';
 
-export const loadEventAction = (event_id) =>{
-  return {
-    type: types.LOAD_EVENT,
-    event_id
-  };
-};
+export const loadEventAction = eventId => ({
+  type: types.LOAD_EVENT,
+  eventId
+});
 
-export const loadEventListAction = (event_day = '') =>{
-  return {
-    type: types.LOAD_EVENT_LIST,
-    event_day
-  };
-};
+export const loadEventListAction = (eventDay = '') => ({
+  type: types.LOAD_EVENT_LIST,
+  eventDay
+});
 
 export const loadAllEventsAction = (
-  event_types = [],
-  event_day = '',
+  eventTypes = [],
+  eventDay = '',
   page,
-  load_more = false,
-  per_page = 12
-) => {
-  return {
-    type: types.LOAD_ALL_EVENTS,
-    event_types,
-    event_day,
-    page,
-    per_page,
-    load_more
-  };
-};
+  loadMore = false,
+  perPage = 12
+) => ({
+  type: types.LOAD_ALL_EVENTS,
+  eventTypes,
+  eventDay,
+  page,
+  perPage,
+  loadMore
+});
 
-export const loadEventCategoriesAction = (page = 1, per_page = 12) => {
-  return {
-    type: types.LOAD_EVENT_CATEGORIES,
-    page,
-    per_page
-  };
-};
+export const loadEventCategoriesAction = (page = 1, perPage = 12) => ({
+  type: types.LOAD_EVENT_CATEGORIES,
+  page,
+  perPage
+});

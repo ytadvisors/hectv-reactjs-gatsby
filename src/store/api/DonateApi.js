@@ -5,11 +5,8 @@ export default class DonateApi extends MainApi {
     super(props);
   }
 
-  getAllDonations = (page = 1, per_page) =>{
-    return this.json_api.get(`donations?per_page=${per_page}&page=${page}`);
-  };
+  getAllDonations = (page = 1, perPage) =>
+    this.jsonApi.get(`donations?perPage=${perPage}&page=${page}`);
 
-  getDonation = (donation_id) =>{
-    return this.json_api.get(`donations/${donation_id}`);
-  };
+  getDonation = donationId => this.jsonApi.get(`donations/${donationId}`);
 }

@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
+import $ from 'jquery';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import ReactForm from './../../../components/ReactForm';
-import Validator from './../../../components/ReactForm/Validator';
-import { reduxForm } from 'redux-form';
+import { reduxForm, SubmissionError } from 'redux-form';
+import Validator from '../../ReactForm/Validator';
+import ReactForm from '../../ReactForm';
+
 import './styles.scss';
-import countries from './../../../countries.json';
-import { SubmissionError } from 'redux-form';
-import $ from 'jquery';
+import countries from '../../../countries.json';
 
 const fields = [
   [
@@ -85,10 +85,10 @@ class ProfileForm extends Component {
 
   onSubmit() {
     const { callbackFunc, terms } = this.props;
-    const valid_submit =
+    const validSubmit =
       !terms || (terms && $('.terms-and-conditions').is(':checked'));
 
-    if (!valid_submit) {
+    if (!validSubmit) {
       throw new SubmissionError({
         terms: 'You must agree to the terms and conditions',
         _error: 'You must agree to the terms and conditions'
@@ -97,6 +97,7 @@ class ProfileForm extends Component {
 
     callbackFunc.call(this);
   }
+
   render() {
     return (
       <section className="profile-details">
@@ -105,7 +106,7 @@ class ProfileForm extends Component {
           fields={fields}
           onSubmit={this.onSubmit}
           buttons={{ next: 'Update' }}
-          display_label
+          displayLabel
         />
         <div className="row" />
       </section>

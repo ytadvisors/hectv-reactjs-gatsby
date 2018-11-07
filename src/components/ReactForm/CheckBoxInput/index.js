@@ -3,15 +3,10 @@ import _ from 'lodash';
 import './styles.scss';
 
 export default class CheckBoxInput extends Component {
-  constructor(props) {
-    super(props);
-    this.onChange = this.onChange.bind(this);
-  }
-
-  onChange(event, itemValue) {
+  onChange = (event, itemValue) => {
     const { input } = this.props;
 
-    let oldValues = input.value || [];
+    const oldValues = input.value || [];
     let newValues = _.without(oldValues, itemValue); // remove value
 
     if (event.target.checked) {
@@ -20,18 +15,18 @@ export default class CheckBoxInput extends Component {
     }
     console.log(newValues);
     input.onChange(newValues);
-  }
+  };
 
   render() {
     const {
       input,
-      display_errors,
+      displayErrors,
       meta: { touched, error },
       options
     } = this.props;
     return (
       <div className="checkbox-input">
-        {options.map((option, i) => (
+        {options.map(option => (
           <div className="form-checkbox" key={`checkbox-${option.text}`}>
             <div>
               <input
@@ -43,7 +38,7 @@ export default class CheckBoxInput extends Component {
             </div>
           </div>
         ))}
-        {display_errors && (
+        {displayErrors && (
           <div
             className="errors"
             dangerouslySetInnerHTML={{

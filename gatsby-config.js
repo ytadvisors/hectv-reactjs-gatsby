@@ -1,29 +1,45 @@
+const _ = require(`lodash`);
+const deepMapKeys = require('deep-map-keys');
 
 let activeEnv = process.env.ACTIVE_ENV;
-let baseUrl = "";
-let protocol = "";
+let baseUrl = '';
+let protocol = '';
 
 if (!activeEnv) {
-  activeEnv = "development";
+  activeEnv = 'development';
 }
 
-require("dotenv").config({
+require('dotenv').config({
   path: `.env.${activeEnv}`,
-  silent : true
+  silent: true
 });
 
-if(process.env.GATSBY_WP_HOST){
-  [ protocol, baseUrl ] = process.env.GATSBY_WP_HOST.split("://");
+if (process.env.GATSBY_WP_HOST) {
+  [protocol, baseUrl] = process.env.GATSBY_WP_HOST.split('://');
 }
+
+const snakeToCamel = key => {
+  const keyMap = key.split('_');
+  switch (keyMap[0]) {
+    case '':
+    case 'wordpress':
+    case 'acf':
+    case 'WordPressAcf':
+      break;
+    default:
+      if (keyMap[keyMap.length - 1] !== 'NODE') return _.camelCase(key);
+  }
+  return key;
+};
 
 module.exports = {
   siteMetadata: {
     title: 'HEC-TV | Home',
     siteUrl: process.env.GATSBY_SITE_HOST,
-    mapKey : process.env.GOOGLE_API_KEY,
-    captchaKey : process.env.RE_CAPTCHA_SITE_KEY,
-    apiUrl : process.env.GATSBY_WP_HOST,
-    fbAppId : process.env.FACEBOOK_APP_ID
+    mapKey: process.env.GOOGLE_API_KEY,
+    captchaKey: process.env.RE_CAPTCHA_SITE_KEY,
+    apiUrl: process.env.GATSBY_WP_HOST,
+    fbAppId: process.env.FACEBOOK_APP_ID
   },
   plugins: [
     `gatsby-plugin-react-helmet`,
@@ -32,18 +48,28 @@ module.exports = {
     {
       resolve: `gatsby-source-wordpress-fork`,
       options: {
-        baseUrl: baseUrl,
-        protocol: protocol,
+        baseUrl,
+        protocol,
         hostingWPCOM: false,
         useACF: false,
         // Set to true to debug endpoints on 'gatsby build'
         verboseOutput: true,
         concurrentRequests: 40,
         auth: {
-          jwt_token : ""
+          jwt_token: ''
         },
-        excludedRoutes: ["/jetpack/**", "/*/*/tags", "/*/*/settings", "/*/*/media", "/*/*/users/*",  "/yoast/**"]
-      },
+        excludedRoutes: [
+          '/jetpack/**',
+          '/*/*/tags',
+          '/*/*/settings',
+          '/*/*/media',
+          '/*/*/users/*',
+          '/yoast/**'
+        ],
+        normalizer({ entities }) {
+          return deepMapKeys(entities, snakeToCamel);
+        }
+      }
     },
     {
       resolve: `gatsby-plugin-google-fonts`,
@@ -51,19 +77,20 @@ module.exports = {
         fonts: [
           `Quicksand`,
           `Muli`,
-          `source sans pro\:300,400,400i,700` // you can also specify font weights and styles
+          `source sans pro:300,400,400i,700` // you can also specify font weights and styles
         ]
       }
     },
     {
-      resolve : `gatsby-plugin-mailchimp`,
-      options : {
-        endpoint : "https://hectv.us17.list-manage.com/subscribe/post?u=3ba5cb3441b0c6df467d5c65b&amp;id=c4ddedb2ea"
+      resolve: `gatsby-plugin-mailchimp`,
+      options: {
+        endpoint:
+          'https://hectv.us17.list-manage.com/subscribe/post?u=3ba5cb3441b0c6df467d5c65b&amp;id=c4ddedb2ea'
       }
     },
     {
       resolve: `gatsby-plugin-sass`,
-      options : {
+      options: {
         precision: 8
       }
     },
@@ -78,8 +105,8 @@ module.exports = {
 
         // Specify optional GTM environment details.
         gtmAuth: process.env.GA_TAGMANAGER_ENV_AUTH_STRING,
-        gtmPreview: process.env.GA_TAGMANAGER_ENV_PREVIEW_NAME,
-      },
+        gtmPreview: process.env.GA_TAGMANAGER_ENV_PREVIEW_NAME
+      }
     },
     {
       resolve: 'gatsby-plugin-robots-txt',

@@ -1,164 +1,156 @@
-import React, { Component} from "react";
-import { graphql } from "gatsby"
+import React, { Component } from 'react';
+import { graphql } from 'gatsby';
 import { connect } from 'react-redux';
-import {
-  loadLiveVideosAction
-} from "./../store/actions/postActions"
+import _ from 'lodash';
+import { loadLiveVideosAction } from '../store/actions/postActions';
 
-import {
-  getPosts,
-  getPrograms
-} from "./../utils/helperFunctions"
-import SEO from "./../components/SEO";
-import Layout from "./../components/Layout"
-import SinglePost from "./../components/SinglePost"
-import ListOfPosts from "./../components/ListOfPosts";
-import _ from "lodash"
+import { getPosts, getPrograms, getExcerpt } from '../utils/helperFunctions';
+import SEO from '../components/SEO';
+import Layout from '../components/Layout';
+import SinglePost from '../components/SinglePost';
+import ListOfPosts from '../components/ListOfPosts';
 
 class Event extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      programs : {}
+      programs: {}
     };
   }
 
-  componentDidMount(){
+  componentDidMount() {
     this.loadLive();
   }
 
   loadLive = () => {
-    const {
-      dispatch,
-      data : {
-        wpSchedule : {
-          edges
-        } = {}
-      } = {}
-    } = this.props;
+    const { dispatch, data: { wpSchedule: { edges } = {} } = {} } = this.props;
     dispatch(loadLiveVideosAction());
     this.setState({
-      programs : getPrograms(edges, 5)
+      programs: getPrograms(edges, 5)
     });
     setTimeout(this.loadLive, 30000);
   };
 
   render() {
-    const {
-      data,
-      live_videos
-    } = this.props;
+    const { data, liveVideos } = this.props;
 
-    let description = data.wpEvent.content || "On Demand Arts, Culture & Education Programming";
-    let posts = getPosts(data, "wpEvent", "event_posts", "event_post");
+    const {
+      wpEvent: { title, thumbnail, content, link = '', slug } = {},
+      wpSite: { siteMetadata: { siteUrl, fbAppId } = {} }
+    } = data;
+
+    const { programs } = this.state;
+
+    const description =
+      content || 'On Demand Arts, Culture & Education Programming';
+    let posts = getPosts(data, 'wpEvent', 'eventPosts', 'eventPost');
     posts = _.take(posts, 3);
 
-    return <div>
-      <SEO
-        {...{
-          title: data.wpEvent.title,
-          image: data.wpEvent.thumbnail,
-          description: description.replace(/<\/?[^>]+(>|$)/g, '').substring(0, 320) + '...',
-          url: data.wpSite.siteMetadata.siteUrl,
-          fb_app_id: data.wpSite.siteMetadata.fbAppId,
-          pathname: data.wpEvent.link.replace(/https?:\/\/[^/]+/, ''),
-          site_name: "hecmedia.org",
-          author: "hectv",
-          twitter_handle: "@hec_tv"
-        }}
-      />
-      <Layout
-        slug={data.wpEvent.slug}
-        live_videos={live_videos}
-        programs={this.state.programs}
-      >
-        <div className="col-md-12">
-          <SinglePost {...{post: data.wpEvent}} />
-          <ListOfPosts
-            title="Related Posts"
-            posts={posts || []}
-            link={{page: 'posts'}}
-            num_results={0}
-            style={{
-              background: '#f9f9f9',
-              marginBottom: '20px',
-              border: '1px solid #ddd'
-            }}
-            design={{
-              default_row_layout: '3 Columns',
-              default_display_type: 'Post'
-            }}
-            loadMore={null}
-            resize_rows
-          />
-        </div>
-      </Layout>
-    </div>
+    return (
+      <div>
+        <SEO
+          {...{
+            title,
+            image: thumbnail,
+            description: getExcerpt(description, 320),
+            url: siteUrl,
+            fbAppId,
+            pathname: link.replace(/https?:\/\/[^/]+/, ''),
+            siteName: 'hecmedia.org',
+            author: 'hectv',
+            twitterHandle: '@hec_tv'
+          }}
+        />
+        <Layout slug={slug} liveVideos={liveVideos} programs={programs}>
+          <div className="col-md-12">
+            <SinglePost {...{ post: data.wpEvent }} />
+            <ListOfPosts
+              title="Related Posts"
+              posts={posts || []}
+              link={{ page: 'posts' }}
+              numResults={0}
+              style={{
+                background: '#f9f9f9',
+                marginBottom: '20px',
+                border: '1px solid #ddd'
+              }}
+              design={{
+                defaultRowLayout: '3 Columns',
+                defaultDisplayType: 'Post'
+              }}
+              loadMore={null}
+              resizeRows
+            />
+          </div>
+        </Layout>
+      </div>
+    );
   }
 }
 
-const mapStateToProps = (state, ownProps) => ({
-  live_videos: state.postReducers.live_videos
+const mapStateToProps = state => ({
+  liveVideos: state.postReducers.liveVideos
 });
 
 export default connect(mapStateToProps)(Event);
 
 export const query = graphql`
-query eventQuery ($id: String!){
-  wpSite: site {
-    siteMetadata{
-      siteUrl
-      fbAppId
-    }
-  }
-  wpSchedule : allWordpressWpSchedules {
-    edges{
-      node{
-        slug
-        title
-        link
-        acf {
-          schedule_programs {
-            program_start_time
-            program_end_time
-            program_title
-            program_start_date
-          }
-        }
+  query eventQuery($id: String!) {
+    wpSite: site {
+      siteMetadata {
+        siteUrl
+        fbAppId
       }
     }
-  }
-  wpEvent: wordpressWpEvent (id : { eq : $id }) {
-    title
-    content
-    link
-    thumbnail
-    slug
-    acf {
-      venue
-      web_address
-      event_price
-      event_dates{
-        start_time
-        end_time
-      }
-      event_posts{
-        event_post{
-          post_title
-          post_excerpt
-          post_name
+    wpSchedule: allWordpressWpSchedules {
+      edges {
+        node {
+          slug
+          title
+          link
           acf {
-            is_video
-            video_image{
-              sizes{
-                medium
-                medium_large
-              }
+            schedulePrograms {
+              programStartTime
+              programEndTime
+              programTitle
+              programStartDate
             }
-            post_header {
-              sizes {
-                medium
-                medium_large
+          }
+        }
+      }
+    }
+    wpEvent: wordpressWpEvent(id: { eq: $id }) {
+      title
+      content
+      link
+      thumbnail
+      slug
+      acf {
+        venue
+        webAddress
+        eventPrice
+        eventDates {
+          startTime
+          endTime
+        }
+        eventPosts {
+          eventPost {
+            postTitle
+            postExcerpt
+            postName
+            acf {
+              isVideo
+              videoImage {
+                sizes {
+                  medium
+                  mediumLarge
+                }
+              }
+              postHeader {
+                sizes {
+                  medium
+                  mediumLarge
+                }
               }
             }
           }
@@ -166,5 +158,4 @@ query eventQuery ($id: String!){
       }
     }
   }
-}
 `;

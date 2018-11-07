@@ -5,27 +5,17 @@ export default class PageApi extends MainApi {
     super(props);
   }
 
-  getAboutUs = () => {
-    return this.json_api.get('pages?slug=about-us');
-  };
+  getAboutUs = () => this.jsonApi.get('pages?slug=about-us');
 
-  getMenus = (id = '') => {
-    return this.root_api.get(`/wp-json/wp-api-menus/v2/menus/${id}`);
-  };
+  getMenus = (id = '') =>
+    this.rootApi.get(`/wp-json/wp-api-menus/v2/menus/${id}`);
 
-  getPage = (pageName) => {
-    return this.json_api.get(`pages?slug=${pageName}`);
-  };
+  getPage = pageName => this.jsonApi.get(`pages?slug=${pageName}`);
 
-  getTestimonials = (page = 1) => {
-    return this.json_api.get(`testimonial?page=${page}`);
-  };
+  getTestimonials = (page = 1) => this.jsonApi.get(`testimonial?page=${page}`);
 
-  getPricingPlans = () => {
-    return this.json_api.get(`edplans?order_by=plan_price&order=asc`);
-  };
+  getPricingPlans = () =>
+    this.jsonApi.get(`edplans?order_by=plan_price&order=asc`);
 
-  getLiveVideo = () => {
-    return this.json_api.get(`livevideos`);
-  };
+  getLiveVideo = () => this.jsonApi.get(`livevideos`);
 }

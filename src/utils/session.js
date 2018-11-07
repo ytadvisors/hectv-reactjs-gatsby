@@ -1,12 +1,11 @@
 export function isLoggedIn() {
-  let user = localStorage.getItem('user');
-  let user_object = user ? JSON.parse(user) : {};
-  return user_object.token;
-  return {};
+  const user = localStorage.getItem('user');
+  const userObject = user ? JSON.parse(user) : {};
+  return userObject.token;
 }
 
 export function getUser() {
-  let user = localStorage.getItem('user');
+  const user = localStorage.getItem('user');
   if (user) {
     return JSON.parse(user);
   }
@@ -14,28 +13,28 @@ export function getUser() {
 }
 
 export function getUserToken() {
-  let user = getUser();
+  const user = getUser();
   return user.token ? user.token : '';
 }
 
 export function getUserId() {
-  let user = getUser();
+  const user = getUser();
   return user.id ? user.id : '';
 }
 
 export function getPlanId() {
-  let user = getUser();
-  return user.plan_id ? user.plan_id : '';
+  const user = getUser();
+  return user.planId ? user.planId : '';
 }
 
 export function setUserToken(token) {
-  let user = getUser();
+  const user = getUser();
   user.token = token;
   localStorage.setItem('user', JSON.stringify(user));
   return true;
 }
 export function setUserId(id) {
-  let user = getUser();
+  const user = getUser();
   user.id = id;
   localStorage.setItem('user', JSON.stringify(user));
   return true;
@@ -45,17 +44,17 @@ export function deleteUser() {
   localStorage.removeItem('user');
 }
 
-export function setPlanId(plan_id) {
-  let user = getUser();
-  user.plan_id = plan_id;
+export function setPlanId(planId) {
+  const user = getUser();
+  user.planId = planId;
   localStorage.setItem('user', JSON.stringify(user));
   return true;
 }
 
 export function getPlanPrice(price) {
-  //TODO: Automate price based on api for plan pricing.
-  const price_value = price.match(/[0-9]+/);
-  const value = price_value && price_value.length > 0 ? price_value[0] : '';
+  // TODO: Automate price based on api for plan pricing.
+  const priceValue = price.match(/[0-9]+/);
+  const value = priceValue && priceValue.length > 0 ? priceValue[0] : '';
   switch (getPlanId()) {
     case 'bronze_monthly':
     case 'silver_monthly':

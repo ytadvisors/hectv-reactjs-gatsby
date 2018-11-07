@@ -1,45 +1,44 @@
 import React, { Component } from 'react';
-import './styles.scss';
 import ReactPlayer from 'react-player';
-import PropTypes from 'prop-types';
+import { Button } from 'react-bootstrap';
+import './styles.scss';
 
 export default class VideoPlayer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      video_started: false
+      videoStarted: false
     };
   }
 
-
   startVideo = () => {
-    this.setState({ video_started: true });
+    this.setState({ videoStarted: true });
   };
 
   render() {
     const {
-      video_style,
-      container_style,
+      videoStyle,
+      containerStyle,
       thumbnail,
       url,
       playing,
       videoCallback,
-      embed_url
+      embedUrl
     } = this.props;
-    const { video_started } = this.state;
-    let video_preview = '';
-    let show_thumbnail = !video_started && thumbnail;
+    const { videoStarted } = this.state;
+    let videoPreview = '';
+    const showThumbnail = !videoStarted && thumbnail;
 
-    if (show_thumbnail) {
-      video_preview = (
-        <div
+    if (showThumbnail) {
+      videoPreview = (
+        <Button
           className="full-width video-preview"
           onClick={this.startVideo}
           style={{ backgroundImage: `url('${thumbnail}')` }}
         />
       );
     } else {
-      video_preview = !embed_url ? (
+      videoPreview = !embedUrl ? (
         <div className="video-container">
           <div className="player-wrapper">
             <ReactPlayer
@@ -49,7 +48,7 @@ export default class VideoPlayer extends Component {
               className="react-player"
               height="100%"
               width="100%"
-              style={video_style}
+              style={videoStyle}
               playing={playing || thumbnail}
               onEnded={videoCallback}
               data-vimeo-responsive="1"
@@ -57,27 +56,20 @@ export default class VideoPlayer extends Component {
           </div>
         </div>
       ) : (
-        <div className="video-stream" dangerouslySetInnerHTML={{ __html: embed_url }} />
+        <div
+          className="video-stream"
+          dangerouslySetInnerHTML={{ __html: embedUrl }}
+        />
       );
     }
 
     return (
-      <section className={`video-player fluid `}>
+      <section className="video-player fluid ">
         <div className="row" />
-        <div className="video-container" style={container_style}>
-          {video_preview}
+        <div className="video-container" style={containerStyle}>
+          {videoPreview}
         </div>
       </section>
     );
   }
 }
-
-VideoPlayer.propTypes = {
-  url: PropTypes.string,
-  thumbnail: PropTypes.string,
-  video_style: PropTypes.object,
-  container_style: PropTypes.object,
-  videoCallback: PropTypes.func,
-  playing: PropTypes.bool,
-  is_live_video: PropTypes.bool
-};

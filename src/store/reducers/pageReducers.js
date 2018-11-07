@@ -1,14 +1,14 @@
 import * as types from '../types/pageTypes';
 
 const initialState = {
-  current_page: 'home',
-  current_tab: '',
-  current_navigation_tab: '',
-  current_step: 0,
+  currentPage: 'home',
+  currentTab: '',
+  currentNavigationTab: '',
+  currentStep: 0,
   error: false,
-  pricing_plans: [],
-  open_overlay: '',
-  overlay_settings: {},
+  pricingPlans: [],
+  openOverlay: '',
+  overlaySettings: {},
   menus: {},
   live_video: {},
   page_title: '',
@@ -16,7 +16,8 @@ const initialState = {
   page_data: {}
 };
 
-export default (state = initialState, action) => {
+export default (curState = initialState, action) => {
+  const state = { ...curState };
   switch (action.type) {
     case types.LOAD_PAGE:
     case types.LOAD_PRICING:
@@ -28,7 +29,7 @@ export default (state = initialState, action) => {
         error: false
       };
 
-    //Results
+    // Results
     case types.SET_PAGE:
       return {
         ...state,
@@ -50,7 +51,7 @@ export default (state = initialState, action) => {
     case types.SET_PRICING:
       return {
         ...state,
-        pricing_plans: action.pricing_plans
+        pricingPlans: action.pricingPlans
       };
     case types.SET_MENU:
       return {
@@ -63,45 +64,45 @@ export default (state = initialState, action) => {
         live_video: action.live_video
       };
 
-    //Non Async Requests
+    // Non Async Requests
 
     case types.CHANGE_PAGE:
       return {
         ...state,
-        current_page: action.current_page
+        currentPage: action.currentPage
       };
 
     case types.CHANGE_NAVIGATION_TAB:
       return {
         ...state,
-        current_navigation_tab: action.current_navigation_tab
+        currentNavigationTab: action.currentNavigationTab
       };
 
     case types.CHANGE_TAB:
       return {
         ...state,
-        current_tab: action.current_tab
+        currentTab: action.currentTab
       };
 
     case types.CHANGE_OVERLAY_STEP:
       return {
         ...state,
-        current_step: action.current_step
+        currentStep: action.currentStep
       };
     case types.OPEN_OVERLAY:
-      delete state.overlay_settings;
+      delete state.overlaySettings;
       return {
         ...state,
-        open_overlay: action.overlay_name,
-        overlay_settings: action.overlay_settings
+        openOverlay: action.overlayName,
+        overlaySettings: action.overlaySettings
       };
     case types.CLOSE_OVERLAY:
       return {
         ...state,
-        open_overlay: ''
+        openOverlay: ''
       };
 
-    //Error
+    // Error
     case types.CHANGE_PAGE_ERROR:
       return {
         ...state,
@@ -110,4 +111,4 @@ export default (state = initialState, action) => {
     default:
       return state;
   }
-}
+};

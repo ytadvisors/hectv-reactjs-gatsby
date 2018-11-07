@@ -1,5 +1,4 @@
-import React, { Component } from 'react';
-import './styles.scss';
+import React from 'react';
 import {
   withScriptjs,
   withGoogleMap,
@@ -7,9 +6,10 @@ import {
   Marker,
   InfoWindow
 } from 'react-google-maps';
+import './styles.scss';
 
 const MapWithAMarker = withScriptjs(
-  withGoogleMap(props => (
+  withGoogleMap(() => (
     <GoogleMap
       defaultZoom={14}
       defaultCenter={{ lat: 38.745697, lng: -90.437065 }}
@@ -29,31 +29,21 @@ const MapWithAMarker = withScriptjs(
   ))
 );
 
-export default class Map extends Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    let { mapKey } = this.props;
-    let mapUrl = `https://maps.googleapis.com/maps/api/js?key=${mapKey}&v=3.exp&libraries=geometry,drawing,places`;
-    return (
-      <section>
-        <div className="row">
-          <div className="contact-container">
-            <div className="col-md-12 contact-field">
-              <div className="interactive-map">
-                <MapWithAMarker
-                  googleMapURL={mapUrl}
-                  loadingElement={<div style={{ height: `100%` }} />}
-                  containerElement={<div style={{ height: `500px` }} />}
-                  mapElement={<div style={{ height: `100%` }} />}
-                />
-              </div>
-            </div>
+export default ({ mapKey }) => (
+  <section>
+    <div className="row">
+      <div className="contact-container">
+        <div className="col-md-12 contact-field">
+          <div className="interactive-map">
+            <MapWithAMarker
+              googleMapURL={`https://maps.googleapis.com/maps/api/js?key=${mapKey}&v=3.exp&libraries=geometry,drawing,places`}
+              loadingElement={<div style={{ height: `100%` }} />}
+              containerElement={<div style={{ height: `500px` }} />}
+              mapElement={<div style={{ height: `100%` }} />}
+            />
           </div>
         </div>
-      </section>
-    );
-  }
-}
+      </div>
+    </div>
+  </section>
+);

@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import { reduxForm } from 'redux-form';
+import $ from 'jquery';
+import { reduxForm, SubmissionError } from 'redux-form';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import ReactForm from './../../../components/ReactForm';
-import Validator from './../../../components/ReactForm/Validator';
-import { SubmissionError } from 'redux-form';
-import $ from 'jquery';
+import ReactForm from '../../ReactForm';
+import Validator from '../../ReactForm/Validator';
 
 const fields = [
   {
@@ -36,10 +35,10 @@ class LoginForm extends Component {
 
   onSubmit() {
     const { callbackFunc, terms } = this.props;
-    const valid_submit =
+    const validSubmit =
       !terms || (terms && $('.terms-and-conditions').is(':checked'));
 
-    if (!valid_submit) {
+    if (!validSubmit) {
       throw new SubmissionError({
         terms: 'You must agree to the terms and conditions',
         _error: 'You must agree to the terms and conditions'
@@ -67,16 +66,16 @@ LoginForm.propTypes = {
   prevModal: PropTypes.func.isRequired,
   closeModal: PropTypes.func.isRequired,
   callbackFunc: PropTypes.func.isRequired,
-  current_step: PropTypes.number.isRequired
+  currentStep: PropTypes.number.isRequired
 };
 
 const mapStateToProps = state => ({
   values: state.form.user.values
 });
 
-const form_name = 'user';
+const formName = 'user';
 const ReactContainer = reduxForm({
-  form: form_name,
+  form: formName,
   validate
 })(ReactForm);
 

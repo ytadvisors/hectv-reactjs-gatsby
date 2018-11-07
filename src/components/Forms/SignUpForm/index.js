@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
+import $ from 'jquery';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import ReactForm from './../../../components/ReactForm';
-import Validator from './../../../components/ReactForm/Validator';
-import { reduxForm } from 'redux-form';
+import { reduxForm, SubmissionError } from 'redux-form';
+import Validator from '../../ReactForm/Validator';
+import ReactForm from '../../ReactForm';
+
 import './styles.scss';
-import { SubmissionError } from 'redux-form';
-import $ from 'jquery';
 
 const fields = [
   {
@@ -50,10 +50,10 @@ class SignUpForm extends Component {
 
   onSubmit() {
     const { callbackFunc, terms } = this.props;
-    const valid_submit =
+    const validSubmit =
       !terms || (terms && $('.terms-and-conditions').is(':checked'));
 
-    if (!valid_submit) {
+    if (!validSubmit) {
       throw new SubmissionError({
         terms: 'You must agree to the terms and conditions',
         _error: 'You must agree to the terms and conditions'
@@ -62,6 +62,7 @@ class SignUpForm extends Component {
 
     callbackFunc.call(this);
   }
+
   render() {
     return (
       <section className="signup-form">

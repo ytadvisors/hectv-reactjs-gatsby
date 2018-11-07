@@ -5,38 +5,40 @@ import './styles.scss';
 export default class DefaultDatePicker extends Component {
   constructor(props) {
     super(props);
-    this.handleDateChange = this.handleDateChange.bind(this);
     this.state = {
-      start_date: undefined
+      startDate: undefined
     };
   }
 
-  handleDateChange(date) {
-    const { input: { name }, change } = this.props;
+  handleDateChange = date => {
+    const {
+      input: { name },
+      change
+    } = this.props;
     this.setState({
-      start_date: date
+      startDate: date
     });
 
     change(name, date.format('MM/DD/YYYY'));
-  }
+  };
 
   render() {
     const {
       label,
-      display_label,
-      display_errors,
+      displayErrors,
       meta: { touched, error }
     } = this.props;
+    const { startDate } = this.state;
     return (
       <div className="date-picker">
         <DatePicker
           dateFormat="MM/DD/YYYY"
           name={label}
-          selected={this.state.start_date}
+          selected={startDate}
           onChange={this.handleDateChange}
           placeholderText={label}
         />
-        {display_errors && (
+        {displayErrors && (
           <div
             className="errors"
             dangerouslySetInnerHTML={{

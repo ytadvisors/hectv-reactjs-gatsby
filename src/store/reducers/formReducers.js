@@ -1,12 +1,12 @@
-import * as types from '../types/formTypes';
 import { reducer as formReducer } from 'redux-form';
+import * as types from '../types/formTypes';
 
-const user_initialState = {
+const userInitialState = {
   values: {}
 };
 
 export default formReducer.plugin({
-  user: (state = user_initialState, action) => {
+  user: (state = userInitialState, action) => {
     switch (action.type) {
       case types.LOGIN_FAIL:
         return {
@@ -39,13 +39,13 @@ export default formReducer.plugin({
         return state;
     }
   },
-  search: (state = user_initialState, action) => {
+  search: (state = userInitialState, action) => {
     switch (action.type) {
       default:
         return state;
     }
   },
-  schedule: (state = user_initialState, action) => {
+  schedule: (state = userInitialState, action) => {
     switch (action.type) {
       case types.LOAD_SCHEDULE_VALUES:
         return {
@@ -59,7 +59,7 @@ export default formReducer.plugin({
         return state;
     }
   },
-  newsletter: (state = user_initialState, action) => {
+  newsletter: (state = userInitialState, action) => {
     switch (action.type) {
       case types.LOAD_NEWSLETTER_VALUES:
         return {
@@ -73,7 +73,7 @@ export default formReducer.plugin({
         return state;
     }
   },
-  contact: (state = user_initialState, action) => {
+  contact: (state = userInitialState, action) => {
     switch (action.type) {
       case types.LOAD_CONTACT_VALUES:
         return {
@@ -85,20 +85,18 @@ export default formReducer.plugin({
         };
       case types.RESET_CONTACT_VALUES:
         return {
-          values: user_initialState.values
+          values: userInitialState.values
         };
-        break;
       default:
         return state;
     }
   },
-  comment: (state = user_initialState, action) => {
+  comment: (state = userInitialState, action) => {
     switch (action.type) {
       case types.RESET_COMMENT_VALUES:
         return {
-          values: user_initialState.values
+          values: userInitialState.values
         };
-        break;
       default:
         return state;
     }

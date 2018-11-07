@@ -2,14 +2,14 @@ import * as types from '../types/eventTypes';
 
 const initialState = {
   events: [],
-  related_events: [],
+  relatedEvents: [],
   event_list: [],
   event: {},
-  event_categories: [],
-  num_results: {
+  eventCategories: [],
+  numResults: {
     events: 0,
     event_list: 0,
-    related_events: 0
+    relatedEvents: 0
   }
 };
 
@@ -25,43 +25,43 @@ export default (state = initialState, action) => {
         error: false
       };
 
-    //Results
+    // Results
     case types.SET_EVENT_LIST:
       return {
         ...state,
         event_list: action.event_list,
-        num_results: {
-          ...state.num_results,
-          event_list: action.num_results
+        numResults: {
+          ...state.numResults,
+          event_list: action.numResults
         },
         error: false
       };
     case types.SET_RELATED_EVENTS:
       return {
         ...state,
-        related_events: action.related_events,
-        num_results: {
-          ...state.num_results,
-          related_events: action.num_results
+        relatedEvents: action.relatedEvents,
+        numResults: {
+          ...state.numResults,
+          relatedEvents: action.numResults
         },
         error: false
       };
     case types.SET_ALL_EVENTS:
       return {
         ...state,
-        events: action.load_more
+        events: action.loadMore
           ? [...state.events, ...action.events]
           : action.events,
-        num_results: {
-          ...state.num_results,
-          events: action.num_results
+        numResults: {
+          ...state.numResults,
+          events: action.numResults
         },
         error: false
       };
     case types.SET_EVENT:
       return {
         ...state,
-        event: action.load_more
+        event: action.loadMore
           ? [...state.event, ...action.event]
           : action.event,
         error: false
@@ -69,13 +69,13 @@ export default (state = initialState, action) => {
     case types.SET_EVENT_CATEGORIES:
       return {
         ...state,
-        event_categories: action.load_more
-          ? [...state.event_categories, ...action.event_categories]
-          : action.event_categories,
+        eventCategories: action.loadMore
+          ? [...state.eventCategories, ...action.eventCategories]
+          : action.eventCategories,
         error: false
       };
 
-    //Errors
+    // Errors
     case types.LOAD_ERROR:
       return {
         ...state,
@@ -84,4 +84,4 @@ export default (state = initialState, action) => {
     default:
       return state;
   }
-}
+};

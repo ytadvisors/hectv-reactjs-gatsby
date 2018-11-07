@@ -6,80 +6,59 @@ export default class PostApi extends MainApi {
     super(props);
   }
 
-  getComments = (slug, page = 1) =>{
-    return this.json_api.get(`comments?post=${slug}&page=${page}&order=desc`);
+  getComments = (slug, page = 1) =>
+    this.jsonApi.get(`comments?post=${slug}&page=${page}&order=desc`);
+
+  addComment = params => {
+    const query = querystring.stringify(params);
+    return this.jsonApi.post(`comments`, query);
   };
 
-  addComment = (params) =>{
-    let query = querystring.stringify(params);
-    return this.json_api.post(`comments`, query);
-  };
+  getSubCategories = parent =>
+    this.jsonApi.get(`categoryList?parent=${parent}`);
 
-  getSubCategories = (parent) =>{
-    return this.json_api.get(`category_list?parent=${parent}`);
-  };
+  getCategory = slug => this.jsonApi.get(`categoryList?slug=${slug}`);
 
-  getCategory = (slug) => {
-    return this.json_api.get(`category_list?slug=${slug}`);
-  };
+  getCategoryById = id => this.jsonApi.get(`categoryList/${id}`);
 
-  getCategoryById = (id) =>{
-    return this.json_api.get(`category_list/${id}`);
-  };
+  getAllPosts = (pageCategory = '', page = 1) => {
+    if (pageCategory === '')
+      return this.jsonApi.get(`posts?perPage=10&page=${page}`);
 
-  getAllPosts = (page_category = '', page = 1) => {
-    if (page_category === '')
-      return this.json_api.get(`posts?per_page=10&page=${page}`);
-    else {
-      return this.json_api.get(
-        `posts?per_page=10&page=${page}&category_list=${page_category}`
-      );
-    }
-  };
-
-  findPosts = ({terms, page, per_page}) =>{
-    page = page || 1;
-    per_page = per_page || 10;
-
-    if (terms === '')
-      return this.json_api.get(`posts?per_page=${per_page}&page=${page}`);
-    else {
-      return this.json_api.get(
-        `posts?per_page=${per_page}&page=${page}&search=${terms}`
-      );
-    }
-  };
-
-  getPostList = (posts) =>{
-    return this.json_api.get(`posts?slug[]=${posts.join('&slug[]=')}`);
-  };
-
-  getPost = (post_id) =>{
-    return this.json_api.get(`posts/${post_id}`);
-  };
-
-  getCategoriesPosts = (category_list = [], page = 1, per_page = 3) =>{
-    return this.json_api.get(
-      `posts?per_page=${per_page}&page=${page}&category_list[]=${category_list.join(
-        '&category_list[]='
-      )}`
+    return this.jsonApi.get(
+      `posts?perPage=10&page=${page}&categoryList=${pageCategory}`
     );
   };
 
-  getPostsBySlugs = (slugs) =>{
+  findPosts = ({ terms, page = 1, perPage = 10 }) => {
+    if (terms === '')
+      return this.jsonApi.get(`posts?perPage=${perPage}&page=${page}`);
+
+    return this.jsonApi.get(
+      `posts?perPage=${perPage}&page=${page}&search=${terms}`
+    );
+  };
+
+  getPostList = posts =>
+    this.jsonApi.get(`posts?slug[]=${posts.join('&slug[]=')}`);
+
+  getPost = postId => this.jsonApi.get(`posts/${postId}`);
+
+  getCategoriesPosts = (categoryList = [], page = 1, perPage = 3) =>
+    this.jsonApi.get(
+      `posts?perPage=${perPage}&page=${page}&categoryList[]=${categoryList.join(
+        '&categoryList[]='
+      )}`
+    );
+
+  getPostsBySlugs = slugs => {
     const query = slugs.join('&slug[]=');
-    return this.json_api.get(`posts?slug[]=${query}`);
+    return this.jsonApi.get(`posts?slug[]=${query}`);
   };
 
-  getPostBySlug = (slug) => {
-    return this.json_api.get(`posts?slug=${slug}`);
-  };
+  getPostBySlug = slug => this.jsonApi.get(`posts?slug=${slug}`);
 
-  getArticles = (page = 1) =>{
-    return this.json_api.get(`posts?articles=1&page=${page}`);
-  };
+  getArticles = (page = 1) => this.jsonApi.get(`posts?articles=1&page=${page}`);
 
-  getLiveVideos = () => {
-    return this.root_api.get(`/wp-json/hectv/v1/livevideos/live`);
-  };
+  getLiveVideos = () => this.rootApi.get(`/wp-json/hectv/v1/livevideos/live`);
 }

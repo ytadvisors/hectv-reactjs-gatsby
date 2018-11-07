@@ -1,74 +1,36 @@
 import React, { Component } from 'react';
-import * as FontAwesome from 'react-icons/lib/fa';
-import SearchForm from './../../components/Forms/SearchForm';
-import SocialLinks from './../../components/SocialLinks';
-import NavWrap from './../../components/NavWrap';
-import PropTypes from 'prop-types';
-import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
-import { isServer } from './../../utils/helperFunctions';
-import { Link } from "gatsby"
-import logo from './../../assets/white_hec.png';
 import $ from 'jquery';
-
+import * as FontAwesome from 'react-icons/lib/fa';
+import PropTypes from 'prop-types';
+import { Navbar, Nav, NavDropdown, Button } from 'react-bootstrap';
+import { Link } from 'gatsby';
+import SearchForm from '../Forms/SearchForm';
+import SocialLinks from '../SocialLinks';
+import NavWrap from '../NavWrap';
+import logo from '../../assets/white_hec.png';
 import {
   getHeaderMenuObject,
-  getSocialMenuObject
-} from './../../utils/helperFunctions';
+  getSocialMenuObject,
+  isServer
+} from '../../utils/helperFunctions';
 import './styles.scss';
 
 export default class Header extends Component {
   constructor(props) {
     super(props);
-    this.getLinks = this.getLinks.bind(this);
-    this.toggle = this.toggle.bind(this);
-    this.open = this.open.bind(this);
-    this.close = this.close.bind(this);
-    this.getNavDropDown = this.getNavDropDown.bind(this);
-    this.getNavItem = this.getNavItem.bind(this);
-    this.setNavExpanded = this.setNavExpanded.bind(this);
-    this.closeNav = this.closeNav.bind(this);
-    this.search = this.search.bind(this);
-
     this.state = {
       open: {},
       navExpanded: false
     };
   }
-  search() {
-    this.close('#');
-    const { searchFunc } = this.props;
-    searchFunc();
-  }
 
-  open(url) {
-    let state = this.state;
-    state.open[url] = true;
-    this.setState({ open: state.open });
-  }
-
-  close(url) {
-    let state = this.state;
-    state.open[url] = false;
-    this.setState({ open: state.open });
-  }
-
-  toggle(url) {
-    let state = this.state;
-    state.open[url] = !state.open[url];
-    this.setState({ open: state.open });
-  }
-
-  setNavExpanded(expanded) {
-    this.setState({ navExpanded: expanded });
-  }
-
-  closeNav() {
-    this.setState({ navExpanded: false });
+  componentDidMount() {
+    $('#main-nav > div:first-child').addClass('main-container');
   }
 
   componentWillReceiveProps(newProps) {
-    if(this.props.slug !== newProps.slug){
-      console.log(this.props);
+    const { slug } = this.props;
+    if (slug !== newProps.slug) {
       this.closeNav();
     }
   }
@@ -79,118 +41,148 @@ export default class Header extends Component {
     }
   }
 
-  componentDidMount() {
-    $('#main-nav > div:first-child').addClass('main-container');
-  }
+  search = () => {
+    this.close('#');
+    const { searchFunc } = this.props;
+    searchFunc();
+  };
 
-  getNavDropDown(link, linkFunction, current_link, i) {
-    const { url, label, btn_class } = link;
-    let clean_url = url.replace(/https?:\/\/[^/]+/, '');
-    let btn_display = btn_class ? btn_class : 'btn-secondary';
+  open = url => {
+    this.setState(prevState => {
+      const state = { ...prevState };
+      state.open[url] = true;
+      return { open: state.open };
+    });
+  };
+
+  close = url => {
+    this.setState(prevState => {
+      const state = { ...prevState };
+      state.open[url] = false;
+      return { open: state.open };
+    });
+  };
+
+  toggle = url => {
+    this.setState(prevState => {
+      const state = { ...prevState };
+      state.open[url] = !state.open[url];
+      return { open: state.open };
+    });
+  };
+
+  setNavExpanded = expanded => {
+    this.setState({ navExpanded: expanded });
+  };
+
+  closeNav = () => {
+    this.setState({ navExpanded: false });
+  };
+
+  getNavDropDown = (link, linkFunction, currentLink, i) => {
+    const btnDisplay = link.btnClass || 'btn-secondary';
 
     return (
       <NavDropdown
         key={`top_link${i}`}
-        className={`btn ${btn_display}`}
-        title={label}
-        id={`${label}-${i}`}
+        className={`btn ${btnDisplay}`}
+        title={link.label}
+        id={`${link.label}-${i}`}
       >
-        {link.children.map((menu, x) => {
+        {link.children.map(menu => {
           const { url, label } = menu;
-          let clean_url = url.replace(/https?:\/\/[^/]+/, '');
+          const cleanUrl = url.replace(/https?:\/\/[^/]+/, '');
           return (
-            <NavWrap
-              key={`menu-${x}`}
-            >
-              <Link to={clean_url} dangerouslySetInnerHTML={{
-                __html: label
-              }} >
-              </Link>
+            <NavWrap key={url}>
+              <Link
+                to={cleanUrl}
+                dangerouslySetInnerHTML={{
+                  __html: label
+                }}
+              />
             </NavWrap>
           );
         })}
       </NavDropdown>
     );
-  }
+  };
 
-  getNavItem(link, linkFunction, current_link, i) {
-    const {
-      url,
-      icon,
-      label,
-      icon_placement,
-      btn_class,
-      toggle,
-      onClick
-    } = link;
-    let clean_url = url.replace(/https?:\/\/[^/]+/, '');
-    let btn_display = btn_class ? btn_class : 'btn-secondary';
-    let clickFunction = toggle ? () => {} : onClick || linkFunction;
+  getNavItem = (link, linkFunction, currentLink, i) => {
+    const { url, icon, label, iconPlacement, btnClass, toggle, onClick } = link;
+    const cleanUrl = url.replace(/https?:\/\/[^/]+/, '');
+    const btnDisplay = btnClass || 'btn-secondary';
+    const clickFunction = toggle ? () => {} : onClick || linkFunction;
+    const { open } = this.state;
 
-    return this.state.open[url] ? (
+    return open[url] ? (
       <NavWrap
         key={`top_link${i}`}
-        className={`${current_link === clean_url.replace(/\//g, '')
-          ? `btn show ${btn_display}`
-          : `btn  ${btn_display}`}`}
-        onClick={() => clickFunction(clean_url)}
+        className={`${
+          currentLink === cleanUrl.replace(/\//g, '')
+            ? `btn show ${btnDisplay}`
+            : `btn  ${btnDisplay}`
+        }`}
+        onClick={() => clickFunction(cleanUrl)}
       >
         {toggle}
       </NavWrap>
     ) : (
       <NavWrap
         key={`top_link${i}`}
-        className={`${current_link === clean_url.replace(/\//g, '')
-          ? `btn show ${btn_display}`
-          : `btn  ${btn_display}`}`}
+        className={`${
+          currentLink === cleanUrl.replace(/\//g, '')
+            ? `btn show ${btnDisplay}`
+            : `btn  ${btnDisplay}`
+        }`}
       >
-        {icon && icon_placement !== 'right' ? icon : ''}
-        <Link to={clean_url} dangerouslySetInnerHTML={{
-          __html: label
-        }} >
-        </Link>
+        {icon && iconPlacement !== 'right' ? icon : ''}
+        <Link
+          to={cleanUrl}
+          dangerouslySetInnerHTML={{
+            __html: label
+          }}
+        />
       </NavWrap>
     );
-  }
+  };
 
-  getLinks(links, linkFunction, current_link) {
-    return links.map(
+  getLinks = (links, linkFunction, currentLink) =>
+    links.map(
       (link, i) =>
         link.children
-          ? this.getNavDropDown(link, linkFunction, current_link, i)
-          : this.getNavItem(link, linkFunction, current_link, i)
+          ? this.getNavDropDown(link, linkFunction, currentLink, i)
+          : this.getNavItem(link, linkFunction, currentLink, i)
     );
-  }
 
   render() {
-    const {
-      current_page,
-      header,
-      social,
-      openLink
-    } = this.props;
+    const { currentPage, header, social, openLink } = this.props;
+    const { navExpanded } = this.state;
 
     const isMobile = !isServer && window.innerWidth <= 1170;
-    let style = isMobile
-      ? { width: window.innerWidth - 50 + 'px', right: '12px' }
+    const style = isMobile
+      ? { width: `${window.innerWidth - 50}px`, right: '12px' }
       : {};
 
-    let top_links = getHeaderMenuObject(header);
-    let social_links = getSocialMenuObject(social, isMobile ? 15 : 25, 'white');
+    const topLinks = getHeaderMenuObject(header);
+    const socialLinks = getSocialMenuObject(
+      social,
+      isMobile ? 15 : 25,
+      'white'
+    );
 
-    let user_admin = [
+    const userAdmin = [
       {
         label: '',
         url: '#',
-        btn_class: 'btn-secondary pull-right search-btn',
+        btnClass: 'btn-secondary pull-right search-btn',
         icon: (
-          <div className="search-btn-icon" onClick={() => this.open('#')}>
+          <Button className="search-btn-icon" onClick={() => this.open('#')}>
             <FontAwesome.FaSearch
               className="search-icon"
               size="20"
               color="#444"
             />
-          </div>
+          </Button>
         ),
         toggle: (
           <div>
@@ -199,16 +191,16 @@ export default class Header extends Component {
                 <div className="search-input col-xs-10 no-padding">
                   <SearchForm callbackFunc={this.search} />
                 </div>
-                <div
+                <Button
                   className="col-xs-2 text-center search-icon-container"
                   style={{ verticalAlign: 'middle' }}
                   onClick={() => this.search()}
                 >
                   <FontAwesome.FaSearch className="search-icon" color="#222" />
-                </div>
+                </Button>
               </div>
             </div>
-            <div className="gradient" onClick={() => this.close('#')} />
+            <Button className="gradient" onClick={() => this.close('#')} />
           </div>
         )
       }
@@ -217,12 +209,11 @@ export default class Header extends Component {
     return (
       <section className="header">
         <Navbar
-          ref="nav"
           inverse
           className="navbar-class"
           id="main-nav"
           onToggle={this.setNavExpanded}
-          expanded={this.state.navExpanded}
+          expanded={navExpanded}
         >
           <Navbar.Header className="navbar-header-class">
             <div className="top-logo">
@@ -238,14 +229,17 @@ export default class Header extends Component {
             </div>
             <div className="brand-details">
               <div className="brand-text">
-                <div>St. Louis' home of Education</div>
+                <div>
+                  St. Louis
+                  {`'`} home of Education
+                </div>
                 <div>Arts, and Culture</div>
               </div>
-              <SocialLinks links={social_links} />
+              <SocialLinks links={socialLinks} />
             </div>
-            <Navbar.Toggle className={`nav-toggle `} />
+            <Navbar.Toggle className="nav-toggle " />
             <Nav onSelect={this.closeNav} className="user-admin pull-right">
-              {this.getLinks(user_admin, openLink, current_page)}
+              {this.getLinks(userAdmin, openLink, currentPage)}
             </Nav>
           </Navbar.Header>
           <div className="bottom-nav row">
@@ -254,7 +248,7 @@ export default class Header extends Component {
                 onSelect={this.closeNav}
                 className="pull-left top-navigation left-links"
               >
-                {this.getLinks(top_links, openLink, current_page)}
+                {this.getLinks(topLinks, openLink, currentPage)}
               </Nav>
             </Navbar.Collapse>
           </div>
@@ -263,7 +257,8 @@ export default class Header extends Component {
     );
   }
 }
+
 Header.propTypes = {
-  header: PropTypes.array.isRequired,
-  social: PropTypes.array.isRequired
+  header: PropTypes.arrayOf(PropTypes.object).isRequired,
+  social: PropTypes.arrayOf(PropTypes.object).isRequired
 };
