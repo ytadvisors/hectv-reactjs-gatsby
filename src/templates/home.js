@@ -29,6 +29,7 @@ class Home extends Component {
 
   loadLive = () => {
     const { dispatch, data: { wpSchedule: { edges } = {} } = {} } = this.props;
+
     dispatch(loadLiveVideosAction());
     this.setState({
       programs: getPrograms(edges, 5)

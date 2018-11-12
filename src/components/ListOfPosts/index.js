@@ -389,7 +389,7 @@ export default class ListOfPosts extends Component {
   };
 
   getRowKey = currentRow =>
-    currentRow.reduce((result, item) => `${item.slug} `, '');
+    currentRow.reduce((result, item) => `${item.slug} ${item.postName}`, '');
 
   getRows = (layout, displayType, rowOfColumns, tableStyle, resizeRows) => (
     <table className="main-table" style={tableStyle}>

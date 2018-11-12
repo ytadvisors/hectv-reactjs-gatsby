@@ -211,12 +211,9 @@ export const getPrograms = (schedules, numEntries) => {
   const day = currentTime.format('MMMM-YYYY').toLowerCase();
 
   if (schedules) {
-    const programs = schedules.reduce((acc, schedule) => {
-      let result = { ...acc };
-      if (schedule.node.slug === day)
-        result = schedule.node.acf.schedulePrograms;
-      return result;
-    }, {});
+    const programs = schedules.reduce((acc, schedule) => schedule.node.slug === day
+        ? schedule.node.acf.schedulePrograms
+        : { ...acc }, {});
 
     return programs.reduce(
       (acc, item) => {
