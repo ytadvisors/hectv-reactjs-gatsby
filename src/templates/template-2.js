@@ -1,127 +1,123 @@
-import React, { Component} from "react";
-import {graphql} from "gatsby"
+import React, { Component } from 'react';
+import { graphql } from 'gatsby';
 import { connect } from 'react-redux';
 
-import {
-  loadLiveVideosAction
-} from "./../store/actions/postActions"
+import { loadLiveVideosAction } from '../store/actions/postActions';
 
-import {
-  getPrograms
-} from "./../utils/helperFunctions"
-import SEO from "./../components/SEO";
-import Layout from "./../components/Layout"
-import SinglePost from "./../components/SinglePost"
-import DefaultNav from './../components/SubNavigation/DefaultNav';
+import { getPrograms, getExcerpt } from '../utils/helperFunctions';
+import SEO from '../components/SEO';
+import Layout from '../components/Layout';
+import SinglePost from '../components/SinglePost';
+import DefaultNav from '../components/SubNavigation/DefaultNav';
 
 class Template2Page extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      programs : {}
+      programs: {}
     };
   }
 
-  componentDidMount(){
+  componentDidMount() {
+    this.mounted = true;
     this.loadLive();
   }
 
+  componentWillUnmount() {
+    this.mounted = false;
+  }
+
   loadLive = () => {
-    const {
-      dispatch,
-      data : {
-        wpSchedule : {
-          edges
-        } = {}
-      } = {}
-    } = this.props;
+    const { dispatch, data: { wpSchedule: { edges } = {} } = {} } = this.props;
     dispatch(loadLiveVideosAction());
-    this.setState({
-      programs : getPrograms(edges, 5)
-    });
+    if (this.mounted)
+      this.setState({
+        programs: getPrograms(edges, 5)
+      });
     setTimeout(this.loadLive, 30000);
   };
 
   render() {
+    const { data, liveVideos } = this.props;
+
     const {
-      data,
-      live_videos
-    } = this.props;
+      wpPage: { title, content, link = '', slug } = {},
+      wpSite: { siteMetadata: { siteUrl, fbAppId } = {} } = {}
+    } = data;
 
-    let title = data.wpPage.title;
+    const post = { ...data.wpPage };
+    const { programs } = this.state;
+    post.acf.content = content;
 
-    if (data.wpPage.acf)
-      data.wpPage.acf.content = data.wpPage.content;
+    const description =
+      content || 'On Demand Arts, Culture & Education Programming';
 
-    let description = data.wpPage.content || "On Demand Arts, Culture & Education Programming";
-    return <div>
-      <SEO
-        {...{
-          title: `HEC-TV | ${title}`,
-          image: "",
-          description: description.replace(/<\/?[^>]+(>|$)/g, '').substring(0, 320) + '...',
-          url: data.wpSite.siteMetadata.siteUrl,
-          fb_app_id: data.wpSite.siteMetadata.fbAppId,
-          pathname: data.wpPage.link.replace(/https?:\/\/[^/]+/, ''),
-          site_name: "hecmedia.org",
-          author: "hectv",
-          twitter_handle: "@hec_tv"
-        }}
-      />
-      <Layout
-        slug={data.wpPage.slug}
-        live_videos={live_videos}
-        programs={this.state.programs}
-      >
-        <div>
-          <div className="col-md-12">
-            <DefaultNav title={title} link={data.wpPage.link}/>
+    return (
+      <div>
+        <SEO
+          {...{
+            title: `HEC-TV | ${title}`,
+            image: '',
+            description: getExcerpt(description, 320),
+            url: siteUrl,
+            fbAppId,
+            pathname: link.replace(/https?:\/\/[^/]+/, ''),
+            siteName: 'hecmedia.org',
+            author: 'hectv',
+            twitterHandle: '@hec_tv'
+          }}
+        />
+        <Layout slug={slug} liveVideos={liveVideos} programs={programs}>
+          <div>
+            <div className="col-md-12">
+              <DefaultNav title={title} link={link} />
+            </div>
+            <div className="col-md-12">
+              <SinglePost {...{ post }} hideTitle />
+            </div>
           </div>
-          <div className="col-md-12">
-            <SinglePost {...{post: data.wpPage}} hideTitle/>
-          </div>
-        </div>
-      </Layout>
-    </div>
+        </Layout>
+      </div>
+    );
   }
 }
 
-
-const mapStateToProps = (state, ownProps) => ({
-  live_videos: state.postReducers.live_videos
+const mapStateToProps = state => ({
+  liveVideos: state.postReducers.liveVideos
 });
 
 export default connect(mapStateToProps)(Template2Page);
 export const query = graphql`
-query template2PageQuery($slug: String!) {
-  wpSite: site {
-    siteMetadata{
-      siteUrl
-      fbAppId
+  query template2PageQuery($slug: String!) {
+    wpSite: site {
+      siteMetadata {
+        siteUrl
+        fbAppId
+      }
     }
-  }
-  wpSchedule : allWordpressWpSchedules {
-    edges{
-      node{
-        slug
-        title
-        link
-        acf{
-          schedule_programs{
-            program_start_time
-            program_end_time
-            program_title
-            program_start_date
+    wpSchedule: allWordpressWpSchedules {
+      edges {
+        node {
+          slug
+          title
+          link
+          acf {
+            schedulePrograms {
+              programStartTime
+              programEndTime
+              programTitle
+              programStartDate
+            }
           }
         }
       }
     }
+    wpPage: wordpressPage(slug: { eq: $slug }) {
+      slug
+      title
+      content
+      link
+      template
+    }
   }
-  wpPage: wordpressPage(slug: {eq: $slug}) {
-    slug
-    title
-    content
-    link
-    template
-  }
-}`;
+`;

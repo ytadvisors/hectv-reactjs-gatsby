@@ -1,40 +1,35 @@
 import * as types from '../types/postTypes';
 
-export const loadPostAction = (post_id) => {
-  return {
-    type: types.LOAD_POST,
-    post_id
-  };
-};
+export const loadPostAction = postId => ({
+  type: types.LOAD_POST,
+  postId
+});
 
-export const loadLiveVideosAction = () => {
-  return {
-    type: types.LOAD_LIVE_VIDEOS
-  };
-};
+export const loadLiveVideosAction = () => ({
+  type: types.LOAD_LIVE_VIDEOS
+});
 
-export const loadSearchPostsAction = (apiUrl, terms, page, load_more = false) => {
-  return {
-    type: types.LOAD_SEARCH_POSTS,
-    apiUrl,
-    terms,
-    page,
-    load_more
-  };
-};
+export const loadSearchPostsAction = (
+  apiUrl,
+  terms,
+  page,
+  loadMore = false
+) => ({
+  type: types.LOAD_SEARCH_POSTS,
+  apiUrl,
+  terms,
+  page,
+  loadMore
+});
 
-export const loadSubCategoriesAction = (category) => {
-  return {
-    type: types.LOAD_SUBCATEGORIES,
-    category
-  };
-};
+export const loadSubCategoriesAction = category => ({
+  type: types.LOAD_SUBCATEGORIES,
+  category
+});
 
-export const loadAllPostsAction = (category = '', page, load_more = false) => {
-  return {
-    type: types.LOAD_ALL_POSTS,
-    category,
-    page,
-    load_more
-  };
-};
+export const loadAllPostsAction = (category = '', page, loadMore = false) => ({
+  type: types.LOAD_ALL_POSTS,
+  category,
+  page,
+  loadMore
+});

@@ -14,6 +14,7 @@ export default ({
     dispatch(closeOverlayAction());
   };
 
+  const title = "St. Louis' home of Education";
   return (
     <Modal
       show={openOverlay === 'basic'}
@@ -29,7 +30,7 @@ export default ({
 
           <div className="col-xs-8 brand-details no-padding">
             <div className="brand-text">
-              <div>St. Louis&apos; home of Education</div>
+              <div>{title}</div>
               <div>Arts, and Culture</div>
             </div>
           </div>
@@ -41,7 +42,7 @@ export default ({
             src={img}
             className="img-responsive "
             style={{ width: '100%' }}
-            alt="background"
+            alt="header"
           />
         )}
         {video && (

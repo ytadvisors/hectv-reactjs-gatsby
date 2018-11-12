@@ -21,7 +21,7 @@ export default (state = initialState, action) => {
         error: false
       };
 
-    //Results
+    // Results
     case types.SAVE_USER_INFORMATION:
       return {
         ...state,
@@ -34,14 +34,10 @@ export default (state = initialState, action) => {
       };
     case types.SET_LOGIN:
     case types.SET_USER:
-      let stored_user = localStorage.getItem('user')
-        ? JSON.parse(localStorage.getItem('user'))
-        : {};
       return {
         ...state,
         user: {
           ...state.user,
-          ...stored_user,
           ...action.values
         }
       };
@@ -59,7 +55,7 @@ export default (state = initialState, action) => {
       return {
         ...state
       };
-    //Errors
+    // Errors
     case types.LOAD_ERROR:
     case types.LOGIN_ERROR:
     case types.REGISTER_ERROR:
@@ -72,4 +68,4 @@ export default (state = initialState, action) => {
     default:
       return state;
   }
-}
+};

@@ -1,13 +1,17 @@
 import React from 'react';
-import { StaticQuery, graphql  } from 'gatsby';
+import { StaticQuery, graphql } from 'gatsby';
 import Recaptcha from 'react-recaptcha';
 import './styles.scss';
 
+export default props => {
+  const {
+    input: { name },
+    displayErrors,
+    meta: { touched, error },
+    change
+  } = props;
 
-export default (props) => {
-
-  const verifyCallback = (props) => {
-    const { input: { name }, change } = props;
+  const verifyCallback = () => {
     change(name, true);
   };
 
@@ -15,44 +19,36 @@ export default (props) => {
     console.log('Done!!!!');
   };
 
-
-  const {
-    input,
-    display_errors,
-    meta: { touched, error }
-  } = props;
   return (
     <StaticQuery
       query={graphql`
-         query captchaKeyQuery{
+        query captchaKeyQuery {
           wpSite: site {
-            siteMetadata{
+            siteMetadata {
               captchaKey
             }
           }
         }
       `}
-      render={
-        data => {
-          return <div className="captcha">
-            <Recaptcha
-              sitekey={data.wpSite.siteMetadata.captchaKey}
-              render="explicit"
-              verifyCallback={() => verifyCallback(props)}
-              onloadCallback={callback}
-              elementID={input.name}
+      render={data => (
+        <div className="captcha">
+          <Recaptcha
+            sitekey={data.wpSite.siteMetadata.captchaKey}
+            render="explicit"
+            verifyCallback={() => verifyCallback()}
+            onloadCallback={callback}
+            elementID={name}
+          />
+          {displayErrors && (
+            <div
+              className="errors"
+              dangerouslySetInnerHTML={{
+                __html: touched && error ? error : '&nbsp;'
+              }}
             />
-            {display_errors && (
-              <div
-                className="errors"
-                dangerouslySetInnerHTML={{
-                  __html: touched && error ? error : '&nbsp;'
-                }}
-              />
-            )}
-          </div>
-        }
-      }
+          )}
+        </div>
+      )}
     />
   );
-}
+};

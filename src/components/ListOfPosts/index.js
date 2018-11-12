@@ -1,182 +1,153 @@
 import React, { Component } from 'react';
 import { Link } from 'gatsby';
-import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { Button } from 'react-bootstrap';
-import defaultImage from './../../assets/nothumbnail.png';
-import playButton from './../../assets/play-button.png';
-import { isServer, getEventDate } from './../../utils/helperFunctions';
 import * as Material from 'react-icons/lib/md';
 import * as Ionicons from 'react-icons/lib/io';
 import LazyLoad from 'react-lazyload';
+import defaultImage from '../../assets/nothumbnail.png';
+import playButton from '../../assets/play-button.png';
+import { isServer, getEventDate } from '../../utils/helperFunctions';
 
 import './styles.scss';
 
 export default class ListOfPosts extends Component {
   constructor(props) {
     super(props);
-    this.truncate = this.truncate.bind(this);
-    this.getRows = this.getRows.bind(this);
-    this.getNumColumns = this.getNumColumns.bind(this);
-    this.getColumnContent = this.getColumnContent.bind(this);
-    this.getThumbNail = this.getThumbNail.bind(this);
-    this.getCategories = this.getCategories.bind(this);
-    this.getTitle = this.getTitle.bind(this);
-    this.getContent = this.getContent.bind(this);
-    this.getExcerpt = this.getExcerpt.bind(this);
-    this.getContentDetails = this.getContentDetails.bind(this);
-    this.getColumnLayout = this.getColumnLayout.bind(this);
-    this.getLink = this.getLink.bind(this);
-    this.getImgSrc = this.getImgSrc.bind(this);
-    this.resize = this.resize.bind(this);
-
-    //Layout
-    this.getSingleColumnPost = this.getSingleColumnPost.bind(this);
-    this.getSingleColumnWallpaper = this.getSingleColumnWallpaper.bind(this);
     this.state = {
       isMobile: false
     };
   }
 
   componentDidMount() {
-    if(!isServer)
-      window.addEventListener('resize', this.resize);
+    if (!isServer) window.addEventListener('resize', this.resize);
     this.setState({ isMobile: !isServer && window.innerWidth <= 500 });
   }
 
   componentWillUnmount() {
-    if(!isServer)
-      window.removeEventListener('resize', this.resize);
+    if (!isServer) window.removeEventListener('resize', this.resize);
   }
 
-  resize() {
+  resize = () => {
     this.setState({ isMobile: !isServer && window.innerWidth <= 500 });
-  }
+  };
 
-  truncate(excerpt, truncateLength) {
-    return excerpt && excerpt.length > truncateLength
-      ? excerpt.substr(0, truncateLength) + '&hellip;'
+  truncate = (excerpt, truncateLength) =>
+    excerpt && excerpt.length > truncateLength
+      ? `${excerpt.substr(0, truncateLength)}&hellip;`
       : excerpt;
-  }
 
-  getThumbNail(thumbnail, is_video, link) {
-    return (
-      <Link to={link} className="thumbnail-link">
-        {is_video && <img src={playButton} className="play-icon" />}
-        <LazyLoad height={200}>
-          <img
-            src={thumbnail || defaultImage}
-            className="img-responsive full-width thumbnail-img"
-            alt=""
-          />
-        </LazyLoad>
-      </Link>
-    );
-  }
+  getThumbNail = (thumbnail, isVideo, link) => (
+    <Link to={link} className="thumbnail-link">
+      {isVideo && <img src={playButton} className="play-icon" alt="play" />}
+      <LazyLoad height={200}>
+        <img
+          src={thumbnail || defaultImage}
+          className="img-responsive full-width thumbnail-img"
+          alt=""
+        />
+      </LazyLoad>
+    </Link>
+  );
 
-  getLink(post){
-    const { page } = this.props.link;
-    const { post_name, slug, redirect } = post;
-    return redirect || (post_name) ? `/${page}/${post_name}` : `/${page}/${slug}`;
-  }
+  getLink = post => {
+    const { link: { page } = {} } = this.props;
+    const { postName, slug, redirect } = post;
+    return redirect || postName ? `/${page}/${postName}` : `/${page}/${slug}`;
+  };
 
-  getImgSrc(post , type){
-
+  getImgSrc = (post, type) => {
     const {
-      thumbnail
+      thumbnail,
+      acf: { isVideo, coverImage, videoImage, postHeader, eventImage } = {}
     } = post;
 
-    let acf = post.acf || {};
-    let is_video = acf.is_video;
-    let cover_image =  acf.cover_image;
-    if(thumbnail)
-      return thumbnail;
-    else if(cover_image)
-      return cover_image;
-    else if(acf.video_image || acf.post_header || acf.event_image){
-      let img = "";
-      if(is_video){
-        img = acf.video_image;
+    if (thumbnail) return thumbnail;
+    if (coverImage) return coverImage;
+    if (videoImage || postHeader || eventImage) {
+      let img = '';
+      if (isVideo) {
+        img = videoImage;
       } else {
-        img = acf.post_header ? acf.post_header : acf.event_image
+        img = postHeader || eventImage;
       }
-      if(img){
-        const { sizes: {medium, medium_large }} = img;
-        switch(type){
-          case "small":
+      if (img) {
+        const {
+          sizes: { medium, mediumLarge }
+        } = img;
+        switch (type) {
+          case 'small':
             return medium;
+          default:
+            return mediumLarge;
         }
-        return medium_large
       }
     }
     return defaultImage;
-  }
+  };
 
-  getCategories(categories) {
-    return (
-      <p>
-        {categories.map((category, x) => (
-          <span className="category-info" key={`category-${x}`}>
-            {category.link && <Link
+  getCategories = categories => (
+    <p>
+      {categories.map(category => (
+        <span className="category-info" key={category.link}>
+          {category.link && (
+            <Link
               to={category.link.replace(/https?:\/\/[^/]+/, '')}
               dangerouslySetInnerHTML={{
                 __html: category.name
               }}
-            />}
+            />
+          )}
+        </span>
+      ))}
+    </p>
+  );
 
-          </span>
-        ))}
-      </p>
-    );
-  }
-
-  getTitle(display_type, layout, post) {
+  getTitle = (displayType, layout, post) => {
     const { title } = post;
-    const link = this.getLink(post)
-    let post_type = layout === '3 Columns' ? 'small_title' : '';
-    if (display_type === 'Wallpaper') {
+    const link = this.getLink(post);
+    const postType = layout === '3 Columns' ? 'small_title' : '';
+    if (displayType === 'Wallpaper') {
       return (
         <p>
           <span
-            className={`blog-title ${post_type}`}
+            className={`blog-title ${postType}`}
             dangerouslySetInnerHTML={{
               __html: title
             }}
           />
         </p>
       );
-    } else
-      return (
-        <p>
-          <Link to={link}>
-            <span
-              className={`blog-title ${post_type}`}
-              dangerouslySetInnerHTML={{
-                __html: title
-              }}
-            />
-          </Link>
-        </p>
-      );
-  }
+    }
+    return (
+      <p>
+        <Link to={link}>
+          <span
+            className={`blog-title ${postType}`}
+            dangerouslySetInnerHTML={{
+              __html: title
+            }}
+          />
+        </Link>
+      </p>
+    );
+  };
 
-  getExcerpt(display_type, layout, post) {
-
+  getExcerpt = (displayType, layout, post) => {
     const { excerpt, acf } = post;
     let subtitle = excerpt;
     let icon = '';
 
-    if( acf && acf.venue) {
+    if (acf && acf.venue) {
       subtitle = acf.venue;
       icon = <Material.MdLocationOn size="25" color="#4ea2ea" />;
     }
 
     if (subtitle) {
       if (
-        display_type === 'Wallpaper' ||
+        displayType === 'Wallpaper' ||
         (layout !== '2 Columns' && layout !== '3 Columns')
       ) {
-
         return (
           <div>
             {icon}
@@ -191,85 +162,72 @@ export default class ListOfPosts extends Component {
       }
     }
     return '';
-  }
+  };
 
-  getContentDetails(display_type, layout, post) {
-    const { content_details } = post;
-    if (content_details) {
+  getContentDetails = (displayType, layout, post) => {
+    const { contentDetails } = post;
+    if (contentDetails) {
       if (
-        display_type === 'Wallpaper' ||
+        displayType === 'Wallpaper' ||
         (layout !== '2 Columns' && layout !== '3 Columns')
       ) {
         return (
           <span
             className="content-details"
             dangerouslySetInnerHTML={{
-              __html: ' ' + this.truncate(content_details, 163)
+              __html: ` ${this.truncate(contentDetails, 163)}`
             }}
           />
         );
       }
     }
     return '';
-  }
+  };
 
-  getContent(display_type, layout, post) {
+  getContent = (displayType, layout, post) => (
+    <div>
+      {this.getExcerpt(displayType, layout, post)}
+      {this.getContentDetails(displayType, layout, post)}
+    </div>
+  );
+
+  getColumnContent = (displayType, layout, post) => {
+    const { categories, acf } = post;
+    const categoryList = !categories ? [] : categories;
     return (
       <div>
-        {this.getExcerpt(display_type, layout, post)}
-        {this.getContentDetails(display_type, layout, post)}
-      </div>
-    );
-  }
-
-  getColumnContent(display_type, layout, post) {
-    const {
-      categories,
-      acf
-    } = post;
-    let category_list = !categories ? [] : categories;
-    return (
-      <div>
-        {acf && acf.event_dates && (
-          <div className="blog-meta">
-            {this.getDate(acf.event_dates)}
-          </div>
-        )}
-        <div className="blog-excerpt">
-          {this.getCategories(category_list)}
-          {this.getTitle(display_type, layout, post)}
-          {this.getContent(
-            display_type,
-            layout,
-            post
+        {acf &&
+          acf.eventDates && (
+            <div className="blog-meta">{this.getDate(acf.eventDates)}</div>
           )}
+        <div className="blog-excerpt">
+          {this.getCategories(categoryList)}
+          {this.getTitle(displayType, layout, post)}
+          {this.getContent(displayType, layout, post)}
         </div>
       </div>
     );
-  }
+  };
 
-  getDate(event_dates) {
-    if (event_dates) {
+  getDate = eventDates => {
+    if (eventDates) {
       return (
         <div className="blog-info">
           <Ionicons.IoCalendar size="20" color="white" />
           <span
             className="date"
             dangerouslySetInnerHTML={{
-              __html: getEventDate(event_dates)
+              __html: getEventDate(eventDates)
             }}
           />
         </div>
       );
     }
     return '';
-  }
+  };
 
-  getSingleColumnPost(post, content) {
-
-
-    let acf = post.acf || {};
-    let is_video = acf.is_video;
+  getSingleColumnPost = (post, content) => {
+    const { acf: { isVideo } = {} } = post;
 
     return (
       <table className="no-spacing">
@@ -281,8 +239,8 @@ export default class ListOfPosts extends Component {
               style={{ padding: '10px', paddingBottom: '30px' }}
             >
               {this.getThumbNail(
-                this.getImgSrc(post , "small"),
-                is_video,
+                this.getImgSrc(post, 'small'),
+                isVideo,
                 this.getLink(post)
               )}
             </td>
@@ -290,69 +248,74 @@ export default class ListOfPosts extends Component {
         </tbody>
       </table>
     );
-  }
+  };
 
-  getSingleColumnWallpaper(post, content) {
-    const { redirect } = post;
+  getSingleColumnWallpaper = (post, content) => (
+    <table className="no-spacing">
+      <tbody>
+        <tr>
+          <td className="col-md-12 wallpapercontainer">
+            <div
+              className="wallpaper"
+              style={{
+                backgroundImage: `url(${this.getImgSrc(post) || defaultImage})`
+              }}
+            >
+              {(post.redirect && (
+                <a
+                  href={post.redirect}
+                  style={{ display: 'block' }}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <div className="gradient" />
+                  <div className="texture" />
+                  <div className="content">{content}</div>
+                </a>
+              )) || (
+                <Link to={this.getLink(post)}>
+                  <div className="gradient" />
+                  <div className="texture" />
+                  <div className="content">{content}</div>
+                </Link>
+              )}
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  );
 
-    return (
-      <table className="no-spacing">
-        <tbody>
-          <tr>
-            <td className="col-md-12 wallpapercontainer">
-              <div
-                className="wallpaper"
-                style={{ backgroundImage: `url(${this.getImgSrc(post) || defaultImage})` }}
-              >
-                {(redirect && (
-                  <a
-                    href={redirect}
-                    style={{ display: 'block' }}
-                    target="_blank"
-                  >
-                    <div className="gradient" />
-                    <div className="texture" />
-                    <div className="content">{content}</div>
-                  </a>
-                )) || (
-                  <Link to={this.getLink(post)}>
-                    <div className="gradient" />
-                    <div className="texture" />
-                    <div className="content">{content}</div>
-                  </Link>
-                )}
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    );
-  }
+  getFeaturedPost = (post, content) => {
+    const { acf: { isVideo } = {} } = post;
 
-  getFeaturedPost(post, content) {
-
-
-    let acf = post.acf || {};
-    let is_video = acf.is_video;
+    const { isMobile } = this.state;
 
     return (
       <div className="featured-block">
         {this.getThumbNail(
-          this.getImgSrc(post, this.state.isMobile ? "small" : ""),
-          is_video,
+          this.getImgSrc(post, isMobile ? 'small' : ''),
+          isVideo,
           this.getLink(post)
         )}
         {content}
       </div>
     );
-  }
+  };
 
-  getFeaturedWallpaper(post, content) {
+  getFeaturedWallpaper = (post, content) => {
+    const { isMobile } = this.state;
+
     return (
       <div className="featured-block">
         <div
           className="wallpaper"
-          style={{ backgroundImage: `url(${this.getImgSrc(post, !this.state.isMobile ? "small" : "")})` }}
+          style={{
+            backgroundImage: `url(${this.getImgSrc(
+              post,
+              !isMobile ? 'small' : ''
+            )})`
+          }}
         >
           <Link to={this.getLink(post)}>
             <div className="gradient" />
@@ -362,43 +325,41 @@ export default class ListOfPosts extends Component {
         </div>
       </div>
     );
-  }
+  };
 
-  getPost(layout, post, content) {
-
-    let acf = post.acf || {};
-    let is_video = acf.is_video;
+  getPost = (layout, post, content) => {
+    const { acf: { isVideo } = {} } = post;
 
     return (
       <div>
         <div className={`thumbnail-${layout.replace(' ', '-').toLowerCase()}`}>
-          {this.getThumbNail(this.getImgSrc(post), is_video, this.getLink(post))}
+          {this.getThumbNail(this.getImgSrc(post), isVideo, this.getLink(post))}
         </div>
         {content}
       </div>
     );
-  }
+  };
 
-  getWallpaper(post, content) {
-    return (
-      <div
-        className="wallpaper"
-        style={{ backgroundImage: `url(${this.getImgSrc(post)})` }}
-      >
-        <Link to={this.getLink(post)}>
-          <div className="gradient" />
-          <div className="texture" />
-          <div className="content">{content}</div>
-        </Link>
-      </div>
-    );
-  }
+  getWallpaper = (post, content) => (
+    <div
+      className="wallpaper"
+      style={{ backgroundImage: `url(${this.getImgSrc(post)})` }}
+    >
+      <Link to={this.getLink(post)}>
+        <div className="gradient" />
+        <div className="texture" />
+        <div className="content">{content}</div>
+      </Link>
+    </div>
+  );
 
-  getColumnLayout(display_type, layout, post, num_rows) {
-    let content = this.getColumnContent(display_type, layout, post);
+  getColumnLayout = (displayType, layout, post, numRows) => {
+    const content = this.getColumnContent(displayType, layout, post);
+    const { isMobile } = this.state;
+
     switch (layout) {
       case 'Single Column':
-        switch (display_type) {
+        switch (displayType) {
           case 'Post':
             return this.getSingleColumnPost(post, content);
           case 'Wallpaper':
@@ -407,154 +368,153 @@ export default class ListOfPosts extends Component {
             return this.getSingleColumnPost(post, content);
         }
       case 'Featured':
-        switch (display_type) {
+        switch (displayType) {
           case 'Post':
-            return this.getFeaturedPost(post, content, this.state.isMobile);
+            return this.getFeaturedPost(post, content, isMobile);
           case 'Wallpaper':
-            return this.getFeaturedWallpaper(
-              post,
-              content,
-              this.state.isMobile
-            );
+            return this.getFeaturedWallpaper(post, content, isMobile);
           default:
-            return this.getFeaturedPost(post, content, this.state.isMobile);
+            return this.getFeaturedPost(post, content, isMobile);
         }
       default:
-        switch (display_type) {
+        switch (displayType) {
           case 'Post':
-            return this.getPost(`${num_rows}-columns`, post, content);
+            return this.getPost(`${numRows}-columns`, post, content);
           case 'Wallpaper':
             return this.getWallpaper(post, content);
           default:
-            return this.getPost(`${num_rows}-columns`, post, content);
+            return this.getPost(`${numRows}-columns`, post, content);
         }
     }
-  }
+  };
 
-  getRows(
-    layout,
-    display_type,
-    row_of_columns,
-    table_style,
-    resize_rows
-  ) {
-    return (
-      <table className={`main-table`} style={table_style}>
-        <tbody>
-          {row_of_columns.map((current_row, x) => (
-            <tr key={`row-${x}`} className="main-row ">
-              {current_row.map((post, y) => {
-                return (
-                  <td key={`col ${x}${y}`} className="main-col col-xs-4">
-                    <div className="no-padding post-preview">
-                      {this.getColumnLayout(
-                        display_type,
-                        layout,
-                        post,
-                        resize_rows && current_row.length
-                      )}
-                    </div>
-                  </td>
-                );
-              })}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    );
-  }
+  getRowKey = currentRow =>
+    currentRow.reduce((result, item) => `${item.slug} ${item.postName}`, '');
 
-  getNumColumns(layout) {
-    let num_columns = 1;
+  getRows = (layout, displayType, rowOfColumns, tableStyle, resizeRows) => (
+    <table className="main-table" style={tableStyle}>
+      <tbody>
+        {rowOfColumns.map(currentRow => (
+          <tr key={this.getRowKey(currentRow)} className="main-row ">
+            {currentRow.map(post => (
+              <td
+                key={`${post.slug} ${post.postName}`}
+                className="main-col col-xs-4"
+              >
+                <div className="no-padding post-preview">
+                  {this.getColumnLayout(
+                    displayType,
+                    layout,
+                    post,
+                    resizeRows && currentRow.length
+                  )}
+                </div>
+              </td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+
+  getNumColumns = layout => {
+    let numColumns = 1;
     switch (layout) {
       case '2 Columns':
-        num_columns = 2;
+        numColumns = 2;
         break;
       case '3 Columns':
-        num_columns = 3;
+        numColumns = 3;
         break;
       default:
-        num_columns = 1;
+        numColumns = 1;
         break;
     }
 
-    return num_columns;
-  }
+    return numColumns;
+  };
 
   render() {
-    let main_content = '';
-    let remaining_posts = '';
-    let default_layout = 'Single Column';
-    let display_type = 'Post';
-    let num_columns = 1;
+    let mainContent = '';
+    let remainingPosts = '';
+    let defaultLayout = 'Single Column';
+    let displayType = 'Post';
+    let numColumns = 1;
     const {
-      num_results,
+      numResults,
       loadMore,
       posts,
-      link,
       title,
       design,
       style,
-      resize_rows
+      resizeRows
     } = this.props;
+    const { isMobile } = this.state;
     if (posts.length > 0) {
-      let posts_clone = _.clone(posts);
-      let page_design = { new_row_layout: [] };
-      let table_style = {};
+      const postsClone = _.clone(posts);
+      let pageDesign = { newRowLayout: [] };
+      let tableStyle = {};
 
       if (design) {
-        if (design.default_row_layout)
-          default_layout = design.default_row_layout;
-        if (design.default_display_type)
-          display_type = design.default_display_type;
-        if (design.new_row_layout && design.new_row_layout.length > 0) {
-          table_style =
-            design.new_row_layout.length > 1 && !this.state.isMobile
+        if (design.defaultRowLayout) defaultLayout = design.defaultRowLayout;
+        if (design.defaultDisplayType) displayType = design.defaultDisplayType;
+        if (design.newRowLayout && design.newRowLayout.length > 0) {
+          tableStyle =
+            design.newRowLayout.length > 1 && !isMobile
               ? { borderSpacing: '6px' }
               : {};
         }
-        page_design = design;
+        pageDesign = design;
       }
-      main_content =
-        page_design.new_row_layout &&
-        page_design.new_row_layout.map((layout, x) => {
-          let current_layout = this.state.isMobile
-            ? 'Featured'
-            : layout.row_layout;
-          let current_display = layout.display_type;
-          num_columns = this.getNumColumns(current_layout);
-          let row = _.slice(posts_clone, 0, num_columns);
-          let row_of_columns = _.chunk(row, num_columns);
-          posts_clone.splice(0, num_columns);
+      const rowLayout =
+        pageDesign.newRowLayout &&
+        pageDesign.newRowLayout.map((obj, y) => ({
+          id: y,
+          obj
+        }));
+      mainContent =
+        rowLayout &&
+        rowLayout.map(rowInfo => {
+          const layout = rowInfo.obj;
+          const currentLayout = isMobile ? 'Featured' : layout.rowLayout;
+          const currentDisplay = layout.displayType;
+          numColumns = this.getNumColumns(currentLayout);
+          const row = _.slice(postsClone, 0, numColumns);
+          const rowOfColumns = _.chunk(row, numColumns);
+          postsClone.splice(0, numColumns);
           return (
-            <div key={`table-${x}`}>
+            <div key={rowInfo.id}>
               {this.getRows(
-                current_layout,
-                current_display,
-                row_of_columns,
-                table_style,
-                !!resize_rows
+                currentLayout,
+                currentDisplay,
+                rowOfColumns,
+                tableStyle,
+                !!resizeRows
               )}
             </div>
           );
         });
 
-      if (posts_clone.length > 0) {
-        let current_layout = this.state.isMobile ? 'Featured' : default_layout;
-        let current_display = display_type;
-        let remaining_rows = _.chunk(
-          posts_clone,
-          this.getNumColumns(current_layout)
-        );
-        table_style = !this.state.isMobile ? { borderSpacing: '6px' } : {};
-        remaining_posts = remaining_rows.map((row, x) => (
-          <div key={`row-${x}`}>
+      if (postsClone.length > 0) {
+        const currentLayout = isMobile ? 'Featured' : defaultLayout;
+        const currentDisplay = displayType;
+        const remainingRows = _.chunk(
+          postsClone,
+          this.getNumColumns(currentLayout)
+        ).map((obj, x) => ({
+          id: x,
+          obj
+        }));
+
+        tableStyle = !isMobile ? { borderSpacing: '6px' } : {};
+        remainingPosts = remainingRows.map(row => (
+          <div key={row.id}>
             {this.getRows(
-              current_layout,
-              current_display,
-              [row],
-              table_style,
-              !!resize_rows
+              currentLayout,
+              currentDisplay,
+              [row.obj],
+              tableStyle,
+              !!resizeRows
             )}
           </div>
         ));
@@ -563,13 +523,13 @@ export default class ListOfPosts extends Component {
         <section className="post-list-container clearfix" style={style}>
           {title ? <div className="title">{title}</div> : ''}
           <article className="hidden">
-            <p>{num_results} results found</p>
+            <p>{numResults} results found</p>
           </article>
-          {main_content}
-          {remaining_posts}
-          {(row_of_columns => {
-            let num_displayed = row_of_columns.length;
-            if (loadMore && num_displayed > 0 && num_displayed < num_results) {
+          {mainContent}
+          {remainingPosts}
+          {(rowOfColumns => {
+            const numDisplayed = rowOfColumns.length;
+            if (loadMore && numDisplayed > 0 && numDisplayed < numResults) {
               return (
                 <div className="load-more-container row">
                   <Button
@@ -582,6 +542,7 @@ export default class ListOfPosts extends Component {
                 </div>
               );
             }
+            return '';
           })(posts)}
         </section>
       );
@@ -589,9 +550,3 @@ export default class ListOfPosts extends Component {
     return <section />;
   }
 }
-
-ListOfPosts.propTypes = {
-  posts: PropTypes.array.isRequired,
-  link: PropTypes.object.isRequired,
-  num_results: PropTypes.number.isRequired
-};

@@ -1,113 +1,111 @@
-import React, {Component}  from 'react';
+import React from 'react';
 import moment from 'moment';
 import * as Material from 'react-icons/lib/md';
+import LazyLoad from 'react-lazyload';
+import VideoPlayer from '../VideoPlayer/index';
+import { getEventDate, cleanUrl } from '../../utils/helperFunctions';
 
 import './styles.scss';
-import VideoPlayer from '../VideoPlayer/index';
-import {  getEventDate, getLiveVideos, cleanUrl } from './../../utils/helperFunctions';
-import LazyLoad from 'react-lazyload';
 
-export default class SinglePost extends Component {
-  constructor(props){
-    super(props);
-  }
-  render(){
-    const container_style = { padding: '0' };
-    const {
-      post: {
-        title,
-        thumbnail,
-        content,
-        link = "",
-        acf : {
-          youtube_id,
-          web_address,
-          event_price,
-          venue,
-          vimeo_id,
-          event_dates,
-          embed_url = ""
-        } = {}
-      },
-      live_videos = [],
-      hideTitle,
-      classes
-    } = this.props;
+export default ({
+  post: {
+    title,
+    thumbnail,
+    content,
+    link = '',
+    acf: {
+      youtubeId,
+      webAddress,
+      eventPrice,
+      venue,
+      vimeoId,
+      eventDates,
+      embedUrl = ''
+    } = {}
+  },
+  liveVideos = [],
+  hideTitle,
+  classes
+}) => {
+  const containerStyle = { padding: '0' };
+  const { acf: { endDate, displayDate, url } = {} } =
+    liveVideos.length > 0 ? liveVideos[0] : {};
 
-    const {
-      acf: {
-        end_date,
-        display_date,
-        url
-      } = {}
-    } = live_videos.length > 0 ? live_videos[0] : {};
+  const isPlaying = moment().isBetween(
+    moment(displayDate, 'MM/DD/YYYY h:mm a', true),
+    moment(endDate, 'MM/DD/YYYY h:mm a', true)
+  );
 
+  const isLiveVideo =
+    isPlaying &&
+    url &&
+    cleanUrl(url.replace(/\/$/, '')) === cleanUrl(link.replace(/\/$/, ''));
 
-    let formated_start_time = moment(display_date, "MM/DD/YYYY h:mm a", true);
-    let formated_end_time = moment(end_date, "MM/DD/YYYY h:mm a", true);
-    const is_playing = moment(new Date()).isBetween(formated_start_time, formated_end_time);
-    const is_live_video = is_playing && url && cleanUrl(url.replace(/\/$/, "")) === cleanUrl(link.replace(/\/$/, ""));
-
-    return (
-      <section className="post-container">
-        <div className="col-md-12 no-padding">
-          {!hideTitle && <h2 dangerouslySetInnerHTML={{ __html: title }} />}
-          <ul className="post-details">
-            {venue && (
-              <li>
-                <Material.MdLocationOn size="25" color="#4ea2ea" />
-                <span dangerouslySetInnerHTML={{ __html: venue }} />
-              </li>
-            )}
-            {web_address && (
-              <li>
+  return (
+    <section className="post-container">
+      <div className="col-md-12 no-padding">
+        {!hideTitle && <h2 dangerouslySetInnerHTML={{ __html: title }} />}
+        <ul className="post-details">
+          {venue && (
+            <li>
+              <Material.MdLocationOn size="25" color="#4ea2ea" />
+              <span dangerouslySetInnerHTML={{ __html: venue }} />
+            </li>
+          )}
+          {webAddress && (
+            <li>
               <span>
-                <a href={web_address} target="_blank">
-                  {web_address}
+                <a href={webAddress} target="_blank" rel="noopener noreferrer">
+                  {webAddress}
                 </a>
               </span>
-              </li>
-            )}
-            {event_dates && (
-              <li>
-                <span dangerouslySetInnerHTML={{ __html: getEventDate(event_dates) }} />
-              </li>
-            )}
-            {event_price && (
-              <li>
-                <span>Price: {event_price}</span>
-              </li>
-            )}
-          </ul>
-        </div>
-        {youtube_id || vimeo_id || embed_url ? (
-          <div className={`video-post ${(classes && classes.video) || ''}`}>
-            <VideoPlayer url={ youtube_id
-                ? `https://youtu.be/${youtube_id}`
-                : `https://vimeo.com/${vimeo_id}` }
-              container_style={container_style}
-              embed_url={is_live_video && embed_url}
-            />
-          </div>
-        ) : (
-          <div
-            className={`blog-image ${(classes && classes.thumbnail) ||
-            'default-img'}`}
-          >
-            <LazyLoad height={500}>
-              <img
-                src={thumbnail}
-                className="img-responsive blog-thumbnail"
-                alt=""
+            </li>
+          )}
+          {eventDates && (
+            <li>
+              <span
+                dangerouslySetInnerHTML={{
+                  __html: getEventDate(eventDates)
+                }}
               />
-            </LazyLoad>
-          </div>
-        )}
-        <div className={`blog-content ${(classes && classes.content) || ''}`}>
-          <div dangerouslySetInnerHTML={{ __html: content }} />
+            </li>
+          )}
+          {eventPrice && (
+            <li>
+              <span>Price: {eventPrice}</span>
+            </li>
+          )}
+        </ul>
+      </div>
+      {youtubeId || vimeoId || embedUrl ? (
+        <div className={`video-post ${(classes && classes.video) || ''}`}>
+          <VideoPlayer
+            url={
+              youtubeId
+                ? `https://youtu.be/${youtubeId}`
+                : `https://vimeo.com/${vimeoId}`
+            }
+            containerStyle={containerStyle}
+            embedUrl={isLiveVideo && embedUrl}
+          />
         </div>
-      </section>
-    );
-  }
-}
-
+      ) : (
+        <div
+          className={`blog-image ${(classes && classes.thumbnail) ||
+            'default-img'}`}
+        >
+          <LazyLoad height={500}>
+            <img
+              src={thumbnail}
+              className="img-responsive blog-thumbnail"
+              alt="thumbnail"
+            />
+          </LazyLoad>
+        </div>
+      )}
+      <div className={`blog-content ${(classes && classes.content) || ''}`}>
+        <div dangerouslySetInnerHTML={{ __html: content }} />
+      </div>
+    </section>
+  );
+};

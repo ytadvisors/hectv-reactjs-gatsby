@@ -1,9 +1,9 @@
-import * as types from '../types/accountTypes';
+// import * as types from '../types/accountTypes';
 
-//LOAD
+// LOAD
 
-//CREATE
+// CREATE
 
-//UPDATE
+// UPDATE
 
-//DELETE
+// DELETE

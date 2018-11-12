@@ -5,15 +5,10 @@ export default class ScheduleApi extends MainApi {
     super(props);
   }
 
-  getAllSchedules = (page = 1, per_page) => {
-    return this.json_api.get(`schedules?per_page=${per_page}&page=${page}`);
-  };
+  getAllSchedules = (page = 1, perPage) =>
+    this.jsonApi.get(`schedules?perPage=${perPage}&page=${page}`);
 
-  getScheduleByDay = (day) => {
-    return this.json_api.get(`schedules?day=${day}`);
-  };
+  getScheduleByDay = day => this.jsonApi.get(`schedules?day=${day}`);
 
-  getSchedule = (schedule_id) => {
-    return this.json_api.get(`schedules/${schedule_id}`);
-  };
+  getSchedule = scheduleId => this.jsonApi.get(`schedules/${scheduleId}`);
 }

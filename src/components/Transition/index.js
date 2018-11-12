@@ -1,44 +1,41 @@
-import React, { Component } from "react";
-import { Transition as ReactTransition } from "react-transition-group";
-import { getTransitionStyle } from "../../utils/helperFunctions";
-import { historyExitingEventType, timeout } from "../../../gatsby-browser";
-import { isServer } from "./../../utils/helperFunctions"
-import $ from "jquery";
+import React, { Component } from 'react';
+import { Transition as ReactTransition } from 'react-transition-group';
+import { getTransitionStyle } from '../../utils/helperFunctions';
+import { historyExitingEventType, timeout } from '../../../gatsby-browser';
 
 export default class Transition extends Component {
   constructor(props) {
     super(props);
-    this.listenerHandler = this.listenerHandler.bind(this);
     this.state = {
       exiting: false
     };
-  }
-
-  listenerHandler(event) {
-    this.setState({ exiting: true });
-
   }
 
   componentDidMount() {
     window.addEventListener(historyExitingEventType, this.listenerHandler);
   }
 
-
   static getDerivedStateFromProps({ exiting }) {
     if (exiting) {
-      return { exiting: false }
+      return { exiting: false };
     }
-    return null
+    return null;
   }
 
+  listenerHandler = () => {
+    this.setState({ exiting: true });
+  };
+
   render() {
+    const { exiting } = this.state;
+    const { children } = this.props;
     const transitionProps = {
       timeout: {
         enter: 0,
-        exit: timeout,
+        exit: timeout
       },
       appear: true,
-      in: !this.state.exiting,
+      in: !exiting
     };
 
     return (
@@ -46,13 +43,13 @@ export default class Transition extends Component {
         {status => (
           <div
             style={{
-              ...getTransitionStyle({ status, timeout }),
+              ...getTransitionStyle({ status, timeout })
             }}
           >
-            {this.props.children}
+            {children}
           </div>
         )}
       </ReactTransition>
-    )
+    );
   }
 }

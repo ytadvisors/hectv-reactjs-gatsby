@@ -7,29 +7,31 @@ import 'react-datepicker/dist/react-datepicker.css';
 import './styles.scss';
 
 export default class CalendarSelector extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
       startDate: moment(new Date())
     };
-    this.handleChange = this.handleChange.bind(this);
   }
 
-  handleChange(date) {
-    const {callback} = this.props;
+  handleChange = date => {
+    const { callback } = this.props;
     this.setState({
       startDate: date
     });
 
     callback(date);
-  }
+  };
 
   render() {
-    return <DatePicker
-      selected={this.state.startDate}
-      dateFormat="MMMM DD"
-      onChange={this.handleChange}
-    />;
+    const { startDate } = this.state;
+    return (
+      <DatePicker
+        selected={startDate}
+        dateFormat="MMMM DD"
+        onChange={this.handleChange}
+      />
+    );
   }
 }
 

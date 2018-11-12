@@ -1,6 +1,5 @@
-import { put, takeLatest, all, call } from 'redux-saga/effects';
+import { put, takeLatest, all } from 'redux-saga/effects';
 import * as types from '../types/accountTypes';
-import { showLoading, hideLoading } from 'react-redux-loading-bar';
 
 /*-----------------
  *
@@ -72,13 +71,13 @@ function* handleErrors(payload) {
             operation: 'reload_page'
           });
           break;
+        default:
+          break;
       }
     }
   }
 }
 
 export default function* rootSaga() {
-  yield all([
-    yield takeLatest(types.LOAD_ERROR, handleErrors)
-  ]);
+  yield all([yield takeLatest(types.LOAD_ERROR, handleErrors)]);
 }

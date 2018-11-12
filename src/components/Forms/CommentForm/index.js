@@ -1,17 +1,16 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import ReactForm from './../../../components/ReactForm';
-import Validator from './../../../components/ReactForm/Validator';
 import { reduxForm } from 'redux-form';
+import ReactForm from '../../ReactForm';
+import Validator from '../../ReactForm/Validator';
+
 import './styles.scss';
-import { SubmissionError } from 'redux-form';
-import $ from 'jquery';
 
 const fields = [
   [
     {
-      name: 'message',
+      name: 'content',
       component: 'textarea',
       type: 'text',
       rows: 8,
@@ -24,15 +23,11 @@ const fields = [
 const validate = Validator(fields);
 
 class CommentForm extends Component {
-  constructor(props) {
-    super(props);
-    this.onSubmit = this.onSubmit.bind(this);
-  }
-
-  onSubmit() {
+  onSubmit = () => {
     const { callbackFunc } = this.props;
     callbackFunc.call(this);
-  }
+  };
+
   render() {
     return (
       <section className="comment-form">

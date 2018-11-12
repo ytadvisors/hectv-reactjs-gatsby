@@ -3,7 +3,7 @@ import * as types from '../types/scheduleTypes';
 const initialState = {
   schedules: [],
   schedule: [],
-  num_results: {
+  numResults: {
     schedule: 0,
     schedules: 0
   }
@@ -19,23 +19,23 @@ export default (state = initialState, action) => {
         error: false
       };
 
-    //Results
+    // Results
     case types.SET_ALL_SCHEDULES:
       return {
         ...state,
-        schedules: action.load_more
+        schedules: action.loadMore
           ? [...state.schedules, ...action.schedules]
           : action.schedules,
-        num_results: {
-          ...state.num_results,
-          schedules: action.num_results
+        numResults: {
+          ...state.numResults,
+          schedules: action.numResults
         },
         error: false
       };
     case types.SET_SCHEDULE:
       return {
         ...state,
-        schedule: action.load_more
+        schedule: action.loadMore
           ? [...state.schedule, ...action.schedule]
           : action.schedule,
         error: false
@@ -43,13 +43,13 @@ export default (state = initialState, action) => {
     case types.SET_DAILY_SCHEDULE:
       return {
         ...state,
-        schedule: action.load_more
+        schedule: action.loadMore
           ? [...state.schedule, ...action.schedule]
           : action.schedule,
         error: false
       };
 
-    //Errors
+    // Errors
     case types.LOAD_ERROR:
       return {
         ...state,
@@ -58,4 +58,4 @@ export default (state = initialState, action) => {
     default:
       return state;
   }
-}
+};

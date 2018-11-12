@@ -1,62 +1,53 @@
-import React, { Component } from 'react';
+import React from 'react';
 import _ from 'lodash';
 import { CardElement } from 'react-stripe-elements';
 import './styles.scss';
 
-export default class DefaultSelect extends Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    const {
-      input,
-      label,
-      options,
-      meta: { touched, error },
-      children,
-      display_errors,
-      display_label
-    } = this.props;
-
-    let selected_option = _.find(options, { value: input.value });
-
-    return (
-      <div className="default-select">
-        {display_label ? <div className="label">{label}</div> : ''}
-        <select {...input}>{children}</select>
-        {display_errors && (
-          <div
-            className="errors"
-            dangerouslySetInnerHTML={{
-              __html: touched && error ? error : '&nbsp;'
+export default ({
+  input,
+  label,
+  options,
+  meta: { touched, error },
+  children,
+  displayErrors,
+  displayLabel
+}) => {
+  const selectedOption = _.find(options, { value: input.value });
+  return (
+    <div className="default-select">
+      {displayLabel ? <div className="label">{label}</div> : ''}
+      <select {...input}>{children}</select>
+      {displayErrors && (
+        <div
+          className="errors"
+          dangerouslySetInnerHTML={{
+            __html: touched && error ? error : '&nbsp;'
+          }}
+        />
+      )}
+      {selectedOption && selectedOption.info ? (
+        <div className="info">{selectedOption.info}</div>
+      ) : (
+        ''
+      )}
+      {selectedOption &&
+      selectedOption.price &&
+      selectedOption.show_card &&
+      selectedOption.price !== '0' ? (
+        <div className="stripe-card">
+          <label htmlFor={input.name}>Card details</label>
+          <CardElement
+            className="stripe-card"
+            style={{
+              base: {
+                fontSize: '14px'
+              }
             }}
           />
-        )}
-        {selected_option && selected_option.info ? (
-          <div className="info">{selected_option.info}</div>
-        ) : (
-          ''
-        )}
-        {selected_option &&
-        selected_option.price &&
-        selected_option.show_card &&
-        selected_option.price !== '0' ? (
-          <div className="stripe-card">
-            <label>Card details</label>
-            <CardElement
-              className="stripe-card"
-              style={{
-                base: {
-                  fontSize: '14px'
-                }
-              }}
-            />
-          </div>
-        ) : (
-          ''
-        )}
-      </div>
-    );
-  }
-}
+        </div>
+      ) : (
+        ''
+      )}
+    </div>
+  );
+};

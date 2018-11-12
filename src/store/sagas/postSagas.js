@@ -1,15 +1,15 @@
 import { put, select, takeLatest, all, call } from 'redux-saga/effects';
 import { delay } from 'redux-saga';
-
+import deepMapKeys from 'deep-map-keys';
 import _ from 'lodash';
 
-import PostApi from './../api/PostApi';
+import { showLoading, hideLoading } from 'react-redux-loading-bar';
+import PostApi from '../api/PostApi';
 import * as types from '../types/postTypes';
 import * as eventTypes from '../types/eventTypes';
 import * as pageTypes from '../types/pageTypes';
-import { showLoading, hideLoading } from 'react-redux-loading-bar';
-import { getUserToken } from './../../utils/session';
-import { getNumAPIResults } from './../../utils/helperFunctions';
+import { getUserToken } from '../../utils/session';
+import { getNumAPIResults } from '../../utils/helperFunctions';
 
 function validateUser() {
   if (getUserToken() === undefined || getUserToken() === '') {
@@ -18,42 +18,25 @@ function validateUser() {
 }
 
 function mapSubcategories(result) {
-  let response = {};
+  const response = {};
   response.name = result.name;
   response.slug = result.slug;
   response.id = result.id;
   return response;
 }
 
-function mapComments(result) {
-  let response = {};
-  response.title = '';
-  if (result.content) {
-    response.title = result.content.rendered;
-  }
-
-  response.parent = result.parent;
-  response.comment_id = result.id;
-  response.author = result.author_name;
-  response.thumbnail = result.author_avatar_urls
-    ? result.author_avatar_urls['48']
-    : '';
-
-  return response;
-}
-
 function mapPost(result) {
-  let response = {};
-  if(result) {
+  const response = {};
+  if (result) {
     response.excerpt = '';
     response.content = '';
     response.thumbnail = '';
     response.title = '';
-    response.video_url = '';
+    response.videoUrl = '';
     response.slug = result.slug;
     response.type = 'posts';
     response.format = 'blog';
-    response.post_name = result.slug;
+    response.postName = result.slug;
 
     if (result.title) {
       response.title = result.title.rendered;
@@ -72,15 +55,15 @@ function mapPost(result) {
     }
 
     if (result.acf) {
-      if (result.acf.video_image) {
-        response.thumbnail = result.acf.video_image.sizes.medium_large;
-        response.small_thumbnail = result.acf.video_image.sizes.medium;
+      if (result.acf.videoImage) {
+        response.thumbnail = result.acf.videoImage.sizes.mediumLarge;
+        response.smallThumbnail = result.acf.videoImage.sizes.medium;
         response.format = 'video';
       }
-      if (result.acf.post_header) {
-        response.thumbnail = result.acf.post_header.sizes.medium_large;
-        response.small_thumbnail = result.acf.post_header.sizes.medium;
-        response.small_thumbnail = response.small_thumbnail.replace(
+      if (result.acf.postHeader) {
+        response.thumbnail = result.acf.postHeader.sizes.mediumLarge;
+        response.smallThumbnail = result.acf.postHeader.sizes.medium;
+        response.smallThumbnail = response.smallThumbnail.replace(
           /http:\/\/s3(.+amazon)/g,
           'https://s3$1'
         );
@@ -90,16 +73,15 @@ function mapPost(result) {
         );
         response.format = 'blog';
       }
-      if (result.acf.youtube_id) {
-        response.video_url = `https://youtu.be/${result.acf.youtube_id}`;
+      if (result.acf.youtubeId) {
+        response.videoUrl = `https://youtu.be/${result.acf.youtubeId}`;
       }
-      if (result.acf.vimeo_id) {
-        response.video_url = `https://vimeo.com/${result.acf.vimeo_id}`;
+      if (result.acf.vimeoId) {
+        response.videoUrl = `https://vimeo.com/${result.acf.vimeoId}`;
       }
-
     }
 
-    response.categories = result.category_list;
+    response.categories = result.categoryList;
   }
   return response;
 }
@@ -113,8 +95,8 @@ function mapPost(result) {
 function* loadPost(payload) {
   try {
     yield put(showLoading());
-    let api = new PostApi();
-    const post = yield call(api.getPostBySlug, payload.post_id);
+    const api = new PostApi();
+    const post = yield call(api.getPostBySlug, payload.postId);
     if (post.data.length > 0) {
       const data = mapPost(post.data[0]);
       yield put({
@@ -129,29 +111,29 @@ function* loadPost(payload) {
       }
 
       if (data.categories.length > 0) {
-        let categories = data.categories.map(category => category.term_id);
+        const categories = data.categories.map(category => category.term_id);
         yield put({
           type: types.LOAD_POSTS_IN_CATEGORY,
-          categories: categories
+          categories
         });
       } else {
         yield put({
           type: types.SET_POSTS_IN_CATEGORY,
           category_posts: [],
-          load_more: payload.load_more,
-          num_results: 0
+          loadMore: payload.loadMore,
+          numResults: 0
         });
       }
 
-      if (data.post_list) {
+      if (data.postList) {
         yield put({
           type: types.LOAD_POSTS_SLUG,
-          category: 'related_' + payload.post_id,
-          slugs: data.post_list
+          category: `related_${payload.postId}`,
+          slugs: data.postList
         });
       }
     } else {
-      throw new Error('No matching post: ' + payload.post_id);
+      throw new Error(`No matching post: ${payload.postId}`);
     }
 
     yield put(hideLoading());
@@ -164,15 +146,12 @@ function* loadPost(payload) {
 function* loadSubcategories(payload) {
   try {
     yield put(showLoading());
-    let api = new PostApi();
-    const category_info = yield call(
-      api.getCategory,
-      payload.category
-    );
+    const api = new PostApi();
+    const categoryInfo = yield call(api.getCategory, payload.category);
     if (
-      !category_info ||
-      category_info.data.length === 0 ||
-      !category_info.data[0].id
+      !categoryInfo ||
+      categoryInfo.data.length === 0 ||
+      !categoryInfo.data[0].id
     ) {
       yield put({
         type: types.SET_SUBCATEGORIES,
@@ -181,7 +160,7 @@ function* loadSubcategories(payload) {
     } else {
       const subcategories = yield call(
         api.getSubCategories,
-        category_info.data[0].id
+        categoryInfo.data[0].id
       );
       if (subcategories && subcategories.data.length > 0) {
         const data = subcategories.data.map(mapSubcategories);
@@ -211,9 +190,9 @@ function* loadSubcategories(payload) {
 function* loadCategoryPosts(payload) {
   try {
     yield put(showLoading());
-    let api = new PostApi();
+    const api = new PostApi();
 
-    let posts = yield call(
+    const posts = yield call(
       api.getCategoriesPosts,
       payload.categories,
       payload.page,
@@ -223,8 +202,8 @@ function* loadCategoryPosts(payload) {
     yield put({
       type: types.SET_POSTS_IN_CATEGORY,
       category_posts: data,
-      load_more: payload.load_more,
-      num_results: getNumAPIResults(posts)
+      loadMore: payload.loadMore,
+      numResults: getNumAPIResults(posts)
     });
     yield put(hideLoading());
   } catch (error) {
@@ -236,18 +215,18 @@ function* loadCategoryPosts(payload) {
 function* loadPostsWithSlug(payload) {
   try {
     yield put(showLoading());
-    let api = new PostApi();
-    let posts = yield call(api.getPostsBySlugs, payload.slugs);
+    const api = new PostApi();
+    const posts = yield call(api.getPostsBySlugs, payload.slugs);
 
     const data = posts.data.map(mapPost);
-    let indexed_posts = _.keyBy(data, 'post_name');
-    let result = payload.slugs.map(slug => indexed_posts[slug]);
+    const indexedPosts = _.keyBy(data, 'postName');
+    const result = payload.slugs.map(slug => indexedPosts[slug]);
     yield put({
       type: types.SET_ALL_POSTS,
       posts: result,
       category: payload.category,
-      load_more: payload.load_more,
-      num_results: getNumAPIResults(posts)
+      loadMore: payload.loadMore,
+      numResults: getNumAPIResults(posts)
     });
     yield put(hideLoading());
   } catch (error) {
@@ -258,12 +237,11 @@ function* loadPostsWithSlug(payload) {
 
 function* loadLiveVideos() {
   try {
-    let api = new PostApi();
-    let live_videos = yield call(api.getLiveVideos);
-    const data = live_videos.data;
+    const api = new PostApi();
+    const liveVideos = yield call(api.getLiveVideos);
     yield put({
       type: types.SET_LIVE_VIDEOS,
-      live_videos: data
+      liveVideos: liveVideos.data
     });
   } catch (error) {
     yield put({ type: types.LOAD_ERROR, error });
@@ -278,8 +256,8 @@ function* loadLiveVideos() {
 function* loadAllPosts(payload) {
   try {
     yield put(showLoading());
-    let api = new PostApi();
-    let page_category = '';
+    const api = new PostApi();
+    let pageCategory = '';
     let posts = [];
     yield put({
       type: pageTypes.SET_CATEGORY_TITLE,
@@ -295,53 +273,45 @@ function* loadAllPosts(payload) {
         break;
       default:
         if (payload.category !== '') {
-          const category = yield call(
-            api.getCategory,
-            payload.category
-          );
+          const category = yield call(api.getCategory, payload.category);
           if (category.data.length === 0) {
             yield put({
               type: types.SET_ALL_POSTS,
               posts: [],
               category: payload.category,
-              load_more: payload.load_more,
-              num_results: 0
+              loadMore: payload.loadMore,
+              numResults: 0
             });
 
             yield put(hideLoading());
             return;
-          } else {
-            page_category = category.data[0].id;
-            if (category.data[0].parent === 0) {
-              yield put({
-                type: pageTypes.SET_CATEGORY_TITLE,
-                title: category.data[0].name
-              });
-            } else if (category.data[0].parent) {
-              const temp_category = yield call(
-                api.getCategoryById,
-                category.data[0].parent
-              );
+          }
+          pageCategory = category.data[0].id;
+          if (category.data[0].parent === 0) {
+            yield put({
+              type: pageTypes.SET_CATEGORY_TITLE,
+              title: category.data[0].name
+            });
+          } else if (category.data[0].parent) {
+            const tempCategory = yield call(
+              api.getCategoryById,
+              category.data[0].parent
+            );
 
-              yield put({
-                type: pageTypes.SET_CATEGORY_TITLE,
-                title: temp_category.data.name
-              });
+            yield put({
+              type: pageTypes.SET_CATEGORY_TITLE,
+              title: tempCategory.data.name
+            });
 
-              yield put({
-                type: types.LOAD_SUBCATEGORIES,
-                category: temp_category.data.slug
-              });
-              yield put(hideLoading());
-            }
+            yield put({
+              type: types.LOAD_SUBCATEGORIES,
+              category: tempCategory.data.slug
+            });
+            yield put(hideLoading());
           }
         }
 
-        posts = yield call(
-          api.getAllPosts,
-          page_category,
-          payload.page
-        );
+        posts = yield call(api.getAllPosts, pageCategory, payload.page);
     }
 
     const data = posts.data.map(mapPost);
@@ -349,9 +319,9 @@ function* loadAllPosts(payload) {
       type: types.SET_ALL_POSTS,
       posts: data,
       category: payload.category,
-      load_more: payload.load_more,
-      current_page: payload.page || 1,
-      num_results: getNumAPIResults(posts)
+      loadMore: payload.loadMore,
+      currentPage: payload.page || 1,
+      numResults: getNumAPIResults(posts)
     });
     yield put(hideLoading());
   } catch (error) {
@@ -363,48 +333,48 @@ function* loadAllPosts(payload) {
 function* loadSearchPosts(payload) {
   try {
     yield put(showLoading());
-    let api = new PostApi(payload);
-    let current_page = payload.page || 1;
-    let terms = payload.terms.toLowerCase();
-    let posts = yield call(api.findPosts, payload);
+    const api = new PostApi(payload);
+    const currentPage = payload.page || 1;
+    const terms = payload.terms.toLowerCase();
+    const posts = yield call(api.findPosts, payload);
 
     let data = [];
-    let num_results = getNumAPIResults(posts);
-    if(posts && posts.data){
-      const data = posts.data.map(mapPost);
+    const numResults = getNumAPIResults(posts);
+    if (posts && posts.data) {
+      const postData = deepMapKeys(posts.data, key => _.camelCase(key));
+      data = postData.map(mapPost);
 
       yield put({
         type: types.SET_ALL_POSTS,
         posts: data,
         category: `search_${terms}`,
-        load_more: payload.load_more,
-        current_page: current_page,
-        num_results: num_results
+        loadMore: payload.loadMore,
+        currentPage,
+        numResults
       });
     } else {
       yield put({
         type: types.SET_ALL_POSTS,
         posts: data,
         category: `search_${terms}`,
-        load_more: payload.load_more,
-        current_page: current_page,
-        num_results: 0
+        loadMore: payload.loadMore,
+        currentPage,
+        numResults: 0
       });
     }
 
-
-    if(data.length > 0 && num_results > 10){
+    if (data.length > 0 && numResults > 10) {
       const state = yield select();
-      let reducer = state.postReducers;
+      const reducer = state.postReducers;
 
-      //automate load more.
-      if(reducer.posts.length < reducer.num_results.posts){
+      // automate load more.
+      if (reducer.posts.length < reducer.numResults.posts) {
         yield call(delay, 300);
         yield put({
           type: types.LOAD_SEARCH_POSTS,
-          terms : terms,
-          page: current_page + 1,
-          load_more : true
+          terms,
+          page: currentPage + 1,
+          loadMore: true
         });
       }
     }
@@ -431,7 +401,7 @@ function* addComment(payload) {
   try {
     yield put(showLoading());
     validateUser();
-    let api = new PostApi();
+    const api = new PostApi();
     yield call(api.addComment, payload.comment);
 
     yield put({
@@ -491,11 +461,12 @@ function* handleErrors(payload) {
             error: true
           });
           break;
+        default:
+          break;
       }
     }
   }
 }
-
 
 export default function* rootSaga() {
   yield all([

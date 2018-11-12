@@ -1,182 +1,183 @@
-import React, {Component} from "react";
-import {graphql} from "gatsby"
+import React, { Component } from 'react';
+import { graphql } from 'gatsby';
 import { connect } from 'react-redux';
-import moment from "moment";
+import moment from 'moment';
+import { loadLiveVideosAction } from '../store/actions/postActions';
+
+import SEO from '../components/SEO';
+import Layout from '../components/Layout';
+import EventNav from '../components/SubNavigation/EventNav';
 import {
-  loadLiveVideosAction
-} from "./../store/actions/postActions"
+  getCurrentEvents,
+  getFirstImageFromWpList,
+  getPrograms,
+  getExcerpt
+} from '../utils/helperFunctions';
+import ListOfPosts from '../components/ListOfPosts';
 
-import {
-  getPrograms
-} from "./../utils/helperFunctions"
-
-import SEO from "./../components/SEO";
-import Layout from "./../components/Layout"
-import EventNav from './../components/SubNavigation/EventNav';
-import { getCurrentEvents, getFirstImageFromWpList } from "./../utils/helperFunctions"
-import ListOfPosts from "./../components/ListOfPosts";
-
-class EventType extends Component{
-
+class EventType extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      current_date: moment(moment().format('MM/DD/YYYY')),
-      programs : {}
+      currentDate: moment(moment().format('MM/DD/YYYY')),
+      programs: {}
     };
   }
 
-  componentDidMount(){
+  componentDidMount() {
+    this.mounted = true;
     this.loadLive();
   }
 
+  componentWillUnmount() {
+    this.mounted = false;
+  }
+
   loadLive = () => {
-    const {
-      dispatch,
-      data : {
-        wpSchedule : {
-          edges
-        } = {}
-      } = {}
-    } = this.props;
+    const { dispatch, data: { wpSchedule: { edges } = {} } = {} } = this.props;
     dispatch(loadLiveVideosAction());
-    this.setState({
-      programs : getPrograms(edges, 5)
-    });
+    if (this.mounted)
+      this.setState({
+        programs: getPrograms(edges, 5)
+      });
     setTimeout(this.loadLive, 30000);
   };
 
-  changeDate(new_date){
-    this.setState({current_date : moment(new_date)})
-  }
+  changeDate = newDate => {
+    this.setState({ currentDate: moment(newDate) });
+  };
 
   render() {
-    const {
-      data,
-      live_videos
-    } = this.props;
+    const { data, liveVideos } = this.props;
+    const { currentDate, programs } = this.state;
+    if (data.wpPage.acf) data.wpPage.acf.content = data.wpPage.content;
 
-    if (data.wpPage.acf)
-      data.wpPage.acf.content = data.wpPage.content;
+    const events = (data.wpEvents && data.wpEvents.edges) || [];
+    const currentEvents = getCurrentEvents(currentDate, events);
+    const posts =
+      currentEvents &&
+      currentEvents.values &&
+      currentEvents.values.map(obj => obj.node);
+    const description =
+      data.wpPage.content || 'On Demand Arts, Culture & Education Programming';
+    const selectTitle =
+      (data.wpEventCategory && data.wpEventCategory.name) || 'Filter Events';
 
-    let events = data.wpEvents && data.wpEvents.edges || [];
-    let current_events = getCurrentEvents(this.state.current_date, events);
-    let posts = current_events && current_events.values && current_events.values.map(obj => obj.node);
-    let description = data.wpPage.content || "On Demand Arts, Culture & Education Programming";
-    let select_title =  data.wpEventCategory && data.wpEventCategory.name || "Filter Events";
-
-    return <div>
-      <SEO
-        {...{
-          title: `HEC-TV | ${data.wpPage.title}`,
-          image: getFirstImageFromWpList(posts),
-          description: description.replace(/<\/?[^>]+(>|$)/g, '').substring(0, 320) + '...',
-          url: data.wpSite.siteMetadata.siteUrl,
-          fb_app_id: data.wpSite.siteMetadata.fbAppId,
-          pathname: data.wpPage.link.replace(/https?:\/\/[^/]+/, ''),
-          site_name: "hecmedia.org",
-          author: "hectv",
-          twitter_handle: "@hec_tv"
-        }}
-      />
-      <Layout
-        slug={data.wpPage.slug}
-        live_videos={live_videos}
-        programs={this.state.programs}
-      >
-        <div>
-          <div className="col-md-12">
-            <EventNav {...data.wpPage} changeDate={this.changeDate.bind(this)}  select_title={select_title} />
+    return (
+      <div>
+        <SEO
+          {...{
+            title: `HEC-TV | ${data.wpPage.title}`,
+            image: getFirstImageFromWpList(posts),
+            description: getExcerpt(description, 320),
+            url: data.wpSite.siteMetadata.siteUrl,
+            fbAppId: data.wpSite.siteMetadata.fbAppId,
+            pathname: data.wpPage.link.replace(/https?:\/\/[^/]+/, ''),
+            siteName: 'hecmedia.org',
+            author: 'hectv',
+            twitterHandle: '@hec_tv'
+          }}
+        />
+        <Layout
+          slug={data.wpPage.slug}
+          liveVideos={liveVideos}
+          programs={programs}
+        >
+          <div>
+            <div className="col-md-12">
+              <EventNav
+                {...data.wpPage}
+                changeDate={this.changeDate}
+                selectTitle={selectTitle}
+              />
+            </div>
+            <ListOfPosts
+              posts={posts || []}
+              link={{ page: 'events' }}
+              numResults={0}
+              design={data.wpPage.acf}
+              loadMore={null}
+              resizeRows
+            />
           </div>
-          <ListOfPosts
-            posts={posts || []}
-            link={{page: 'events'}}
-            num_results={0}
-            design={data.wpPage.acf}
-            loadMore={null}
-            resize_rows
-          />
-        </div>
-      </Layout>
-    </div>
+        </Layout>
+      </div>
+    );
   }
 }
 
-const mapStateToProps = (state, ownProps) => ({
-  live_videos: state.postReducers.live_videos
+const mapStateToProps = state => ({
+  liveVideos: state.postReducers.liveVideos
 });
 
 export default connect(mapStateToProps)(EventType);
 
 export const query = graphql`
-query eventTypeQuery ($categories: [ Int ] $wordpress_id : Int){
-  wpSite: site {
-    siteMetadata{
-      siteUrl
-      fbAppId
+  query eventTypeQuery($categories: [Int], $wordpress_id: Int) {
+    wpSite: site {
+      siteMetadata {
+        siteUrl
+        fbAppId
+      }
     }
-  }
-  wpSchedule : allWordpressWpSchedules {
-    edges{
-      node{
-        slug
-        title
-        link
-        acf{
-          schedule_programs{
-            program_start_time
-            program_end_time
-            program_title
-            program_start_date
+    wpSchedule: allWordpressWpSchedules {
+      edges {
+        node {
+          slug
+          title
+          link
+          acf {
+            schedulePrograms {
+              programStartTime
+              programEndTime
+              programTitle
+              programStartDate
+            }
           }
         }
       }
     }
-  }
-  wpPage: wordpressPage(slug: {eq: "events"}) {
-    slug
-    title
-    content
-    link
-    acf {
-      video_id
-      default_row_layout
-      default_display_type
-      new_row_layout {
-        row_layout
-        display_type
+    wpPage: wordpressPage(slug: { eq: "events" }) {
+      slug
+      title
+      content
+      link
+      acf {
+        videoId
+        defaultRowLayout
+        defaultDisplayType
+        newRowLayout {
+          rowLayout
+          displayType
+        }
       }
     }
-  }
- wpEvents: allWordpressWpEvent(
-    filter: {
-        event_category : { in : $categories }
-    }
-    sort :{
-      fields: [acf___event_dates]
-      order:ASC
-    }
-  ){
-    edges{
-      node{
-        slug
-        title
-        link
-        thumbnail
-        acf{
-          venue
-          event_price
-          event_dates{
-            start_time
-            end_time
+    wpEvents: allWordpressWpEvent(
+      filter: { eventCategory: { in: $categories } }
+      sort: { fields: [acf___eventDates], order: ASC }
+    ) {
+      edges {
+        node {
+          slug
+          title
+          link
+          thumbnail
+          acf {
+            venue
+            eventPrice
+            eventDates {
+              startTime
+              endTime
+            }
           }
         }
       }
     }
+    wpEventCategory: wordpressWpEventCategory(
+      wordpress_id: { eq: $wordpress_id }
+    ) {
+      name
+      wordpress_id
+    }
   }
-  wpEventCategory: wordpressWpEventCategory ( wordpress_id : {eq: $wordpress_id}){
-    name
-    wordpress_id
-  }
-}
 `;

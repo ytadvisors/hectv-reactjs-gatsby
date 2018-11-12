@@ -3,7 +3,7 @@ import * as types from '../types/donateTypes';
 const initialState = {
   donations: [],
   donation: {},
-  num_results: {
+  numResults: {
     donation: 0,
     donations: 0
   }
@@ -18,29 +18,29 @@ export default (state = initialState, action) => {
         error: false
       };
 
-    //Results
+    // Results
     case types.SET_ALL_DONATIONS:
       return {
         ...state,
-        donations: action.load_more
+        donations: action.loadMore
           ? [...state.donations, ...action.donations]
           : action.donations,
-        num_results: {
-          ...state.num_results,
-          donations: action.num_results
+        numResults: {
+          ...state.numResults,
+          donations: action.numResults
         },
         error: false
       };
     case types.SET_DONATION:
       return {
         ...state,
-        donation: action.load_more
+        donation: action.loadMore
           ? [...state.donation, ...action.donation]
           : action.donation,
         error: false
       };
 
-    //Errors
+    // Errors
     case types.LOAD_ERROR:
       return {
         ...state,
@@ -49,4 +49,4 @@ export default (state = initialState, action) => {
     default:
       return state;
   }
-}
+};
