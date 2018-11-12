@@ -38,13 +38,12 @@ class Category extends Component {
 
   render() {
     const {
-      data: {
-        wpCategory: { name, description, link = '', slug = '' } = {},
-        wpCategoryPosts,
-        wpSite: { siteMetadata: { siteUrl, fbAppId } = {} } = {}
-      } = {},
+      data: { wpCategory, wpCategoryPosts, wpSite } = {},
       liveVideos
     } = this.props;
+
+    const { name, description, link = '', slug = '' } = wpCategory || {};
+    const { siteMetadata: { siteUrl, fbAppId } = {} } = wpSite || {};
 
     const { programs } = this.state;
 
