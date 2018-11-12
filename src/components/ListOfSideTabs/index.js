@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button } from 'react-bootstrap';
 import './styles.scss';
 
 export default class ListOfSideTabs extends Component {
@@ -23,13 +22,12 @@ export default class ListOfSideTabs extends Component {
       <section className="list-of-side-tabs">
         <div className="tab-header">
           {tabs.map(tab => (
-            <Button
+            <div
               className={tab.title === currentTab ? 'active' : ''}
               key={`${tab.title}-tab`}
-              onClick={() => this.changeTab(tab.title)}
             >
               {tab.title}
-            </Button>
+            </div>
           ))}
         </div>
         {tabs.map(
