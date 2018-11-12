@@ -210,26 +210,30 @@ export const getPrograms = (schedules, numEntries) => {
   const currentTime = moment(new Date());
   const day = currentTime.format('MMMM-YYYY').toLowerCase();
 
-  const programs = schedules.reduce((acc, schedule) => {
-    let result = { ...acc };
-    if (schedule.node.slug === day) result = schedule.node.acf.schedulePrograms;
-    return result;
-  }, {});
-
-  return programs.reduce(
-    (acc, item) => {
-      const result = { ...acc };
-      if (result.started < numEntries) {
-        const endTime = moment(
-          new Date(`${item.programStartDate} ${item.programEndTime}`)
-        );
-        if (currentTime.isSameOrBefore(endTime) || result.started > 0) {
-          result.values.push(item);
-          result.started += 1;
-        }
-      }
+  if (schedules) {
+    const programs = schedules.reduce((acc, schedule) => {
+      let result = { ...acc };
+      if (schedule.node.slug === day)
+        result = schedule.node.acf.schedulePrograms;
       return result;
-    },
-    { values: [], started: 0 }
-  );
+    }, {});
+
+    return programs.reduce(
+      (acc, item) => {
+        const result = { ...acc };
+        if (result.started < numEntries) {
+          const endTime = moment(
+            new Date(`${item.programStartDate} ${item.programEndTime}`)
+          );
+          if (currentTime.isSameOrBefore(endTime) || result.started > 0) {
+            result.values.push(item);
+            result.started += 1;
+          }
+        }
+        return result;
+      },
+      { values: [], started: 0 }
+    );
+  }
+  return {};
 };

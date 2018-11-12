@@ -41,8 +41,7 @@ function createPostHelper(
       context: {
         id: link.node.id,
         categories,
-        slug: link.node.slug,
-        env: process.env
+        slug: link.node.slug
       }
     };
 
@@ -62,8 +61,7 @@ function createCategoryPageHelper(createPage, links, template) {
         id: obj.node.id,
         wordpress_id: obj.node.wordpress_id,
         categories: [obj.node.wordpress_id],
-        slug: obj.node.slug,
-        env: process.env
+        slug: obj.node.slug
       }
     };
 
@@ -93,8 +91,7 @@ function createPageHelper(createPage, links) {
       component: slash(path.resolve(templatePath)),
       context: {
         id: obj.node.id,
-        slug: obj.node.slug,
-        env: process.env
+        slug: obj.node.slug
       }
     };
 
@@ -103,19 +100,11 @@ function createPageHelper(createPage, links) {
   });
 }
 
-exports.onCreateWebpackConfig = ({ actions }) => {
-  actions.setWebpackConfig({
-    node: {
-      fs: 'empty'
-    }
-  });
-};
-
 async function createSitePages(createPage, graphql) {
   const result = await graphql(
     `
       {
-        wpPages: allWordpressPage {
+        sitePages: allWordpressPage {
           edges {
             node {
               id
@@ -129,22 +118,23 @@ async function createSitePages(createPage, graphql) {
       }
     `
   );
+
   if (result.errors) throw new Error(result.errors);
 
-  return createPageHelper(createPage, result.data.wpPages.edges);
+  return createPageHelper(createPage, result.data.sitePages.edges);
 }
 
 async function createSiteEvents(createPage, graphql) {
   const result = await graphql(
     `
       {
-        wpEvents: allWordpressWpEvent {
+        siteEvents: allWordpressWpEvent {
           edges {
             node {
               id
               slug
               title
-              event_category
+              eventCategory
             }
           }
         }
@@ -156,10 +146,10 @@ async function createSiteEvents(createPage, graphql) {
   const eventTemplate = path.resolve('./src/templates/event.js');
   return createPostHelper(
     createPage,
-    result.data.wpEvents.edges,
+    result.data.siteEvents.edges,
     eventTemplate,
     'events',
-    'event_category'
+    'eventCategory'
   );
 }
 
@@ -167,7 +157,7 @@ async function createSiteEventCategories(createPage, graphql) {
   const result = await graphql(
     `
       {
-        wpEventCategories: allWordpressWpEventCategory {
+        siteEventCategories: allWordpressWpEventCategory {
           edges {
             node {
               wordpress_id
@@ -184,9 +174,10 @@ async function createSiteEventCategories(createPage, graphql) {
   if (result.errors) throw new Error(result.errors);
 
   const eventTemplate = path.resolve('./src/templates/event_type.js');
+
   return createCategoryPageHelper(
     createPage,
-    result.data.wpEventCategories.edges,
+    result.data.siteEventCategories.edges,
     eventTemplate
   );
 }
@@ -195,7 +186,7 @@ async function createSiteCategories(createPage, graphql) {
   const result = await graphql(
     `
       {
-        wpCategory: allWordpressCategory {
+        siteCategory: allWordpressCategory {
           edges {
             node {
               name
@@ -217,18 +208,22 @@ async function createSiteCategories(createPage, graphql) {
   if (result.errors) throw new Error(result.errors);
 
   const pageTemplate = path.resolve('./src/templates/category.js');
-  return createCategoryPageHelper(
+  createCategoryPageHelper(
     createPage,
-    result.data.wpCategory.edges,
+    result.data.siteCategory.edges,
     pageTemplate
   );
+
+  return result.data.siteCategory && result.data.siteCategory.edges.length > 0
+    ? result.data.siteCategory.edges.map(obj => obj.node)
+    : [];
 }
 
 async function createSiteMagazines(createPage, graphql) {
   const result = await graphql(
     `
       {
-        wpMagazine: allWordpressWpMagazine {
+        siteMagazine: allWordpressWpMagazine {
           edges {
             node {
               id
@@ -246,7 +241,7 @@ async function createSiteMagazines(createPage, graphql) {
   const magazineTemplate = path.resolve('./src/templates/magazine.js');
   return createPostHelper(
     createPage,
-    result.data.wpMagazine.edges,
+    result.data.siteMagazine.edges,
     magazineTemplate,
     'magazine',
     'type'
@@ -257,7 +252,7 @@ async function createSitePosts(createPage, graphql) {
   const result = await graphql(
     `
       {
-        wpPosts: allWordpressPost {
+        sitePosts: allWordpressPost {
           edges {
             node {
               id
@@ -279,7 +274,7 @@ async function createSitePosts(createPage, graphql) {
   const postTemplate = path.resolve('./src/templates/post.js');
   return createPostHelper(
     createPage,
-    result.data.wpPosts.edges,
+    result.data.sitePosts.edges,
     postTemplate,
     'posts',
     'categories',
@@ -295,17 +290,25 @@ async function createSearch(createPage) {
   });
 }
 
+exports.onCreateWebpackConfig = ({ actions }) => {
+  actions.setWebpackConfig({
+    node: {
+      fs: 'empty'
+    }
+  });
+};
+
 exports.createPages = async ({ graphql, actions }) => {
   const { createPage } = actions;
   try {
     await Promise.all([
-      createSearch(createPage),
-      createSitePages(createPage, graphql),
-      createSiteEvents(createPage, graphql),
+      createSitePosts(createPage, graphql),
       createSiteEventCategories(createPage, graphql),
       createSiteCategories(createPage, graphql),
+      createSitePages(createPage, graphql),
+      createSiteEvents(createPage, graphql),
       createSiteMagazines(createPage, graphql),
-      createSitePosts(createPage, graphql)
+      createSearch(createPage)
     ]);
     return new Promise(resolve => resolve(true));
   } catch (err) {

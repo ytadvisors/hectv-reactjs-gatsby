@@ -46,7 +46,7 @@ class Post extends Component {
       'relatedPost',
       'wpRelatedPosts'
     );
-    const events = getPosts(data, 'wpPost', 'post_events', 'relatedEvent');
+    const events = getPosts(data, 'wpPost', 'postEvents', 'relatedEvent');
     posts = _.take(posts, 3);
     return (
       <div>
@@ -173,7 +173,7 @@ export const query = graphql`
             }
           }
         }
-        post_events {
+        postEvents {
           relatedEvent {
             postExcerpt
             postTitle

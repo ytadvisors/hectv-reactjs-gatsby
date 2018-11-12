@@ -65,12 +65,6 @@ function* handleErrors(payload) {
             error: true
           });
           break;
-        case 'jwt_auth_invalid_token':
-          yield put({
-            type: types.LOGOUT,
-            operation: 'reload_page'
-          });
-          break;
         default:
           break;
       }

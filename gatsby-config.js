@@ -46,7 +46,7 @@ module.exports = {
     `gatsby-plugin-sitemap`,
     `gatsby-plugin-react-next`,
     {
-      resolve: `gatsby-source-wordpress-fork`,
+      resolve: `gatsby-source-wordpress`,
       options: {
         baseUrl,
         protocol,
@@ -55,9 +55,6 @@ module.exports = {
         // Set to true to debug endpoints on 'gatsby build'
         verboseOutput: true,
         concurrentRequests: 40,
-        auth: {
-          jwt_token: ''
-        },
         excludedRoutes: [
           '/jetpack/**',
           '/*/*/tags',

@@ -388,12 +388,15 @@ export default class ListOfPosts extends Component {
     }
   };
 
+  getRowKey = currentRow =>
+    currentRow.reduce((result, item) => `${item.slug} `, '');
+
   getRows = (layout, displayType, rowOfColumns, tableStyle, resizeRows) => (
     <table className="main-table" style={tableStyle}>
       <tbody>
         {rowOfColumns.map(currentRow => (
-          <tr key={currentRow.id} className="main-row ">
-            {currentRow.obj.map(post => (
+          <tr key={this.getRowKey(currentRow)} className="main-row ">
+            {currentRow.map(post => (
               <td
                 key={`${post.slug} ${post.postName}`}
                 className="main-col col-xs-4"
@@ -477,10 +480,7 @@ export default class ListOfPosts extends Component {
           const currentDisplay = layout.displayType;
           numColumns = this.getNumColumns(currentLayout);
           const row = _.slice(postsClone, 0, numColumns);
-          const rowOfColumns = _.chunk(row, numColumns).map((obj, y) => ({
-            id: y,
-            obj
-          }));
+          const rowOfColumns = _.chunk(row, numColumns);
           postsClone.splice(0, numColumns);
           return (
             <div key={rowInfo.id}>

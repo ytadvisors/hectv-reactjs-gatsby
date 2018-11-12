@@ -11,10 +11,6 @@ const initialState = {
 };
 
 export default (state = initialState, action) => {
-  const storedUser = localStorage.getItem('user')
-    ? JSON.parse(localStorage.getItem('user'))
-    : {};
-
   switch (action.type) {
     case types.LOGIN:
     case types.LOAD_USER:
@@ -42,7 +38,6 @@ export default (state = initialState, action) => {
         ...state,
         user: {
           ...state.user,
-          ...storedUser,
           ...action.values
         }
       };
