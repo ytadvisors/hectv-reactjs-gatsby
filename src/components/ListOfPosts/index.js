@@ -57,10 +57,10 @@ export default class ListOfPosts extends Component {
   };
 
   getImgSrc = (post, type) => {
-    const {
-      thumbnail,
-      acf: { isVideo, coverImage, videoImage, postHeader, eventImage } = {}
-    } = post;
+    const { thumbnail, acf } = post;
+
+    const { coverImage, videoImage, postHeader, eventImage } = acf;
+    const isVideo = post.acf && post.acf.isVideo;
 
     if (thumbnail) return thumbnail;
     if (coverImage) return coverImage;
@@ -227,7 +227,7 @@ export default class ListOfPosts extends Component {
   };
 
   getSingleColumnPost = (post, content) => {
-    const { acf: { isVideo } = {} } = post;
+    const isVideo = post.acf && post.acf.isVideo;
 
     return (
       <table className="no-spacing">
@@ -287,7 +287,7 @@ export default class ListOfPosts extends Component {
   );
 
   getFeaturedPost = (post, content) => {
-    const { acf: { isVideo } = {} } = post;
+    const isVideo = post.acf && post.acf.isVideo;
 
     const { isMobile } = this.state;
 
