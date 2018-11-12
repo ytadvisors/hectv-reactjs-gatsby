@@ -55,6 +55,9 @@ module.exports = {
         // Set to true to debug endpoints on 'gatsby build'
         verboseOutput: true,
         concurrentRequests: 40,
+        auth: {
+          jwt_token: ''
+        },
         excludedRoutes: [
           '/jetpack/**',
           '/*/*/tags',

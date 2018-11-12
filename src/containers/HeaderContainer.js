@@ -10,7 +10,7 @@ class HeaderContainer extends Component {
   searchFunc = () => {
     const { pageForm: { search: { values } = {} } = {} } = this.props;
 
-    if (values) {
+    if (values && values.search) {
       navigate(`/search/${values.search}`);
     }
   };

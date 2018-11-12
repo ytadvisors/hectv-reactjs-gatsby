@@ -23,6 +23,7 @@ class Search extends Component {
   }
 
   componentDidMount() {
+    this.mounted = true;
     const {
       location: { pathname }
     } = this.props;
@@ -37,27 +38,34 @@ class Search extends Component {
     }
   }
 
+  componentWillUnmount() {
+    this.mounted = false;
+  }
+
   loadLive = () => {
     const { dispatch, data: { wpSchedule: { edges } = {} } = {} } = this.props;
     dispatch(loadLiveVideosAction());
-    this.setState({
-      programs: getPrograms(edges, 5)
-    });
+    if (this.mounted)
+      this.setState({
+        programs: getPrograms(edges, 5)
+      });
     setTimeout(this.loadLive, 30000);
   };
 
   loadPage(pathname) {
-    const {
-      dispatch,
-      data: {
-        wpSite: {
-          siteMetadata: { apiUrl }
+    if (this.mounted) {
+      const {
+        dispatch,
+        data: {
+          wpSite: {
+            siteMetadata: { apiUrl }
+          }
         }
-      }
-    } = this.props;
+      } = this.props;
 
-    const [, , searchValue] = pathname.split('/');
-    dispatch(loadSearchPostsAction(apiUrl, searchValue));
+      const [, , searchValue] = pathname.split('/');
+      dispatch(loadSearchPostsAction(apiUrl, searchValue));
+    }
   }
 
   render() {

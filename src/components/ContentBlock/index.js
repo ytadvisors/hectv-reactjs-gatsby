@@ -1,11 +1,10 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import './styles.scss';
 
-const ContentBlock = ({
+export default ({
   header,
   content,
-  subheader,
+  subheader = '',
   footer,
   type,
   data,
@@ -35,13 +34,3 @@ const ContentBlock = ({
     </article>
   </section>
 );
-
-ContentBlock.propTypes = {
-  header: PropTypes.string.isRequired,
-  subheader: PropTypes.string.isRequired,
-  content: PropTypes.string.isRequired,
-  footer: PropTypes.string.isRequired,
-  type: PropTypes.string.isRequired
-};
-
-export default ContentBlock;

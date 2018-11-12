@@ -17,15 +17,21 @@ class Magazine extends Component {
   }
 
   componentDidMount() {
+    this.mounted = true;
     this.loadLive();
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
   }
 
   loadLive = () => {
     const { dispatch, data: { wpSchedule: { edges } = {} } = {} } = this.props;
     dispatch(loadLiveVideosAction());
-    this.setState({
-      programs: getPrograms(edges, 5)
-    });
+    if (this.mounted)
+      this.setState({
+        programs: getPrograms(edges, 5)
+      });
     setTimeout(this.loadLive, 30000);
   };
 

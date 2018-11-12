@@ -1,6 +1,6 @@
 import { put, select, takeLatest, all, call } from 'redux-saga/effects';
 import { delay } from 'redux-saga';
-
+import deepMapKeys from 'deep-map-keys';
 import _ from 'lodash';
 
 import { showLoading, hideLoading } from 'react-redux-loading-bar';
@@ -341,7 +341,8 @@ function* loadSearchPosts(payload) {
     let data = [];
     const numResults = getNumAPIResults(posts);
     if (posts && posts.data) {
-      data = posts.data.map(mapPost);
+      const postData = deepMapKeys(posts.data, key => _.camelCase(key));
+      data = postData.map(mapPost);
 
       yield put({
         type: types.SET_ALL_POSTS,
