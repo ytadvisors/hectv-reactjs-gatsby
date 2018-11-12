@@ -29,6 +29,9 @@
       "git add"
     ]
   },
+  "engines": {
+    "node": ">=8"
+  },
   "dependencies": {
     "aws-sdk": "2.349.0",
     "axios": "0.18.0",
