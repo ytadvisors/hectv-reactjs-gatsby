@@ -59,7 +59,7 @@ export default class ListOfPosts extends Component {
   getImgSrc = (post, type) => {
     const { thumbnail, acf = {} } = post;
 
-    const { coverImage, videoImage, postHeader, eventImage } = acf;
+    const { coverImage, videoImage, postHeader, eventImage } = acf || {};
     const isVideo = post.acf && post.acf.isVideo;
 
     if (thumbnail) return thumbnail;
