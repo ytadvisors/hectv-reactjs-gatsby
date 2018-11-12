@@ -239,9 +239,10 @@ function* loadLiveVideos() {
   try {
     const api = new PostApi();
     const liveVideos = yield call(api.getLiveVideos);
+    const liveData = deepMapKeys(liveVideos.data, key => _.camelCase(key));
     yield put({
       type: types.SET_LIVE_VIDEOS,
-      liveVideos: liveVideos.data
+      liveVideos: liveData
     });
   } catch (error) {
     yield put({ type: types.LOAD_ERROR, error });
