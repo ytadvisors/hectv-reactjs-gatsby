@@ -45,9 +45,8 @@ class Template2Page extends Component {
       wpSite: { siteMetadata: { siteUrl, fbAppId } = {} } = {}
     } = data;
 
-    const post = { ...data.wpPage };
     const { programs } = this.state;
-    post.acf.content = content;
+    const post = { ...data.wpPage, acf: { content } };
 
     const description =
       content || 'On Demand Arts, Culture & Education Programming';
