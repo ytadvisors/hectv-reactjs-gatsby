@@ -328,7 +328,7 @@ export default class ListOfPosts extends Component {
   };
 
   getPost = (layout, post, content) => {
-    const { acf: { isVideo } = {} } = post;
+    const isVideo = post.acf && post.acf.isVideo;
 
     return (
       <div>
