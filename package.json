@@ -40,6 +40,7 @@
     "deep-map-keys": "1.2.0",
     "dotenv": "6.0.0",
     "dotenv-webpack": "1.5.7",
+    "eslint-plugin-react": "7.11.1",
     "gatsby": "2.0.22",
     "gatsby-plugin-google-fonts": "0.0.4",
     "gatsby-plugin-google-tagmanager": "1.0.19",
