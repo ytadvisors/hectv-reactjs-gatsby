@@ -7,6 +7,7 @@ import Captcha from './Captcha';
 import DefaultTextArea from './DefaultTextArea';
 import DefaultInput from './DefaultInput';
 import DefaultSelect from './DefaultSelect';
+import SelectMenu from './SelectMenu';
 import DefaultDatePicker from './DefaultDatePicker';
 import CheckBoxInput from './CheckBoxInput';
 import DateTimeAdder from './DateTimeAdder';
@@ -35,6 +36,7 @@ export default class ReactForm extends Component {
       autofocus,
       rows,
       labels,
+      defaultText,
       options
     } = field;
     switch (field.component) {
@@ -90,6 +92,21 @@ export default class ReactForm extends Component {
               options={options}
               displayLabel={displayLabel}
               displayErrors={displayErrors !== false}
+            />
+          </div>
+        );
+      case 'selectMenu':
+        return (
+          <div>
+            <Field
+              name={name}
+              component={SelectMenu}
+              label={placeholder}
+              options={options}
+              disabled={disabled}
+              change={change}
+              defaultText={defaultText || placeholder}
+              displayLabel={displayLabel}
             />
           </div>
         );
@@ -192,6 +209,10 @@ export default class ReactForm extends Component {
       closeModal
     } = this.props;
 
+    const fieldMap = fields.map((field, x) => ({
+      id: `fields-${x}`,
+      value: field
+    }));
     const { termsAgreed } = this.state;
 
     return (
@@ -217,9 +238,9 @@ export default class ReactForm extends Component {
           ''
         )}
         <div className="form-fields">
-          {fields.map(field => (
-            <div className="row" key={field.name}>
-              {this.getFields(field)}
+          {fieldMap.map(field => (
+            <div className="row" key={field.id} id={field.id}>
+              {this.getFields(field.value)}
             </div>
           ))}
           <div className="row step-btn-row">

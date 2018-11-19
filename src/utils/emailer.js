@@ -12,7 +12,7 @@ export default ({ to, subject, message }) => {
   const toUser = Array.isArray(to) ? to : [to];
 
   // this must relate to a verified SES account
-  const from = 'info@educate.today';
+  const from = 'info@hecmedia.org';
 
   const params = {
     Source: from,

@@ -14,3 +14,8 @@ export const loadScheduleValues = values => ({
   type: types.LOAD_SCHEDULE_VALUES,
   values
 });
+
+export const loadContactValues = values => ({
+  type: types.LOAD_CONTACT_VALUES,
+  values
+});

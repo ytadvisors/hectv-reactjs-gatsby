@@ -17,6 +17,7 @@ export const SAVE_SCHEDULE_INFORMATION = `${prefix}SAVE_SCHEDULE_INFORMATION`;
 export const UPDATE_USER = `${prefix}UPDATE_USER`;
 export const ADD_TO_PLAYLIST = `${prefix}ADD_TO_PLAYLIST`;
 export const SEND_EMAIL = `${prefix}SEND_EMAIL`;
+export const SEND_CONTACT_EMAIL = `${prefix}SEND_CONTACT_EMAIL`;
 export const UPDATE_PLAYLIST = `${prefix}UPDATE_PLAYLIST`;
 
 // Delete

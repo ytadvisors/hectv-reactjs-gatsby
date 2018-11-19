@@ -78,12 +78,7 @@ const fields = [
 const validate = Validator(fields);
 
 class ProfileForm extends Component {
-  constructor(props) {
-    super(props);
-    this.onSubmit = this.onSubmit.bind(this);
-  }
-
-  onSubmit() {
+  onSubmit = () => {
     const { callbackFunc, terms } = this.props;
     const validSubmit =
       !terms || (terms && $('.terms-and-conditions').is(':checked'));
@@ -96,7 +91,7 @@ class ProfileForm extends Component {
     }
 
     callbackFunc.call(this);
-  }
+  };
 
   render() {
     return (

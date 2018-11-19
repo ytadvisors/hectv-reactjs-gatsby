@@ -26,14 +26,9 @@ const fields = [
 const validate = Validator(fields);
 
 class LoginForm extends Component {
-  constructor(props) {
-    super(props);
-    this.onSubmit = this.onSubmit.bind(this);
-  }
-
   componentDidMount() {}
 
-  onSubmit() {
+  onSubmit = () => {
     const { callbackFunc, terms } = this.props;
     const validSubmit =
       !terms || (terms && $('.terms-and-conditions').is(':checked'));
@@ -46,7 +41,7 @@ class LoginForm extends Component {
     }
 
     callbackFunc.call(this);
-  }
+  };
 
   render() {
     return (

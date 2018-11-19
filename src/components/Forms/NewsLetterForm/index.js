@@ -34,12 +34,7 @@ const fields = [
 const validate = Validator(fields);
 
 class NewsLetterForm extends Component {
-  constructor(props) {
-    super(props);
-    this.onSubmit = this.onSubmit.bind(this);
-  }
-
-  onSubmit() {
+  onSubmit = () => {
     const { callbackFunc, terms, values } = this.props;
     const validSubmit =
       !terms || (terms && $('.terms-and-conditions').is(':checked'));
@@ -52,7 +47,7 @@ class NewsLetterForm extends Component {
     }
 
     callbackFunc.call(null, values);
-  }
+  };
 
   render() {
     return (
