@@ -12,7 +12,7 @@ export default ({ to, subject, message }) => {
   const toUser = Array.isArray(to) ? to : [to];
 
   // this must relate to a verified SES account
-  const from = 'info@hecmedia.org';
+  const from = process.env.GATSBY_SENDER_EMAIL;
 
   const params = {
     Source: from,
