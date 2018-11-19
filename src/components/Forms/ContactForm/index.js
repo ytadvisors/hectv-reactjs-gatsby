@@ -86,9 +86,10 @@ const fields = [
   [
     {
       name: 'country',
-      component: 'select',
+      component: 'selectMenu',
       type: 'text',
       placeholder: 'Country*',
+      defaultText: 'Select a Country',
       options: countries,
       validation: ['required']
     }
@@ -117,12 +118,7 @@ const fields = [
 const validate = Validator(fields);
 
 class ContactForm extends Component {
-  constructor(props) {
-    super(props);
-    this.onSubmit = this.onSubmit.bind(this);
-  }
-
-  onSubmit() {
+  onSubmit = () => {
     const { callbackFunc, terms } = this.props;
     const validSubmit =
       !terms || (terms && $('.terms-and-conditions').is(':checked'));
@@ -135,7 +131,7 @@ class ContactForm extends Component {
     }
 
     callbackFunc.call(this);
-  }
+  };
 
   render() {
     return (
@@ -162,7 +158,7 @@ const ReactContainer = reduxForm({
 })(ReactForm);
 
 const mapStateToProps = state => ({
-  values: state.form.user.values
+  values: state.form.contact.values
 });
 
 export default connect(mapStateToProps)(ContactForm);

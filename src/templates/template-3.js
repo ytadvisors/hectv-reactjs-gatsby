@@ -3,6 +3,8 @@ import { graphql } from 'gatsby';
 import { connect } from 'react-redux';
 
 import { loadLiveVideosAction } from '../store/actions/postActions';
+import { sendContactEmail } from '../store/actions/accountActions';
+import { openOverlayAction } from '../store/actions/pageActions';
 
 import { getPrograms, getExcerpt } from '../utils/helperFunctions';
 import Map from '../components/Map';
@@ -10,10 +12,6 @@ import SEO from '../components/SEO';
 import Layout from '../components/Layout';
 import DefaultNav from '../components/SubNavigation/DefaultNav';
 import Template3 from '../components/Templates/template-3/index';
-
-function callbackFunc() {
-  console.log('Done');
-}
 
 class Template3Page extends Component {
   constructor(props) {
@@ -31,6 +29,35 @@ class Template3Page extends Component {
   componentWillUnmount() {
     this.mounted = false;
   }
+
+  getSuccessMsg = () => (
+    <div
+      className="text-center"
+      style={{
+        padding: '1.2em 3em 2.8em',
+        lineHeight: '2em',
+        background: '#ddecff'
+      }}
+    >
+      <div>
+        <p>
+          <b>Congratulations!</b>{' '}
+        </p>
+        <p>Your contact message has been sent.</p>
+      </div>
+    </div>
+  );
+
+  contactUs = () => {
+    const {
+      pageForm: { contact: { values } = {} } = {},
+      dispatch
+    } = this.props;
+    const newValues = { ...values };
+    delete newValues['contact-captcha'];
+    dispatch(sendContactEmail(newValues));
+    dispatch(openOverlayAction('basic', { content: this.getSuccessMsg() }));
+  };
 
   loadLive = () => {
     const { dispatch, data: { wpSchedule: { edges } = {} } = {} } = this.props;
@@ -77,7 +104,7 @@ class Template3Page extends Component {
             <div className="col-md-12">
               <DefaultNav title={title} link={link} />
             </div>
-            <Template3 {...{ pageContent }} callbackFunc={callbackFunc}>
+            <Template3 {...{ pageContent }} callbackFunc={this.contactUs}>
               <Map mapKey={mapKey} />
             </Template3>
           </div>
@@ -88,6 +115,7 @@ class Template3Page extends Component {
 }
 
 const mapStateToProps = state => ({
+  pageForm: state.form,
   liveVideos: state.postReducers.liveVideos
 });
 

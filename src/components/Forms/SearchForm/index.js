@@ -20,15 +20,10 @@ const fields = [
 const validate = Validator(fields);
 
 class SearchForm extends Component {
-  constructor(props) {
-    super(props);
-    this.onSubmit = this.onSubmit.bind(this);
-  }
-
-  onSubmit() {
+  onSubmit = () => {
     const { callbackFunc } = this.props;
     callbackFunc.call(this);
-  }
+  };
 
   render() {
     return (

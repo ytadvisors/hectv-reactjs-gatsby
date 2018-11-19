@@ -1,5 +1,8 @@
 import { put, takeLatest, all } from 'redux-saga/effects';
+import _ from 'lodash';
 import * as types from '../types/accountTypes';
+import * as formTypes from '../types/formTypes';
+import sendUserEmail from '../../utils/emailer';
 
 /*-----------------
  *
@@ -12,6 +15,28 @@ import * as types from '../types/accountTypes';
  * CREATE OPERATIONS
  *
  *------------------*/
+
+function* sendContactEmail({ email, values }) {
+  try {
+    let message = '';
+    _.keys(values).forEach(key => {
+      message += `${key}: ${values[key]} <br/>`;
+    });
+
+    sendUserEmail({
+      to: email || process.env.GATSBY_CONTACT_EMAIL || 'test@ytadvisors.com',
+      subject: `New contact email from ${values.email}`,
+      message
+    });
+
+    yield put({
+      type: formTypes.RESET_CONTACT_VALUES,
+      message
+    });
+  } catch (error) {
+    yield put({ type: types.EMAIL_ERROR, error });
+  }
+}
 
 /*-----------------
 *
@@ -79,5 +104,8 @@ function* handleErrors(payload) {
 }
 
 export default function* rootSaga() {
-  yield all([yield takeLatest(types.LOAD_ERROR, handleErrors)]);
+  yield all([
+    yield takeLatest(types.LOAD_ERROR, handleErrors),
+    yield takeLatest(types.SEND_CONTACT_EMAIL, sendContactEmail)
+  ]);
 }
