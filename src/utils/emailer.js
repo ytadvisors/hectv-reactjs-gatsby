@@ -1,11 +1,15 @@
 import AWS from 'aws-sdk';
 
 export default ({ to, subject, message }) => {
-  const { SMTP_USERNAME, SMTP_PASSWORD, SMTP_REGION } = process.env;
+  const {
+    GATSBY_SMTP_USERNAME,
+    GATSBY_SMTP_PASSWORD,
+    GATSBY_SMTP_REGION
+  } = process.env;
   AWS.config.update({
-    accessKeyId: SMTP_USERNAME,
-    secretAccessKey: SMTP_PASSWORD,
-    region: SMTP_REGION
+    accessKeyId: GATSBY_SMTP_USERNAME,
+    secretAccessKey: GATSBY_SMTP_PASSWORD,
+    region: GATSBY_SMTP_REGION
   });
 
   const ses = new AWS.SES();
