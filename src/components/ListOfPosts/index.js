@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'gatsby';
 import _ from 'lodash';
-import { Button } from 'react-bootstrap';
 import * as Material from 'react-icons/lib/md';
 import * as Ionicons from 'react-icons/lib/io';
 import LazyLoad from 'react-lazyload';
@@ -441,8 +440,9 @@ export default class ListOfPosts extends Component {
     let displayType = 'Post';
     let numColumns = 1;
     const {
-      numResults,
-      loadMore,
+      numPages,
+      currentPage,
+      urlPrefix,
       posts,
       title,
       design,
@@ -522,28 +522,35 @@ export default class ListOfPosts extends Component {
       return (
         <section className="post-list-container clearfix" style={style}>
           {title ? <div className="title">{title}</div> : ''}
-          <article className="hidden">
-            <p>{numResults} results found</p>
-          </article>
           {mainContent}
           {remainingPosts}
-          {(rowOfColumns => {
-            const numDisplayed = rowOfColumns.length;
-            if (loadMore && numDisplayed > 0 && numDisplayed < numResults) {
-              return (
-                <div className="load-more-container row">
-                  <Button
-                    className="btn btn-primary btn-load-more"
-                    onClick={loadMore}
-                  >
-                    {' '}
-                    Load More
-                  </Button>
-                </div>
-              );
-            }
-            return '';
-          })(posts)}
+          {numPages &&
+            currentPage && (
+              <div className="row clearfix">
+                <ul className="post-pages">
+                  <li className="post-page-label">Pages</li>
+                  {_.range(numPages).map(page => {
+                    const displayPage = page + 1;
+                    const pageUrl =
+                      displayPage > 1
+                        ? `${urlPrefix}page/${displayPage}`
+                        : urlPrefix;
+                    return (
+                      <li key={page}>
+                        <Link
+                          to={pageUrl}
+                          className={
+                            currentPage === displayPage ? 'active' : ''
+                          }
+                        >
+                          {displayPage}
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            )}
         </section>
       );
     }

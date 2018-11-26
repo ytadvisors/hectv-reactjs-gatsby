@@ -48,16 +48,24 @@ class EventType extends Component {
   };
 
   render() {
-    const { data, liveVideos } = this.props;
+    const {
+      data,
+      liveVideos,
+      pageContext: { edges, page, numPages = 1 },
+      location: { pathname }
+    } = this.props;
+
     const { currentDate, programs } = this.state;
     if (data.wpPage.acf) data.wpPage.acf.content = data.wpPage.content;
 
-    const events = (data.wpEvents && data.wpEvents.edges) || [];
+    const events = edges || [];
     const currentEvents = getCurrentEvents(currentDate, events);
     const posts =
       currentEvents &&
       currentEvents.values &&
       currentEvents.values.map(obj => obj.node);
+
+    const [urlPrefix] = pathname.split('page');
     const description =
       data.wpPage.content || 'On Demand Arts, Culture & Education Programming';
     const selectTitle =
@@ -95,6 +103,9 @@ class EventType extends Component {
               posts={posts || []}
               link={{ page: 'events' }}
               numResults={0}
+              numPages={numPages}
+              urlPrefix={urlPrefix}
+              currentPage={page}
               design={data.wpPage.acf}
               loadMore={null}
               resizeRows
@@ -113,7 +124,7 @@ const mapStateToProps = state => ({
 export default connect(mapStateToProps)(EventType);
 
 export const query = graphql`
-  query eventTypeQuery($categories: [Int], $wordpress_id: Int) {
+  query eventTypeQuery($wordpress_id: Int) {
     wpSite: site {
       siteMetadata {
         siteUrl
@@ -149,27 +160,6 @@ export const query = graphql`
         newRowLayout {
           rowLayout
           displayType
-        }
-      }
-    }
-    wpEvents: allWordpressWpEvent(
-      filter: { eventCategory: { in: $categories } }
-      sort: { fields: [acf___eventDates], order: ASC }
-    ) {
-      edges {
-        node {
-          slug
-          title
-          link
-          thumbnail
-          acf {
-            venue
-            eventPrice
-            eventDates {
-              startTime
-              endTime
-            }
-          }
         }
       }
     }

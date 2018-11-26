@@ -51,9 +51,10 @@ module.exports = {
         baseUrl,
         protocol,
         hostingWPCOM: false,
-        useACF: false,
+        useACF: true,
         // Set to true to debug endpoints on 'gatsby build'
         verboseOutput: true,
+        perPage: 100,
         concurrentRequests: 40,
         auth: {
           jwt_token: ''
@@ -63,6 +64,7 @@ module.exports = {
           '/*/*/tags',
           '/*/*/settings',
           '/*/*/media',
+          '/*/*/users',
           '/*/*/users/*',
           '/yoast/**'
         ],
