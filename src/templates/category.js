@@ -38,20 +38,22 @@ class Category extends Component {
 
   render() {
     const {
-      data: { wpCategory, wpCategoryPosts, wpSite } = {},
-      liveVideos
+      data: { wpCategory, wpSite } = {},
+      liveVideos,
+      pageContext: { edges, page, numPages = 1 },
+      location: { pathname }
     } = this.props;
 
     const { name, description, link = '', slug = '' } = wpCategory || {};
     const { siteMetadata: { siteUrl, fbAppId } = {} } = wpSite || {};
-
     const { programs } = this.state;
+    const [urlPrefix] = pathname.split('page');
 
     const pageDescription =
       description || 'On Demand Arts, Culture & Education Programming';
     const pageLink = link.replace(/https?:\/\/[^/]+/, '');
 
-    const posts = wpCategoryPosts && wpCategoryPosts.edges.map(obj => obj.node);
+    const posts = edges && edges.map(obj => obj.node);
 
     let image = '';
     if (posts && posts.length > 0) image = posts[0].thumbnail;
@@ -76,7 +78,10 @@ class Category extends Component {
             <ListOfPosts
               posts={posts || []}
               link={{ page: 'posts' }}
+              urlPrefix={urlPrefix}
               numResults={0}
+              numPages={numPages}
+              currentPage={page}
               design={null}
               loadMore={null}
               resizeRows
@@ -124,27 +129,6 @@ export const query = graphql`
       link
       name
       description
-    }
-    wpCategoryPosts: allWordpressPost(
-      filter: { categories: { slug: { eq: $slug } } }
-    ) {
-      edges {
-        node {
-          slug
-          link
-          title
-          excerpt
-          thumbnail
-          categories {
-            name
-            link
-            slug
-          }
-          acf {
-            isVideo
-          }
-        }
-      }
     }
   }
 `;

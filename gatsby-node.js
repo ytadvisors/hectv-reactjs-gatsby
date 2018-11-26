@@ -23,7 +23,7 @@ function createPostHelper(
   categoriesIndex,
   categoriesSubindex
 ) {
-  _.each(links, link => {
+  links.forEach(link => {
     let categories = [];
     if (link.node[categoriesIndex]) {
       if (categoriesSubindex) {
@@ -50,28 +50,130 @@ function createPostHelper(
   });
 }
 
-function createCategoryPageHelper(createPage, links, template) {
-  _.each(links, obj => {
-    const newLink = obj.node.link.replace(/https?:\/\/[^/]+/, '');
-
-    const categoryInfo = {
-      path: newLink,
-      component: slash(template),
-      context: {
-        id: obj.node.id,
-        wordpress_id: obj.node.wordpress_id,
-        categories: [obj.node.wordpress_id],
-        slug: obj.node.slug
+async function getCategoryGraphQl(graphql, slug) {
+  return graphql(`
+      {
+        siteCategory: allWordpressPost(
+          filter: { categories: { slug: { eq: "${slug}" } } }
+        ) {
+          edges {
+            node {
+              slug
+              link
+              title
+              excerpt
+              thumbnail
+              categories {
+                name
+                link
+                slug
+              }
+              acf {
+                isVideo
+              }
+            }
+          }  
+        }
       }
-    };
+    `);
+}
 
-    // console.log("CATEGORY INFO: ", util.inspect(categoryInfo, true, 5));
-    createPage(categoryInfo);
+async function getEventCategoryGraphQl(graphql, slug, categories) {
+  return graphql(`
+      {
+        siteCategory: allWordpressWpEvent(
+          filter: { eventCategory: { in: ${categories} } }
+          sort: { fields: [acf___eventDates], order: ASC }
+        ) {
+          edges {
+            node {
+              slug
+              title
+              link
+              thumbnail
+              acf {
+                venue
+                eventPrice
+                eventDates {
+                  startTime
+                  endTime
+                }
+              }
+            }
+          }
+        }
+      }
+    `);
+}
+
+async function createCategoryPageHelper(
+  createPage,
+  graphql,
+  categoryFunc,
+  perPage,
+  links,
+  template
+) {
+  links.forEach(async obj => {
+    try {
+      const response = await categoryFunc(graphql, obj.node.slug, [
+        obj.node.wordpress_id
+      ]);
+      const { data: { siteCategory = {} } = {} } = response;
+      const { edges = [] } = siteCategory || {};
+      const newLink = obj.node.link.replace(/https?:\/\/[^/]+/, '');
+      if (newLink) {
+        const categoryInfo = {
+          path: newLink,
+          component: slash(template),
+          context: {
+            id: obj.node.id,
+            wordpress_id: obj.node.wordpress_id,
+            categories: [obj.node.wordpress_id],
+            edges,
+            page: 1,
+            numPages: 1,
+            slug: obj.node.slug
+          }
+        };
+
+        if (edges.length < perPage) {
+          return createPage(categoryInfo);
+          // console.log("CATEGORY INFO: ", util.inspect(categoryInfo, true, 15));
+        }
+        const pages = _.chunk(edges, perPage);
+        const numPages = _.size(pages);
+        return pages.forEach((edge, page) => {
+          const currentPage = page + 1;
+          const pagePath =
+            currentPage > 1
+              ? `${newLink.replace(/\/$/, '')}/page/${currentPage}`
+              : newLink;
+          return createPage({
+            path: pagePath,
+            component: slash(template),
+            context: Object.assign({
+              id: obj.node.id,
+              wordpress_id: obj.node.wordpress_id,
+              categories: [obj.node.wordpress_id],
+              edges: edge,
+              page: currentPage,
+              numPages,
+              slug: obj.node.slug
+            })
+          });
+        });
+      }
+      return new Promise(resolve => resolve(true));
+    } catch (err) {
+      console.log(err.message);
+      throw new Error(err.message);
+    }
   });
 }
 
 function createPageHelper(createPage, links) {
-  _.each(links, obj => {
+  links.forEach(obj => {
     const newLink = obj.node.link.replace(/https?:\/\/[^/]+/, '');
     let templatePath = './src/templates/page.js';
     let slug = obj.node.slug.toLowerCase();
@@ -177,6 +279,9 @@ async function createSiteEventCategories(createPage, graphql) {
 
   return createCategoryPageHelper(
     createPage,
+    graphql,
+    getEventCategoryGraphQl,
+    10000,
     result.data.siteEventCategories.edges,
     eventTemplate
   );
@@ -210,6 +315,9 @@ async function createSiteCategories(createPage, graphql) {
   const pageTemplate = path.resolve('./src/templates/category.js');
   createCategoryPageHelper(
     createPage,
+    graphql,
+    getCategoryGraphQl,
+    100,
     result.data.siteCategory.edges,
     pageTemplate
   );
