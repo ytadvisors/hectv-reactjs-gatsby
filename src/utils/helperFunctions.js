@@ -47,7 +47,7 @@ export const cleanText = content => content.replace(/<\/?[^a]?[^>]+(>|$)/g, '');
 export const getExcerpt = (excerpt, length = 200) =>
   excerpt.length > length
     ? `${excerpt.replace(/<\/?[^>]+(>|$)/g, '').substring(0, length)}...`
-    : excerpt;
+    : excerpt.replace(/<\/?[^>]+(>|$)/g, '');
 
 export const getSocialIcon = (title, size, color) => {
   switch (title.toLowerCase()) {
