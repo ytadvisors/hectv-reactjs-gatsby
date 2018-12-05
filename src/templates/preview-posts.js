@@ -8,7 +8,12 @@ import {
   loadLiveVideosAction,
   loadPostWithSlugAction
 } from '../store/actions/postActions';
-import { getPosts, getPrograms, getExcerpt } from '../utils/helperFunctions';
+import {
+  getPosts,
+  getPrograms,
+  getExcerpt,
+  decodeHTML
+} from '../utils/helperFunctions';
 
 import SEO from '../components/SEO';
 import Layout from '../components/Layout';
@@ -126,8 +131,8 @@ class Post extends Component {
           slug={slug}
           liveVideos={liveVideos}
           programs={programs}
-          url={siteUrl}
-          title={title}
+          url={link}
+          title={decodeHTML(title || '')}
           showShareIcons
         >
           <div className="col-md-12" style={{ background: '#eee' }}>

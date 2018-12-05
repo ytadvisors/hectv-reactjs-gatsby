@@ -3,7 +3,12 @@ import { graphql } from 'gatsby';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import { loadLiveVideosAction } from '../store/actions/postActions';
-import { getPosts, getPrograms, getExcerpt } from '../utils/helperFunctions';
+import {
+  getPosts,
+  getPrograms,
+  getExcerpt,
+  decodeHTML
+} from '../utils/helperFunctions';
 
 import SEO from '../components/SEO';
 import Layout from '../components/Layout';
@@ -41,7 +46,9 @@ class Post extends Component {
     const { data, liveVideos } = this.props;
     const { programs } = this.state;
 
-    const { wpSite: { siteMetadata: { siteUrl = '' } = {} } = {} } = data;
+    const {
+      wpSite: { siteMetadata: { siteUrl = '', fbAppId = '' } = {} } = {}
+    } = data;
 
     const { excerpt, content, title, thumbnail, slug, link } = data.wpPost;
     const description =
@@ -63,8 +70,8 @@ class Post extends Component {
             title,
             image: thumbnail,
             description: getExcerpt(description, 320),
-            url: data.wpSite.siteMetadata.siteUrl,
-            fbAppId: data.wpSite.siteMetadata.fbAppId,
+            url: siteUrl,
+            fbAppId,
             pathname: link.replace(/https?:\/\/[^/]+/, ''),
             siteName: 'hecmedia.org',
             author: 'hectv',
@@ -76,8 +83,8 @@ class Post extends Component {
           slug={slug}
           liveVideos={liveVideos}
           programs={programs}
-          title={title}
-          url={siteUrl}
+          title={decodeHTML(title || '')}
+          url={link}
           showShareIcons
         >
           <div className="col-md-12" style={{ background: '#eee' }}>
