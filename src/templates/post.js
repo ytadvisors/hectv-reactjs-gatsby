@@ -62,6 +62,7 @@ class Post extends Component {
       'wpRelatedPosts'
     );
     const events = getPosts(data, 'wpPost', 'postEvents', 'relatedEvent');
+    const pathname = link.replace(/https?:\/\/[^/]+/, '');
     posts = _.take(posts, 3);
     return (
       <div>
@@ -72,7 +73,7 @@ class Post extends Component {
             description: getExcerpt(description, 320),
             url: siteUrl,
             fbAppId,
-            pathname: link.replace(/https?:\/\/[^/]+/, ''),
+            pathname,
             siteName: 'hecmedia.org',
             author: 'hectv',
             twitterHandle: '@hec_tv'
@@ -90,7 +91,7 @@ class Post extends Component {
                 post: data.wpPost,
                 liveVideos,
                 pageTitle: decodeHTML(title || ''),
-                pageUrl: link,
+                pageUrl: `${siteUrl}${pathname}`,
                 showShareIcons: true
               }}
             />
