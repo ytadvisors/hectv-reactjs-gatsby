@@ -8,7 +8,7 @@ import Transition from '../Transition';
 import BottomNav from '../BottomNav/index';
 
 export default props => {
-  const { children, style, slug, showBottomNav, programs, liveVideos } = props;
+  const { children, slug, showBottomNav, liveVideos } = props;
   return (
     <StaticQuery
       query={graphql`
@@ -60,7 +60,7 @@ export default props => {
               liveVideos={liveVideos}
               {...props}
             />
-            <ProgramViewer style={style} programs={programs}>
+            <ProgramViewer {...props}>
               <Transition>
                 {children}
                 {showBottomNav && (

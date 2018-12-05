@@ -52,6 +52,11 @@ class Post extends Component {
   render() {
     const { data, liveVideos, post = {}, categoryPosts } = this.props;
     const { programs } = this.state;
+
+    const {
+      wpSite: { siteMetadata: { siteUrl = '', fbAppId = '' } = {} } = {}
+    } = data;
+
     const newPost = {
       ...{
         ...post
@@ -108,8 +113,8 @@ class Post extends Component {
             title,
             image: thumbnail,
             description: getExcerpt(description, 320),
-            url: data.wpSite.siteMetadata.siteUrl,
-            fbAppId: data.wpSite.siteMetadata.fbAppId,
+            url: siteUrl,
+            fbAppId,
             pathname: link.replace(/https?:\/\/[^/]+/, ''),
             siteName: 'hecmedia.org',
             author: 'hectv',
@@ -121,6 +126,9 @@ class Post extends Component {
           slug={slug}
           liveVideos={liveVideos}
           programs={programs}
+          url={siteUrl}
+          title={title}
+          showShareIcons
         >
           <div className="col-md-12" style={{ background: '#eee' }}>
             <SinglePost
