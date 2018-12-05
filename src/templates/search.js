@@ -99,7 +99,7 @@ class Search extends Component {
           <div className="col-md-12">
             <DefaultNav
               title={`Results: ${decodeURI(searchValue)}`}
-              link="/magazines"
+              link={`/search/${searchValue}`}
             />
           </div>
           <ListOfPosts
