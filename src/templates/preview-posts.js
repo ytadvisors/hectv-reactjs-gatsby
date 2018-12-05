@@ -104,6 +104,7 @@ class Post extends Component {
     );
     relatedPosts = [...relatedPosts, ...categoryRelatedPosts];
 
+    const pathname = link.replace(/https?:\/\/[^/]+/, '');
     const relatedEvents = getPosts(
       postObject,
       'wpPost',
@@ -120,7 +121,7 @@ class Post extends Component {
             description: getExcerpt(description, 320),
             url: siteUrl,
             fbAppId,
-            pathname: link.replace(/https?:\/\/[^/]+/, ''),
+            pathname,
             siteName: 'hecmedia.org',
             author: 'hectv',
             twitterHandle: '@hec_tv'
@@ -138,7 +139,7 @@ class Post extends Component {
                 post: newPost,
                 liveVideos,
                 pageTitle: decodeHTML(title || ''),
-                pageUrl: link,
+                pageUrl: `${siteUrl}${pathname}`,
                 showShareIcons: true
               }}
             />
