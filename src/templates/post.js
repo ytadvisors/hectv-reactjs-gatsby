@@ -90,7 +90,7 @@ class Post extends Component {
                 post: data.wpPost,
                 liveVideos,
                 pageTitle: decodeHTML(title || ''),
-                pageUrl: { link },
+                pageUrl: link,
                 showShareIcons: true
               }}
             />
