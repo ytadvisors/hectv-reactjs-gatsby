@@ -97,7 +97,10 @@ class Search extends Component {
         />
         <Layout liveVideos={liveVideos} programs={programs}>
           <div className="col-md-12">
-            <DefaultNav title={`Results: ${searchValue}`} link="/magazines" />
+            <DefaultNav
+              title={`Results: ${decodeURI(searchValue)}`}
+              link={`/search/${searchValue}`}
+            />
           </div>
           <ListOfPosts
             posts={posts || []}
