@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { graphql } from 'gatsby';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import querystring from 'query-string';
 
 import {
   loadLiveVideosAction,
@@ -44,9 +43,9 @@ class Post extends Component {
   };
 
   loadPost = () => {
-    const { dispatch, location: { search } = {} } = this.props;
-    const { id } = querystring.parse(search) || {};
-    if (id) dispatch(loadPostWithSlugAction(id.replace(/\/$/, '')));
+    const { dispatch, location: { pathname } = {} } = this.props;
+    const [, , , searchValue] = pathname.split('/');
+    if (searchValue) dispatch(loadPostWithSlugAction(searchValue));
   };
 
   render() {

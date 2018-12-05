@@ -400,7 +400,7 @@ async function createSearch(createPage) {
 
 async function createPostPreview(createPage) {
   createPage({
-    path: '/preview/posts/',
+    path: '/preview/posts/:id',
     component: slash(path.resolve('./src/templates/preview-posts.js')),
     context: {}
   });
