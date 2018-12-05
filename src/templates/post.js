@@ -41,6 +41,8 @@ class Post extends Component {
     const { data, liveVideos } = this.props;
     const { programs } = this.state;
 
+    const { wpSite: { siteMetadata: { siteUrl = '' } = {} } = {} } = data;
+
     const { excerpt, content, title, thumbnail, slug, link } = data.wpPost;
     const description =
       excerpt || content || 'On Demand Arts, Culture & Education Programming';
@@ -74,6 +76,9 @@ class Post extends Component {
           slug={slug}
           liveVideos={liveVideos}
           programs={programs}
+          title={title}
+          url={siteUrl}
+          showShareIcons
         >
           <div className="col-md-12" style={{ background: '#eee' }}>
             <SinglePost
