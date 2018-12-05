@@ -3,6 +3,7 @@ import moment from 'moment';
 import * as Material from 'react-icons/lib/md';
 import LazyLoad from 'react-lazyload';
 import VideoPlayer from '../VideoPlayer/index';
+import ShareSocialLinks from '../ShareSocialLinks';
 import { getEventDate, cleanUrl } from '../../utils/helperFunctions';
 
 import './styles.scss';
@@ -23,6 +24,9 @@ export default ({
       embedUrl = ''
     } = {}
   },
+  pageTitle,
+  pageUrl,
+  showShareIcons,
   liveVideos = [],
   hideTitle,
   classes
@@ -45,6 +49,12 @@ export default ({
     <section className="post-container">
       <div className="col-md-12 no-padding">
         {!hideTitle && <h2 dangerouslySetInnerHTML={{ __html: title }} />}
+
+        {showShareIcons && (
+          <div className="row share-container">
+            <ShareSocialLinks url={pageUrl} title={pageTitle} />
+          </div>
+        )}
         <ul className="post-details">
           {venue && (
             <li>

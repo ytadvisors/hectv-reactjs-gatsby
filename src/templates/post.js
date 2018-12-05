@@ -83,15 +83,15 @@ class Post extends Component {
           slug={slug}
           liveVideos={liveVideos}
           programs={programs}
-          title={decodeHTML(title || '')}
-          url={link}
-          showShareIcons
         >
           <div className="col-md-12" style={{ background: '#eee' }}>
             <SinglePost
               {...{
                 post: data.wpPost,
-                liveVideos
+                liveVideos,
+                pageTitle: decodeHTML(title || ''),
+                pageUrl: { link },
+                showShareIcons: true
               }}
             />
             <ListOfPosts

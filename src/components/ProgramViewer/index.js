@@ -6,12 +6,11 @@ import ListOfMagazines from '../ListOfMagazines';
 
 import Schedule from '../Schedule';
 import ListOfEvents from '../ListOfEvents';
-import ShareSocialLinks from '../ShareSocialLinks';
 import NewsLetterContainer from '../../containers/NewsLetterContainer';
 import SignUp from '../SignUp';
 import './styles.scss';
 
-export default ({ style, programs, showShareIcons, children, url, title }) => (
+export default ({ style, programs, children }) => (
   <section className="program-viewer">
     <div
       className="container no-padding program-viewer-container"
@@ -23,11 +22,6 @@ export default ({ style, programs, showShareIcons, children, url, title }) => (
         </div>
         <div className="col-lg-3 no-padding">
           <SideNavigation>
-            {showShareIcons && (
-              <div className="row share-container">
-                <ShareSocialLinks url={url} title={title} />
-              </div>
-            )}
             <div className="row">
               <div className="col-sm-4 col-sm-push-8 col-lg-12 col-lg-push-0 no-padding">
                 <ListOfEvents />
