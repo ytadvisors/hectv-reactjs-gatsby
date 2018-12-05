@@ -46,8 +46,8 @@ export default class PostApi extends MainApi {
 
   getCategoriesPosts = (categoryList = [], page = 1, perPage = 3) =>
     this.jsonApi.get(
-      `posts?perPage=${perPage}&page=${page}&categoryList[]=${categoryList.join(
-        '&categoryList[]='
+      `posts?per_page=${perPage}&page=${page}&categories[]=${categoryList.join(
+        '&categories[]='
       )}`
     );
 

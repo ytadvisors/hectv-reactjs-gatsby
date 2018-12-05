@@ -1,8 +1,8 @@
 import * as types from '../types/postTypes';
 
-export const loadPostAction = postId => ({
-  type: types.LOAD_POST,
-  postId
+export const loadPostWithSlugAction = slug => ({
+  type: types.LOAD_POST_SLUG,
+  slug
 });
 
 export const loadLiveVideosAction = () => ({

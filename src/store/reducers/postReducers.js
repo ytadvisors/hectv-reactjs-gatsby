@@ -1,10 +1,10 @@
 import * as types from '../types/postTypes';
 
 const initialState = {
-  selected_video: {},
+  selectedVideo: {},
   category: '',
   posts: [],
-  category_posts: [],
+  categoryPosts: [],
   comments: [],
   postList: [],
   subcategories: [],
@@ -14,7 +14,7 @@ const initialState = {
   numResults: {
     posts: 0,
     postList: 0,
-    category_posts: 0,
+    categoryPosts: 0,
     subcategories: 0
   }
 };
@@ -27,6 +27,7 @@ export default (state = initialState, action) => {
     case types.LOAD_POSTS_IN_CATEGORY:
     case types.LOAD_SUBCATEGORIES:
     case types.LOAD_LIVE_VIDEOS:
+    case types.LOAD_POST_SLUG:
       return {
         ...state,
         error: false
@@ -60,18 +61,18 @@ export default (state = initialState, action) => {
     case types.SET_POST:
       return {
         ...state,
-        post: action.loadMore ? [...state.post, ...action.post] : action.post,
+        post: action.post,
         error: false
       };
     case types.SET_POSTS_IN_CATEGORY:
       return {
         ...state,
-        category_posts: action.loadMore
-          ? [...state.category_posts, ...action.category_posts]
-          : action.category_posts,
+        categoryPosts: action.loadMore
+          ? [...state.categoryPosts, ...action.categoryPosts]
+          : action.categoryPosts,
         numResults: {
           ...state.numResults,
-          category_posts: action.numResults
+          categoryPosts: action.numResults
         },
         error: false
       };
