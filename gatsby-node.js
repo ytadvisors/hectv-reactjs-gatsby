@@ -398,6 +398,14 @@ async function createSearch(createPage) {
   });
 }
 
+async function createPostPreview(createPage) {
+  createPage({
+    path: '/preview/posts',
+    component: slash(path.resolve('./src/templates/preview-posts.js')),
+    context: {}
+  });
+}
+
 exports.onCreateWebpackConfig = ({ actions }) => {
   actions.setWebpackConfig({
     node: {
@@ -416,7 +424,8 @@ exports.createPages = async ({ graphql, actions }) => {
       createSitePages(createPage, graphql),
       createSiteEvents(createPage, graphql),
       createSiteMagazines(createPage, graphql),
-      createSearch(createPage)
+      createSearch(createPage),
+      createPostPreview(createPage)
     ]);
     return new Promise(resolve => resolve(true));
   } catch (err) {

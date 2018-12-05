@@ -119,7 +119,7 @@ function* loadPost(payload) {
       } else {
         yield put({
           type: types.SET_POSTS_IN_CATEGORY,
-          category_posts: [],
+          categoryPosts: [],
           loadMore: payload.loadMore,
           numResults: 0
         });
@@ -185,24 +185,23 @@ function* loadSubcategories(payload) {
 /**
  * Load posts for featured posts
  *
- * @param payload
+ * @param categories
+ * @param page
+ * @param loadMore
  */
-function* loadCategoryPosts(payload) {
+function* loadCategoryPosts({ categories, page = 1, loadMore = false } = {}) {
   try {
     yield put(showLoading());
     const api = new PostApi();
 
-    const posts = yield call(
-      api.getCategoriesPosts,
-      payload.categories,
-      payload.page,
-      3
-    );
-    const data = posts.data.map(mapPost);
+    const posts = yield call(api.getCategoriesPosts, categories, page, 3);
+
+    const data = deepMapKeys(posts.data, key => _.camelCase(key));
+
     yield put({
       type: types.SET_POSTS_IN_CATEGORY,
-      category_posts: data,
-      loadMore: payload.loadMore,
+      categoryPosts: data,
+      loadMore,
       numResults: getNumAPIResults(posts)
     });
     yield put(hideLoading());
@@ -212,22 +211,54 @@ function* loadCategoryPosts(payload) {
   }
 }
 
-function* loadPostsWithSlug(payload) {
+/**
+ * Load the posts using an array of slugs
+ *
+ * @param slugs
+ * @param category
+ * @param loadMore
+ */
+function* loadPostsWithSlug({ slugs, category, loadMore } = {}) {
   try {
     yield put(showLoading());
     const api = new PostApi();
-    const posts = yield call(api.getPostsBySlugs, payload.slugs);
+    const posts = yield call(api.getPostsBySlugs, slugs);
 
     const data = posts.data.map(mapPost);
     const indexedPosts = _.keyBy(data, 'postName');
-    const result = payload.slugs.map(slug => indexedPosts[slug]);
+    const result = slugs.map(slug => indexedPosts[slug]);
     yield put({
       type: types.SET_ALL_POSTS,
       posts: result,
-      category: payload.category,
-      loadMore: payload.loadMore,
+      category,
+      loadMore,
       numResults: getNumAPIResults(posts)
     });
+    yield put(hideLoading());
+  } catch (error) {
+    yield put({ type: types.LOAD_ERROR, error });
+    yield put(hideLoading());
+  }
+}
+
+function* loadPostWithSlug({ slug } = {}) {
+  try {
+    yield put(showLoading());
+    const api = new PostApi();
+    const post = yield call(api.getPostBySlug, slug);
+
+    const data = deepMapKeys(post.data[0], key => _.camelCase(key));
+
+    yield put({
+      type: types.LOAD_POSTS_IN_CATEGORY,
+      categories: data.categories
+    });
+
+    yield put({
+      type: types.SET_POST,
+      post: data
+    });
+
     yield put(hideLoading());
   } catch (error) {
     yield put({ type: types.LOAD_ERROR, error });
@@ -477,6 +508,7 @@ export default function* rootSaga() {
     yield takeLatest(types.LOAD_SUBCATEGORIES, loadSubcategories),
     yield takeLatest(types.LOAD_POST, loadPost),
     yield takeLatest(types.LOAD_POSTS_SLUG, loadPostsWithSlug),
+    yield takeLatest(types.LOAD_POST_SLUG, loadPostWithSlug),
     yield takeLatest(types.LOAD_SEARCH_POSTS, loadSearchPosts),
     yield takeLatest(types.ADD_COMMENT, addComment),
     yield takeLatest(types.LOAD_ERROR, handleErrors)
