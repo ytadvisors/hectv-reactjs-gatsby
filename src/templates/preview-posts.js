@@ -131,15 +131,15 @@ class Post extends Component {
           slug={slug}
           liveVideos={liveVideos}
           programs={programs}
-          url={link}
-          title={decodeHTML(title || '')}
-          showShareIcons
         >
           <div className="col-md-12" style={{ background: '#eee' }}>
             <SinglePost
               {...{
                 post: newPost,
-                liveVideos
+                liveVideos,
+                pageTitle: decodeHTML(title || ''),
+                pageUrl: { link },
+                showShareIcons: true
               }}
             />
             <ListOfPosts
