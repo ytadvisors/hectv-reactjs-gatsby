@@ -138,7 +138,7 @@ class Post extends Component {
                 post: newPost,
                 liveVideos,
                 pageTitle: decodeHTML(title || ''),
-                pageUrl: { link },
+                pageUrl: link,
                 showShareIcons: true
               }}
             />
