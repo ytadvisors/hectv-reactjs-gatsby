@@ -94,12 +94,23 @@ export default class Header extends Component {
           const cleanUrl = url.replace(/https?:\/\/[^/]+/, '');
           return (
             <NavWrap key={url}>
-              <Link
-                to={cleanUrl}
-                dangerouslySetInnerHTML={{
-                  __html: label
-                }}
-              />
+              {url.match(/^\/\//) ? (
+                <a
+                  href={cleanUrl}
+                  dangerouslySetInnerHTML={{
+                    __html: label
+                  }}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                />
+              ) : (
+                <Link
+                  to={cleanUrl}
+                  dangerouslySetInnerHTML={{
+                    __html: label
+                  }}
+                />
+              )}
             </NavWrap>
           );
         })}
@@ -136,12 +147,23 @@ export default class Header extends Component {
         }`}
       >
         {icon && iconPlacement !== 'right' ? icon : ''}
-        <Link
-          to={cleanUrl}
-          dangerouslySetInnerHTML={{
-            __html: label
-          }}
-        />
+        {url.match(/^\/\//) ? (
+          <a
+            href={cleanUrl}
+            dangerouslySetInnerHTML={{
+              __html: label
+            }}
+            target="_blank"
+            rel="noopener noreferrer"
+          />
+        ) : (
+          <Link
+            to={cleanUrl}
+            dangerouslySetInnerHTML={{
+              __html: label
+            }}
+          />
+        )}
       </NavWrap>
     );
   };
