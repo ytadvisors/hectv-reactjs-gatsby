@@ -1,6 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import { withPrefix } from 'gatsby';
+import { oneLine } from 'common-tags';
 import { decodeHTML } from '../../utils/helperFunctions';
 
 export default ({
@@ -66,11 +67,11 @@ export default ({
     <meta name="msapplication-TileColor" content="#da532c" />
     <meta name="theme-color" content="#ffffff" />
     {categories && (
-      <script type="text/javascript">{`
-      window.dataLayer = window.dataLayer || []
-      window.dataLayer.push [{
+      <script type="text/javascript">{oneLine`
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({
         pageCategory: ${JSON.stringify(categories)}
-      }];
+      });
     `}</script>
     )}
   </Helmet>
