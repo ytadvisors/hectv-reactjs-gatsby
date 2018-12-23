@@ -69,7 +69,7 @@ export default ({
       <script type="text/javascript">{`
       window.dataLayer = window.dataLayer || [];
       window.dataLayer.push({
-        pageCategory: ${JSON.stringify(categories)}
+        dimension1: ${JSON.stringify(categories)}
       });
     `}</script>
     )}
