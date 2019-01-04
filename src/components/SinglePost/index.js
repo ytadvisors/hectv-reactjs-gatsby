@@ -73,7 +73,7 @@ export default ({
           )}
           {eventDates &&
             getEventDate(eventDates, 'MMM D, hh:mm a', true).map(event => (
-              <li>
+              <li key={event}>
                 <span
                   dangerouslySetInnerHTML={{
                     __html: event
