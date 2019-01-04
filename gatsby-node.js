@@ -317,7 +317,7 @@ async function createSiteCategories(createPage, graphql) {
     createPage,
     graphql,
     getCategoryGraphQl,
-    100,
+    40,
     result.data.siteCategory.edges,
     pageTemplate
   );
