@@ -1,6 +1,7 @@
 import React from 'react';
 import * as FontAwesome from 'react-icons/lib/fa';
 import moment from 'moment';
+import _ from 'lodash';
 
 // A nice helper to tell us if we're on the server
 export const isServer = !(
@@ -152,22 +153,28 @@ export const getTransitions = timeout => ({
 export const getTransitionStyle = ({ timeout, status }) =>
   getTransitions(timeout)[status] || {};
 
-export const getEventDate = eventDates => {
-  let eDate = '';
+export const getEventDate = (eventDates, displayFormat = 'MMM DD') => {
+  let eDate = [];
   for (let x = 0; x < eventDates.length; x += 1) {
     const { startTime, endTime } = eventDates[x];
     const formattedStartTime = moment(startTime, 'MM/DD/YYYY h:mm a', true);
-    const formattedEndTime = moment(endTime, 'MM/DD/YYYY h:mm a', true);
+    const formattedEndTime = moment(
+      endTime || startTime,
+      'MM/DD/YYYY h:mm a',
+      true
+    );
 
     // Add date prop
-    if (!eDate || x === 0) eDate = ``;
+    if (!eDate || x === 0) eDate = [];
     if (formattedStartTime.isValid() && formattedEndTime.isValid()) {
-      let format = 'MMM DD';
+      let format = displayFormat;
       if (formattedEndTime.get('month') < formattedStartTime.get('month'))
-        format = 'MMM DD, YYYY';
-      eDate += `${formattedStartTime.format(
-        format
-      )} - ${formattedEndTime.format(format)} <br />`;
+        format = `${displayFormat}, YYYY`;
+      const startDate = formattedStartTime.format(format);
+      const endDate = formattedEndTime.format(format);
+      let dateFormat = ` ${startDate} - ${endDate}`;
+      if (startDate === endDate) dateFormat = ` ${startDate}`;
+      if (!_.includes(eDate, dateFormat)) eDate.push(dateFormat);
     }
   }
   return eDate;
@@ -179,24 +186,29 @@ export const getCurrentEvents = (currentDay, events, numEntries) =>
       const result = { ...acc };
       const {
         node: {
+          slug,
           acf: { eventDates }
         }
       } = item;
       if (!numEntries || result.started < numEntries) {
         for (let x = 0; x < eventDates.length; x += 1) {
           const { startTime, endTime } = eventDates[x];
+          const [start] = startTime ? startTime.split(' ') : [];
+          const [end] = endTime ? endTime.split(' ') : [];
           const formattedStartTime = moment(
-            startTime,
-            'MM/DD/YYYY h:mm a',
-            true
+            `${start} 00:00 am`,
+            'MM/DD/YYYY h:mm a'
           );
-          const formattedEndTime = moment(endTime, 'MM/DD/YYYY h:mm a', true);
+          const formattedEndTime = moment(
+            `${end || start} 11:59 pm`,
+            'MM/DD/YYYY h:mm a'
+          );
           if (
             currentDay.isSameOrBefore(formattedEndTime) &&
             (!numEntries || result.started < numEntries) &&
             currentDay.isSameOrAfter(formattedStartTime)
           ) {
-            result.values.push(item);
+            result.values[slug] = item;
             result.started += 1;
           }
         }
