@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { graphql } from 'gatsby';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 import moment from 'moment';
 
 import { loadLiveVideosAction } from '../store/actions/postActions';
@@ -56,10 +57,12 @@ class Events extends Component {
 
     const events = (data.wpEvents && data.wpEvents.edges) || [];
     const currentEvents = getCurrentEvents(currentDate, events);
-    const posts =
-      currentEvents &&
-      currentEvents.values &&
-      currentEvents.values.map(obj => obj.node);
+    const posts = [];
+    if (currentEvents && currentEvents.values)
+      _.keys(currentEvents.values).forEach(key =>
+        posts.push(currentEvents.values[key].node)
+      );
+
     const description =
       data.wpPage.content || 'On Demand Arts, Culture & Education Programming';
 

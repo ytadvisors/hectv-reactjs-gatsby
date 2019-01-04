@@ -71,15 +71,16 @@ export default ({
               </span>
             </li>
           )}
-          {eventDates && (
-            <li>
-              <span
-                dangerouslySetInnerHTML={{
-                  __html: getEventDate(eventDates)
-                }}
-              />
-            </li>
-          )}
+          {eventDates &&
+            getEventDate(eventDates, 'MMM D, hh:mm a', true).map(event => (
+              <li>
+                <span
+                  dangerouslySetInnerHTML={{
+                    __html: event
+                  }}
+                />
+              </li>
+            ))}
           {eventPrice && (
             <li>
               <span>Price: {eventPrice}</span>
