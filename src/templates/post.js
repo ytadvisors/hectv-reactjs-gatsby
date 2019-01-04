@@ -45,10 +45,15 @@ class Post extends Component {
   render() {
     const { data, liveVideos } = this.props;
     const { programs } = this.state;
+    let categories = [];
 
     const {
       wpSite: { siteMetadata: { siteUrl = '', fbAppId = '' } = {} } = {}
     } = data;
+
+    if (data.wpCategory && data.wpCategory.edges) {
+      categories = data.wpCategory.edges.map(obj => obj.node.name);
+    }
 
     const { excerpt, content, title, thumbnail, slug, link } = data.wpPost;
     const description =
@@ -76,7 +81,8 @@ class Post extends Component {
             pathname,
             siteName: 'hecmedia.org',
             author: 'hectv',
-            twitterHandle: '@hec_tv'
+            twitterHandle: '@hec_tv',
+            categories
           }}
         />
         <Layout
@@ -212,6 +218,17 @@ export const query = graphql`
               }
             }
           }
+        }
+      }
+    }
+    wpCategory: allWordpressCategory(
+      filter: { wordpress_id: { in: $categories } }
+    ) {
+      edges {
+        node {
+          name
+          slug
+          link
         }
       }
     }

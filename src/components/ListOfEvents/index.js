@@ -1,5 +1,6 @@
 import React from 'react';
 import moment from 'moment';
+import _ from 'lodash';
 import { StaticQuery, graphql, Link } from 'gatsby';
 import { getCurrentEvents } from '../../utils/helperFunctions';
 
@@ -34,6 +35,12 @@ export default () => (
         5
       );
 
+      const posts = [];
+      if (events && events.values)
+        _.keys(events.values).forEach(key =>
+          posts.push(events.values[key].node)
+        );
+
       return (
         <section className="list-of-events">
           <div className="title">
@@ -42,11 +49,10 @@ export default () => (
             </div>
           </div>
           <ul className="event-list">
-            {events &&
-              events.values &&
-              events.values.map((event, x) => {
-                const { node: { title, link } = {} } = event;
-                return (
+            {posts.map((event, x) => {
+              const { title, link } = event;
+              return (
+                link && (
                   <li key={link}>
                     <span
                       dangerouslySetInnerHTML={{
@@ -58,8 +64,9 @@ export default () => (
                       Read More
                     </Link>
                   </li>
-                );
-              })}
+                )
+              );
+            })}
           </ul>
         </section>
       );
