@@ -155,12 +155,12 @@ module.exports = {
                   ];
                   if (header && header.sizes) {
                     const {
-                      sizes: { medium, thumbnail }
+                      sizes: { large, thumbnail }
                     } = header;
-                    preview = `<img class="webfeedsFeaturedVisual" src="${medium}" />`;
+                    preview = `<img class="webfeedsFeaturedVisual" src="${large}" />`;
                     customElement = [
                       ...customElement,
-                      { 'webfeeds:cover': { _attr: { image: medium } } },
+                      { 'webfeeds:cover': { _attr: { image: large } } },
                       {
                         'content:encoded': `${preview}${content}`
                       },
