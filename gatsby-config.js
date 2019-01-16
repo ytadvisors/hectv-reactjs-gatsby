@@ -119,13 +119,14 @@ module.exports = {
                 site: { siteMetadata: { siteUrl } = {} },
                 allWordpressPost: { edges } = {}
               }
-            }) => edges.map(
+            }) =>
+              edges.map(
                 ({ node: { excerpt, date, title, slug, content } = {} }) => ({
                   description: excerpt,
                   date,
                   title,
-                  url: `${siteUrl  }/posts/${  slug}`,
-                  guid: `${siteUrl  }/posts/${  slug}`,
+                  url: `${siteUrl}/posts/${slug}`,
+                  guid: `${siteUrl}/posts/${slug}`,
                   custom_elements: [{ 'content:encoded': content }]
                 })
               ),
@@ -148,7 +149,7 @@ module.exports = {
             }
           `,
             output: '/rss.xml',
-            title: 'Gatsby RSS Feed'
+            title: 'HEC RSS Feed'
           }
         ]
       }
