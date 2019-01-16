@@ -144,6 +144,7 @@ module.exports = {
                   } = {}
                 }) => {
                   const header = postHeader || videoImage;
+                  let preview = '';
                   let customElement = [
                     { 'content:encoded': content },
                     { 'webfeeds:accentColor': '00FF00' },
@@ -156,18 +157,18 @@ module.exports = {
                     const {
                       sizes: { medium, thumbnail }
                     } = header;
-
+                    preview = `<img class="webfeedsFeaturedVisual" src="${medium}" />`;
                     customElement = [
                       ...customElement,
                       { 'webfeeds:cover': { _attr: { image: medium } } },
                       {
-                        'content:encoded': `<img class="webfeedsFeaturedVisual" src="${medium}"/>${content}`
+                        'content:encoded': `${preview}${content}`
                       },
                       { 'webfeeds:icon': thumbnail }
                     ];
                   }
                   return {
-                    description: excerpt,
+                    description: `${preview}${excerpt}`,
                     date,
                     title,
                     url: `${siteUrl}/posts/${slug}`,
