@@ -112,6 +112,18 @@ module.exports = {
           }
         }
       `,
+        setup: ({
+          query: {
+            site: { siteMetadata },
+            ...rest
+          }
+        }) => ({
+          ...siteMetadata,
+          ...rest,
+          custom_namespaces: {
+            webfeeds: 'http://webfeeds.org/rss/1.0'
+          }
+        }),
         feeds: [
           {
             serialize: ({
@@ -121,14 +133,45 @@ module.exports = {
               }
             }) =>
               edges.map(
-                ({ node: { excerpt, date, title, slug, content } = {} }) => ({
-                  description: excerpt,
-                  date,
-                  title,
-                  url: `${siteUrl}/posts/${slug}`,
-                  guid: `${siteUrl}/posts/${slug}`,
-                  custom_elements: [{ 'content:encoded': content }]
-                })
+                ({
+                  node: {
+                    excerpt,
+                    date,
+                    title,
+                    slug,
+                    content,
+                    acf: { postHeader, videoImage } = {}
+                  } = {}
+                }) => {
+                  const header = postHeader || videoImage;
+                  let customElement = [
+                    { 'content:encoded': content },
+                    { 'webfeeds:accentColor': '00FF00' },
+                    {
+                      'webfeeds:analytics': process.env.GA_TRACKING_ID,
+                      engine: 'GoogleAnalytics'
+                    }
+                  ];
+                  if (header && header.sizes) {
+                    const {
+                      sizes: { medium, thumbnail }
+                    } = header;
+
+                    customElement = [
+                      ...customElement,
+                      { 'webfeeds:cover': { _attr: { image: medium } } },
+                      { 'webfeeds:icon': thumbnail }
+                    ];
+                  }
+                  return {
+                    description: excerpt,
+                    date,
+                    title,
+                    url: `${siteUrl}/posts/${slug}`,
+                    guid: `${siteUrl}/posts/${slug}`,
+                    custom_elements: customElement
+                  };
+                }
               ),
             query: `
             {
@@ -143,6 +186,20 @@ module.exports = {
                     excerpt
                     title
                     content
+                    acf {
+                      postHeader {
+                        sizes {
+                           medium
+                           thumbnail
+                        }
+                      }
+                      videoImage {
+                        sizes {
+                           medium
+                           thumbnail
+                        }
+                      }
+                    }
                   }
                 }
               }
