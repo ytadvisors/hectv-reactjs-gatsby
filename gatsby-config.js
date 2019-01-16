@@ -145,7 +145,7 @@ module.exports = {
                 }) => {
                   const header = postHeader || videoImage;
                   let customElement = [
-                    { 'content:encoded': content },
+                    { 'content:encoded': `<div class></div>content` },
                     { 'webfeeds:accentColor': '00FF00' },
                     {
                       'webfeeds:analytics': process.env.GA_TRACKING_ID,
@@ -160,6 +160,13 @@ module.exports = {
                     customElement = [
                       ...customElement,
                       { 'webfeeds:cover': { _attr: { image: medium } } },
+                      {
+                        'content:encoded':
+                          `<img class="webfeedsFeaturedVisual" src="${ 
+                          medium 
+                          }"/>${ 
+                          content}`
+                      },
                       { 'webfeeds:icon': thumbnail }
                     ];
                   }
