@@ -35,6 +35,7 @@ const snakeToCamel = key => {
 module.exports = {
   siteMetadata: {
     title: 'HEC-TV | Home',
+    description: 'On Demand Arts, Culture & Education Programming',
     siteUrl: process.env.GATSBY_SITE_HOST,
     mapKey: process.env.GOOGLE_API_KEY,
     captchaKey: process.env.RE_CAPTCHA_SITE_KEY,
@@ -97,7 +98,60 @@ module.exports = {
       }
     },
     {
-      resolve: `gatsby-plugin-feed`
+      resolve: `gatsby-plugin-feed`,
+      options: {
+        query: `
+        {
+          site {
+            siteMetadata {
+              title
+              description
+              siteUrl
+              site_url: siteUrl
+            }
+          }
+        }
+      `,
+        feeds: [
+          {
+            serialize: ({
+              query: {
+                site: { siteMetadata: { siteUrl } = {} },
+                allWordpressPost: { edges } = {}
+              }
+            }) => edges.map(
+                ({ node: { excerpt, date, title, slug, content } = {} }) => ({
+                  description: excerpt,
+                  date,
+                  title,
+                  url: `${siteUrl  }/posts/${  slug}`,
+                  guid: `${siteUrl  }/posts/${  slug}`,
+                  custom_elements: [{ 'content:encoded': content }]
+                })
+              ),
+            query: `
+            {
+              allWordpressPost(
+                limit: 1000
+                sort: { order:DESC, fields: [ date ]}
+              ) {
+                edges {
+                  node {
+                    date
+                    slug
+                    excerpt
+                    title
+                    content
+                  }
+                }
+              }
+            }
+          `,
+            output: '/rss.xml',
+            title: 'Gatsby RSS Feed'
+          }
+        ]
+      }
     },
     {
       resolve: `gatsby-plugin-google-tagmanager`,
