@@ -127,13 +127,26 @@ module.exports = {
             {
               'webfeeds:analytics': {
                 _attr: {
-                  id: process.env.GA_TRACKING_ID
+                  id: process.env.GA_TRACKING_ID,
+                  engine: 'GoogleAnalytics'
                 }
-              },
-              engine: 'GoogleAnalytics'
+              }
+            },
+            {
+              'webfeeds:related': {
+                _attr: {
+                  layout: 'card',
+                  target: 'browser'
+                }
+              }
             },
             {
               'webfeeds:icon': `${
+                process.env.GATSBY_SITE_HOST
+              }/favicons/favicon-32x32.png`
+            },
+            {
+              'webfeeds:logo': `${
                 process.env.GATSBY_SITE_HOST
               }/favicons/favicon-32x32.png`
             },
@@ -149,37 +162,18 @@ module.exports = {
               }
             }) =>
               edges.map(
-                ({
-                  node: {
-                    excerpt,
-                    date,
-                    title,
-                    slug,
-                    content,
-                    acf: { postHeader, videoImage } = {}
-                  } = {}
-                }) => {
-                  const header = postHeader || videoImage;
-                  let preview = '';
-                  if (header && header.sizes) {
-                    const {
-                      sizes: { large }
-                    } = header;
-                    preview = `<img class="webfeedsFeaturedVisual" src="${large}" />`;
-                  }
-                  return {
-                    description: `${preview}${excerpt}`,
-                    date,
-                    title,
-                    url: `${siteUrl}/posts/${slug}`,
-                    guid: `${siteUrl}/posts/${slug}`,
-                    custom_elements: [
-                      {
-                        'content:encoded': `${preview}${content}`
-                      }
-                    ]
-                  };
-                }
+                ({ node: { excerpt, date, title, slug, content } = {} }) => ({
+                  description: excerpt,
+                  date,
+                  title,
+                  url: `${siteUrl}/posts/${slug}`,
+                  guid: `${siteUrl}/posts/${slug}`,
+                  custom_elements: [
+                    {
+                      'content:encoded': content
+                    }
+                  ]
+                })
               ),
             query: `
             {
@@ -194,20 +188,6 @@ module.exports = {
                     excerpt
                     title
                     content
-                    acf {
-                      postHeader {
-                        sizes {
-                           large
-                           thumbnail
-                        }
-                      }
-                      videoImage {
-                        sizes {
-                           large
-                           thumbnail
-                        }
-                      }
-                    }
                   }
                 }
               }
