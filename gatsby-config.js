@@ -170,21 +170,15 @@ module.exports = {
                     slug,
                     thumbnail,
                     content,
-                    acf: { vimeoId, postHeader, videoImage } = {}
+                    acf: { postHeader, videoImage } = {}
                   } = {}
                 }) => {
-                  let videoContent = '';
-                  if (vimeoId) {
-                    videoContent = `<iframe src="https://player.vimeo.com/video/${vimeoId}" width="640" height="360" frameborder="0" allowfullscreen></iframe>`;
-                  }
                   const img = postHeader || videoImage;
                   const mainImg =
                     (img && img.sizes && img.sizes.mediumLarge) || thumbnail;
                   const headerImageContent =
                     mainImg &&
-                    `<img src="${mainImg}" class="webfeedsFeaturedVisual" ${
-                      vimeoId ? `style="display: none;"` : ``
-                    } alt="feedly"/>`;
+                    `<img src="${mainImg}" class="webfeedsFeaturedVisual" alt="feedly" />`;
                   return {
                     description: excerpt,
                     date,
@@ -193,7 +187,7 @@ module.exports = {
                     guid: `${siteUrl}/posts/${slug}`,
                     custom_elements: [
                       {
-                        'content:encoded': `${videoContent}${headerImageContent}${content}`
+                        'content:encoded': `${headerImageContent}${content}`
                       }
                     ]
                   };
