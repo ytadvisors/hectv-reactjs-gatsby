@@ -122,6 +122,7 @@ export default ({
         <div dangerouslySetInnerHTML={{ __html: content }} />
       </div>
       {img &&
+        img.sizes &&
         img.sizes.mediumLarge && (
           <img
             src={img.sizes.mediumLarge}
