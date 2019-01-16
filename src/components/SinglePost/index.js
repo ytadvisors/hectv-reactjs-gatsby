@@ -42,7 +42,7 @@ export default ({
     moment(endDate, 'MM/DD/YYYY h:mm a', true)
   );
 
-  const img = postHeader.sizes || videoImage.sizes;
+  const imgSizes = postHeader.sizes || videoImage.sizes;
 
   const isLiveVideo =
     isPlaying &&
@@ -121,10 +121,10 @@ export default ({
       <div className={`blog-content ${(classes && classes.content) || ''}`}>
         <div dangerouslySetInnerHTML={{ __html: content }} />
       </div>
-      {img.sizes &&
-        img.sizes.mediumLarge && (
+      {imgSizes &&
+        imgSizes.mediumLarge && (
           <img
-            src={img.sizes.mediumLarge}
+            src={imgSizes.mediumLarge}
             className="webfeedsFeaturedVisual"
             style={{ display: 'none' }}
             alt="feedly"
