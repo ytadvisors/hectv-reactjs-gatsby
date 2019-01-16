@@ -97,6 +97,9 @@ module.exports = {
       }
     },
     {
+      resolve: `gatsby-plugin-feed`
+    },
+    {
       resolve: `gatsby-plugin-google-tagmanager`,
       options: {
         id: process.env.GA_TAGMANAGER_ID,
