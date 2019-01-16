@@ -122,7 +122,23 @@ module.exports = {
           ...rest,
           custom_namespaces: {
             webfeeds: 'http://webfeeds.org/rss/1.0'
-          }
+          },
+          custom_elements: [
+            {
+              'webfeeds:analytics': {
+                _attr: {
+                  id: process.env.GA_TRACKING_ID
+                }
+              },
+              engine: 'GoogleAnalytics'
+            },
+            {
+              'webfeeds:icon': `${
+                process.env.GATSBY_SITE_HOST
+              }/favicons/favicon-32x32.png`
+            },
+            { 'webfeeds:accentColor': '00FF00' }
+          ]
         }),
         feeds: [
           {
@@ -145,27 +161,11 @@ module.exports = {
                 }) => {
                   const header = postHeader || videoImage;
                   let preview = '';
-                  let customElement = [
-                    { 'content:encoded': content },
-                    { 'webfeeds:accentColor': '00FF00' },
-                    {
-                      'webfeeds:analytics': process.env.GA_TRACKING_ID,
-                      engine: 'GoogleAnalytics'
-                    }
-                  ];
                   if (header && header.sizes) {
                     const {
-                      sizes: { large, thumbnail }
+                      sizes: { large }
                     } = header;
                     preview = `<img class="webfeedsFeaturedVisual" src="${large}" />`;
-                    customElement = [
-                      ...customElement,
-                      { 'webfeeds:cover': { _attr: { image: large } } },
-                      {
-                        'content:encoded': `${preview}${content}`
-                      },
-                      { 'webfeeds:icon': thumbnail }
-                    ];
                   }
                   return {
                     description: `${preview}${excerpt}`,
@@ -173,7 +173,11 @@ module.exports = {
                     title,
                     url: `${siteUrl}/posts/${slug}`,
                     guid: `${siteUrl}/posts/${slug}`,
-                    custom_elements: customElement
+                    custom_elements: [
+                      {
+                        'content:encoded': `${preview}${content}`
+                      }
+                    ]
                   };
                 }
               ),
@@ -193,13 +197,13 @@ module.exports = {
                     acf {
                       postHeader {
                         sizes {
-                           medium
+                           large
                            thumbnail
                         }
                       }
                       videoImage {
                         sizes {
-                           medium
+                           large
                            thumbnail
                         }
                       }
