@@ -178,18 +178,6 @@ export const query = graphql`
         vimeoId
         isVideo
         embedUrl
-        postHeader {
-          sizes {
-            medium
-            mediumLarge
-          }
-        }
-        videoImage {
-          sizes {
-            medium
-            mediumLarge
-          }
-        }
         relatedPosts {
           relatedPost {
             postTitle

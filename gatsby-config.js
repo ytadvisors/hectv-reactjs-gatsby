@@ -162,18 +162,42 @@ module.exports = {
               }
             }) =>
               edges.map(
-                ({ node: { excerpt, date, title, slug, content } = {} }) => ({
-                  description: excerpt,
-                  date,
-                  title,
-                  url: `${siteUrl}/posts/${slug}`,
-                  guid: `${siteUrl}/posts/${slug}`,
-                  custom_elements: [
-                    {
-                      'content:encoded': content
-                    }
-                  ]
-                })
+                ({
+                  node: {
+                    excerpt,
+                    date,
+                    title,
+                    slug,
+                    thumbnail,
+                    content,
+                    acf: { vimeoId, postHeader, videoImage } = {}
+                  } = {}
+                }) => {
+                  let videoContent = '';
+                  if (vimeoId) {
+                    videoContent = `<iframe src="https://player.vimeo.com/video/${vimeoId}" width="640" height="360" frameborder="0" allowfullscreen></iframe>`;
+                  }
+                  const img = postHeader || videoImage;
+                  const mainImg =
+                    (img && img.sizes && img.sizes.mediumLarge) || thumbnail;
+                  const headerImageContent =
+                    mainImg &&
+                    `<img src="${mainImg}" class="webfeedsFeaturedVisual" ${
+                      vimeoId ? `style="display: none;"` : ``
+                    } alt="feedly"/>`;
+                  return {
+                    description: excerpt,
+                    date,
+                    title,
+                    url: `${siteUrl}/posts/${slug}`,
+                    guid: `${siteUrl}/posts/${slug}`,
+                    custom_elements: [
+                      {
+                        'content:encoded': `${videoContent}${headerImageContent}${content}`
+                      }
+                    ]
+                  };
+                }
               ),
             query: `
             {
@@ -188,6 +212,25 @@ module.exports = {
                     excerpt
                     title
                     content
+                    thumbnail
+                    acf {
+                      youtubeId
+                      vimeoId
+                      isVideo
+                      embedUrl
+                      postHeader {
+                        sizes {
+                          medium
+                          mediumLarge
+                        }
+                      }
+                      videoImage {
+                        sizes {
+                          medium
+                          mediumLarge
+                        }
+                      }
+                    }
                   }
                 }
               }

@@ -21,9 +21,7 @@ export default ({
       venue,
       vimeoId,
       eventDates,
-      embedUrl = '',
-      postHeader = {},
-      videoImage = {}
+      embedUrl = ''
     } = {}
   },
   pageTitle,
@@ -41,8 +39,6 @@ export default ({
     moment(displayDate, 'MM/DD/YYYY h:mm a', true),
     moment(endDate, 'MM/DD/YYYY h:mm a', true)
   );
-
-  const img = postHeader || videoImage;
 
   const isLiveVideo =
     isPlaying &&
@@ -121,16 +117,6 @@ export default ({
       <div className={`blog-content ${(classes && classes.content) || ''}`}>
         <div dangerouslySetInnerHTML={{ __html: content }} />
       </div>
-      {img &&
-        img.sizes &&
-        img.sizes.mediumLarge && (
-          <img
-            src={img.sizes.mediumLarge}
-            className="webfeedsFeaturedVisual"
-            style={{ display: 'none' }}
-            alt="feedly"
-          />
-        )}
     </section>
   );
 };
