@@ -160,6 +160,9 @@ module.exports = {
                     customElement = [
                       ...customElement,
                       { 'webfeeds:cover': { _attr: { image: medium } } },
+                      {
+                        'content:encoded': `<img class="webfeedsFeaturedVisual" src="${medium}"/>${content}`
+                      },
                       { 'webfeeds:icon': thumbnail }
                     ];
                   }
