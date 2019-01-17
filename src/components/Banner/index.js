@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import moment from 'moment';
+// import moment from 'moment';
 import { Link } from 'gatsby';
 import playButton from '../../assets/play-button.png';
 import { isServer, getExcerpt, cleanUrl } from '../../utils/helperFunctions';
+import CountDownTimer from '../CountDownTimer';
 
 import './styles.scss';
 
@@ -43,11 +44,8 @@ export default class Banner extends Component {
         <div />
 
         <div>
-          {!startDate ? 'Starts ' : 'Started '}
-          {moment(new Date(startDate))
-            .endOf('hour')
-            .fromNow()}
-          .
+          {/* <CountDownTimer deadline={moment(new Date(startDate))} /> */}
+          Starts in <CountDownTimer deadline={startDate} />
         </div>
       </div>
     );

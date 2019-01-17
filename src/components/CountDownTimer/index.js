@@ -1,87 +1,68 @@
 import React, { Component } from 'react';
-// import moment from 'moment';
+import moment from 'moment';
 
 export default class CountDownTimer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      // now: moment()
-      /* dateTo: moment(),
-      day: '0',
-      hour: '0',
-      min: '0',
-      sec: '0' */
+      now: moment(),
+      days: '0',
+      hours: '0',
+      minutes: '0',
+      seconds: '0'
     };
   }
-  /*
-  componentDidMount() {
-    this.countdown = setInterval(this.timer, 1000);
-    this.setState({
-      // ...this.state,
-      dateTo: this.props.dateTo
-    });
-  }
 
+  /*
   componentWillUnmount() {
     clearInterval(this.countdown);
-  }
-  */
-
-  /*
-  componentDidUpdate(prevProps, prevState) {
-    if (prevProps.dateTo !== this.props.dateTo) {
-      this.setState({});
-    }
   } */
-  /*
-  timer() {
-    if (!this.state || !this.state.dateTo) {
-      return;
-    }
-    const now = moment();
-    const sec = this.state.dateTo.diff(now, 'seconds') % 60;
-    const min = this.state.dateTo.diff(now, 'minutes') % 60;
-    const hour = this.state.dateTo.diff(now, 'hours') % 24;
-    const day = this.state.dateTo.diff(now, 'days');
+
+  componentWillMount() {
+    const { deadline } = this.props;
+    this.getTimeUntil(deadline);
+  }
+
+  componentDidMount() {
+    const { deadline } = this.props;
+    setInterval(() => this.getTimeUntil(deadline), 1000);
+  }
+
+  getTimeUntil(deadline) {
+    const { now } = this.state;
+    const time = moment(new Date(deadline)) - now;
+    // const time = Date.parse(deadline) - Date.parse(new Date());
+
+    const seconds = Math.floor((time / 1000) % 60);
+    const minutes = Math.floor((time / 1000 / 60) % 60);
+    const hours = Math.floor((time / (1000 * 60 * 60)) % 24);
+    const days = Math.floor(time / (1000 * 60 * 60 * 24));
 
     this.setState({
-      now,
-      day: day < 10 ? `0${day}` : day,
-      hour: hour < 10 ? `0${hour}` : hour,
-      min: min < 10 ? `0${min}` : min,
-      sec: sec < 10 ? `0${sec}` : sec
+      days: days < 10 ? `0${days}` : days,
+      hours: hours < 10 ? `0${hours}` : hours,
+      minutes: minutes < 10 ? `0${minutes}` : minutes,
+      seconds: seconds < 10 ? `0${seconds}` : seconds
     });
   }
 
-  */
-
-  /*
-
   renderDays() {
-    if (this.state.day < 1) {
-      return `${this.state.day  }Days`;
-    } if (this.state.day == 1) {
-      return `${this.state.day  }day`;
-    } 
-      return '';
-    
+    const { days } = this.state;
+    if (days > 1) {
+      return `${days}Days`;
+    }
+    if (days === 1) {
+      return `${days}day`;
+    }
+    return '';
   }
 
-  */
-
   render() {
+    const { hours, minutes, seconds } = this.state;
     return (
-      <div>
-        Yay Time
-        {/* {this.renderDays()} {this.state.hour} : {this.state.min}: 
-    {this.state.sec}  */}
-        {
-          //! startDate ? 'Starts ' : 'Started '
-        }
-        {/* moment(new Date(this.props.beginDate))
-          .endOf('minutes')
-        .fromNow() */}
-      </div>
+      <span>
+        {this.renderDays()} {hours} Hours {minutes} Minutes {seconds} Seconds
+      </span>
     );
   }
 }
