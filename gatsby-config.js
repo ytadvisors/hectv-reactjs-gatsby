@@ -35,6 +35,7 @@ const snakeToCamel = key => {
 module.exports = {
   siteMetadata: {
     title: 'HEC-TV | Home',
+    description: 'On Demand Arts, Culture & Education Programming',
     siteUrl: process.env.GATSBY_SITE_HOST,
     mapKey: process.env.GOOGLE_API_KEY,
     captchaKey: process.env.RE_CAPTCHA_SITE_KEY,
@@ -94,6 +95,145 @@ module.exports = {
       resolve: `gatsby-plugin-sass`,
       options: {
         precision: 8
+      }
+    },
+    {
+      resolve: `gatsby-plugin-feed`,
+      options: {
+        query: `
+        {
+          site {
+            siteMetadata {
+              title
+              description
+              siteUrl
+              site_url: siteUrl
+            }
+          }
+        }
+      `,
+        setup: ({
+          query: {
+            site: { siteMetadata },
+            ...rest
+          }
+        }) => ({
+          ...siteMetadata,
+          ...rest,
+          custom_namespaces: {
+            webfeeds: 'http://webfeeds.org/rss/1.0'
+          },
+          custom_elements: [
+            {
+              'webfeeds:analytics': {
+                _attr: {
+                  id: process.env.GA_TRACKING_ID,
+                  engine: 'GoogleAnalytics'
+                }
+              }
+            },
+            {
+              'webfeeds:related': {
+                _attr: {
+                  layout: 'card',
+                  target: 'browser'
+                }
+              }
+            },
+            {
+              'webfeeds:icon': `${
+                process.env.GATSBY_SITE_HOST
+              }/favicons/favicon-32x32.png`
+            },
+            {
+              'webfeeds:logo': `${
+                process.env.GATSBY_SITE_HOST
+              }/favicons/favicon-32x32.png`
+            },
+            { 'webfeeds:accentColor': '00FF00' }
+          ]
+        }),
+        feeds: [
+          {
+            serialize: ({
+              query: {
+                site: { siteMetadata: { siteUrl } = {} },
+                allWordpressPost: { edges } = {}
+              }
+            }) =>
+              edges.map(
+                ({
+                  node: {
+                    excerpt,
+                    date,
+                    title,
+                    slug,
+                    thumbnail,
+                    content,
+                    acf: { postHeader, videoImage } = {}
+                  } = {}
+                }) => {
+                  const img = postHeader || videoImage;
+                  const mainImg =
+                    (img && img.sizes && img.sizes.mediumLarge) || thumbnail;
+                  const headerImageContent =
+                    mainImg &&
+                    `<img src="${mainImg}" class="webfeedsFeaturedVisual" alt="feedly" />`;
+                  return {
+                    description: excerpt,
+                    date,
+                    title,
+                    url: `${siteUrl}/posts/${slug}`,
+                    guid: `${siteUrl}/posts/${slug}`,
+                    custom_elements: [
+                      {
+                        'content:encoded': `${headerImageContent}${content}`
+                      }
+                    ]
+                  };
+                }
+              ),
+            query: `
+            {
+              allWordpressPost(
+                limit: 1000
+                sort: { order:DESC, fields: [ date ]}
+              ) {
+                edges {
+                  node {
+                    date
+                    slug
+                    excerpt
+                    title
+                    content
+                    thumbnail
+                    acf {
+                      youtubeId
+                      vimeoId
+                      isVideo
+                      embedUrl
+                      postHeader {
+                        sizes {
+                          medium
+                          mediumLarge
+                        }
+                      }
+                      videoImage {
+                        sizes {
+                          medium
+                          mediumLarge
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          `,
+            output: '/feed.xml',
+            title: 'HEC RSS Feed'
+          }
+        ]
       }
     },
     {
