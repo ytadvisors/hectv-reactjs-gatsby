@@ -54,7 +54,9 @@ async function getCategoryGraphQl(graphql, slug) {
   return graphql(`
       {
         siteCategory: allWordpressPost(
-          filter: { categories: { slug: { eq: "${slug}" } } }
+          filter: { categories : { elemMatch : {
+            slug: { eq : "${slug}" }
+          }}} 
         ) {
           edges {
             node {
