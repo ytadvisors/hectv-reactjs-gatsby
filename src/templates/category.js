@@ -29,10 +29,9 @@ class Category extends Component {
   loadLive = () => {
     const { dispatch, data: { wpSchedule: { edges } = {} } = {} } = this.props;
     dispatch(loadLiveVideosAction());
-    if (this.mounted)
-      this.setState({
-        programs: getPrograms(edges, 5)
-      });
+    this.setState({
+      programs: getPrograms(edges, 5)
+    });
     setTimeout(this.loadLive, 30000);
   };
 

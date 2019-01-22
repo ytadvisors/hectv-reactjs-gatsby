@@ -34,13 +34,17 @@ class Articles extends Component {
   }
 
   loadLive = () => {
-    const { dispatch, data: { wpSchedule: { edges } = {} } = {} } = this.props;
-    dispatch(loadLiveVideosAction());
-    if (this.mounted)
+    if (this.mounted) {
+      const {
+        dispatch,
+        data: { wpSchedule: { edges } = {} } = {}
+      } = this.props;
+      dispatch(loadLiveVideosAction());
       this.setState({
         programs: getPrograms(edges, 5)
       });
-    setTimeout(this.loadLive, 30000);
+      setTimeout(this.loadLive, 30000);
+    }
   };
 
   render() {
