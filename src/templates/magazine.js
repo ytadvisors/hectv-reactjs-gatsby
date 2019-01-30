@@ -25,7 +25,7 @@ export default ({ data }) => {
 
   const description =
     pageInfo.content || 'On Demand Arts, Culture & Education Programming';
-  const posts = getPosts(data, 'pageInfo', 'magazinePost', 'post');
+  const posts = getPosts(data, 'wpMagazine', 'magazinePost', 'post');
 
   return (
     <Fragment>
@@ -36,7 +36,10 @@ export default ({ data }) => {
           description: getExcerpt(description, 320),
           url: siteUrl,
           fbAppId,
-          pathname: pageInfo.link.replace(/https?:\/\/[^/]+/, ''),
+          pathname:
+            pageInfo &&
+            pageInfo.link &&
+            pageInfo.link.replace(/https?:\/\/[^/]+/, ''),
           siteName: 'hecmedia.org',
           author: 'hectv',
           twitterHandle: '@hec_tv'

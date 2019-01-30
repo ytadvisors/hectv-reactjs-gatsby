@@ -2,8 +2,6 @@ import React, { Fragment } from 'react';
 import { graphql } from 'gatsby';
 
 import {
-  removeDuplicates,
-  getPosts,
   getFirstImageFromWpList,
   getPrograms,
   getExcerpt
@@ -16,19 +14,18 @@ import ListOfPosts from '../components/ListOfPosts';
 
 export default ({ data }) => {
   const {
-    wpSchedule: { edges } = {},
+    wpSchedule,
     wpSite: {
       siteMetadata: { siteUrl, googleOauth2ClientId, fbAppId } = {}
     } = {},
+    pageContext: { page, edges, numPages = 1 },
     wpMenu,
     wpPage
   } = data;
 
-  const programs = getPrograms(edges, 5);
+  const programs = getPrograms(wpSchedule.edges, 5);
   const pageInfo = { ...wpPage.acf };
   if (pageInfo) pageInfo.content = wpPage.content;
-  let posts = getPosts(data, 'wpPage', 'postList', 'post', 'wpPosts');
-  posts = removeDuplicates(posts, 'wordpress_id');
 
   const description =
     wpPage.content || 'On Demand Arts, Culture & Education Programming';
@@ -37,7 +34,7 @@ export default ({ data }) => {
       <SEO
         {...{
           title: `HEC-TV | ${wpPage.title}`,
-          image: getFirstImageFromWpList(posts),
+          image: getFirstImageFromWpList(edges),
           description: getExcerpt(description, 320),
           url: siteUrl,
           fbAppId,
@@ -58,11 +55,13 @@ export default ({ data }) => {
           <DefaultNav title="Articles" link="/articles" />
         </div>
         <ListOfPosts
-          posts={posts || []}
+          posts={edges || []}
           link={{ page: 'posts' }}
           numResults={0}
           design={pageInfo}
           loadMore={null}
+          numPages={numPages}
+          currentPage={page}
         />
       </Layout>
     </Fragment>
@@ -150,25 +149,6 @@ export const query = graphql`
                 }
               }
             }
-          }
-        }
-      }
-    }
-    wpPosts: allWordpressPost(filter: { acf: { isVideo: { eq: false } } }) {
-      edges {
-        node {
-          link
-          title
-          excerpt
-          slug
-          wordpress_id
-          categories {
-            link
-            name
-          }
-          thumbnail
-          acf {
-            isVideo
           }
         }
       }

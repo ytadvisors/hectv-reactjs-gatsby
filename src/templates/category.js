@@ -13,13 +13,15 @@ export default ({
   location: { pathname }
 }) => {
   const {
-    wpCategory: { name, description, link = '', slug = '' } = {},
+    wpCategory = {},
     wpSite: {
       siteMetadata: { siteUrl, fbAppId, googleOauth2ClientId } = {}
     } = {},
     wpMenu
   } = data;
 
+  const { name = '', description = '', link = '', slug = '' } =
+    wpCategory || {};
   const [urlPrefix] = pathname.split('page');
   const programs = getPrograms(data.wpSchedule.edges, 5);
 
