@@ -1,8 +1,6 @@
-import React, { Component } from 'react';
+import React, { Fragment } from 'react';
 import { graphql } from 'gatsby';
-import { connect } from 'react-redux';
 
-import { loadLiveVideosAction } from '../store/actions/postActions';
 import {
   removeDuplicates,
   getPosts,
@@ -14,92 +12,62 @@ import SEO from '../components/SEO';
 import Layout from '../components/Layout';
 import ListOfPosts from '../components/ListOfPosts';
 
-class Page extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      programs: {}
-    };
+export default ({ data }) => {
+  const {
+    wpSchedule: { edges } = {},
+    wpMenu,
+    wpSite: {
+      siteMetadata: { siteUrl, googleOauth2ClientId, fbAppId } = {}
+    } = {}
+  } = data;
+
+  const programs = getPrograms(edges, 5);
+
+  const description =
+    data.wpPage.content || 'On Demand Arts, Culture & Education Programming';
+
+  let posts = getPosts(data, 'wpPage', 'postList', 'post', 'wpPosts');
+  posts = removeDuplicates(posts, 'wordpress_id');
+  let image = '';
+  if (posts.length > 0 && posts[0].acf) {
+    const imgContainer = posts[0].acf.videoImage || posts[0].acf.postHeader;
+    image = imgContainer && imgContainer.sizes ? imgContainer.sizes.medium : '';
   }
 
-  componentDidMount() {
-    this.mounted = true;
-    this.loadLive();
-  }
-
-  componentWillUnmount() {
-    this.mounted = false;
-  }
-
-  loadLive = () => {
-    if (this.mounted) {
-      const {
-        dispatch,
-        data: { wpSchedule: { edges } = {} } = {}
-      } = this.props;
-      dispatch(loadLiveVideosAction());
-      this.setState({
-        programs: getPrograms(edges, 5)
-      });
-      setTimeout(this.loadLive, 30000);
-    }
-  };
-
-  render() {
-    const { data, liveVideos } = this.props;
-    const { programs } = this.state;
-
-    const description =
-      data.wpPage.content || 'On Demand Arts, Culture & Education Programming';
-
-    let posts = getPosts(data, 'wpPage', 'postList', 'post', 'wpPosts');
-    posts = removeDuplicates(posts, 'wordpress_id');
-    let image = '';
-    if (posts.length > 0 && posts[0].acf) {
-      const imgContainer = posts[0].acf.videoImage || posts[0].acf.postHeader;
-      image =
-        imgContainer && imgContainer.sizes ? imgContainer.sizes.medium : '';
-    }
-
-    return (
-      <div>
-        <SEO
-          {...{
-            title: `HEC-TV | ${data.wpPage.title}`,
-            image,
-            description: getExcerpt(description, 320),
-            url: data.wpSite.siteMetadata.siteUrl,
-            fbAppId: data.wpSite.siteMetadata.fbAppId,
-            pathname: data.wpPage.link.replace(/https?:\/\/[^/]+/, ''),
-            siteName: 'hecmedia.org',
-            author: 'hectv',
-            twitterHandle: '@hec_tv'
-          }}
+  return (
+    <Fragment>
+      <SEO
+        {...{
+          title: `HEC-TV | ${data.wpPage.title}`,
+          image,
+          description: getExcerpt(description, 320),
+          url: siteUrl,
+          fbAppId,
+          pathname: data.wpPage.link.replace(/https?:\/\/[^/]+/, ''),
+          siteName: 'hecmedia.org',
+          author: 'hectv',
+          twitterHandle: '@hec_tv'
+        }}
+      />
+      <Layout
+        slug={data.wpPage.slug}
+        menus={wpMenu.edges}
+        programs={programs}
+        fbAppId={fbAppId}
+        googleOauth2ClientId={googleOauth2ClientId}
+      >
+        <ListOfPosts
+          posts={posts || []}
+          link={{ page: 'posts' }}
+          numResults={0}
+          design={data.wpPage.acf}
+          loadMore={null}
+          resizeRows
         />
-        <Layout
-          slug={data.wpPage.slug}
-          liveVideos={liveVideos}
-          programs={programs}
-        >
-          <ListOfPosts
-            posts={posts || []}
-            link={{ page: 'posts' }}
-            numResults={0}
-            design={data.wpPage.acf}
-            loadMore={null}
-            resizeRows
-          />
-        </Layout>
-      </div>
-    );
-  }
-}
-
-const mapStateToProps = state => ({
-  liveVideos: state.postReducers.liveVideos
-});
-
-export default connect(mapStateToProps)(Page);
+      </Layout>
+    </Fragment>
+  );
+};
 
 export const query = graphql`
   query sitePageQuery($slug: String!) {
@@ -107,6 +75,25 @@ export const query = graphql`
       siteMetadata {
         siteUrl
         fbAppId
+        googleOauth2ClientId
+      }
+    }
+    wpMenu: allWordpressWpApiMenusMenusItems {
+      edges {
+        node {
+          name
+          count
+          items {
+            title
+            url
+            wordpress_children {
+              wordpress_id
+              wordpress_parent
+              title
+              url
+            }
+          }
+        }
       }
     }
     wpSchedule: allWordpressWpSchedules {

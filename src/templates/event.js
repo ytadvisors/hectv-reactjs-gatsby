@@ -1,8 +1,6 @@
-import React, { Component } from 'react';
+import React, { Fragment } from 'react';
 import { graphql } from 'gatsby';
-import { connect } from 'react-redux';
 import _ from 'lodash';
-import { loadLiveVideosAction } from '../store/actions/postActions';
 
 import { getPosts, getPrograms, getExcerpt } from '../utils/helperFunctions';
 import SEO from '../components/SEO';
@@ -10,99 +8,67 @@ import Layout from '../components/Layout';
 import SinglePost from '../components/SinglePost';
 import ListOfPosts from '../components/ListOfPosts';
 
-class Event extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      programs: {}
-    };
-  }
+export default ({ data }) => {
+  const {
+    wpEvent: { title, thumbnail, content, link = '', slug } = {},
+    wpSite: { siteMetadata: { siteUrl, fbAppId, googleOauth2ClientId } = {} },
+    wpSchedule: { edges } = {},
+    wpMenu
+  } = data;
 
-  componentDidMount() {
-    this.mounted = true;
-    this.loadLive();
-  }
+  const programs = getPrograms(edges, 5);
 
-  componentWillUnmount() {
-    this.mounted = false;
-  }
+  const description =
+    content || 'On Demand Arts, Culture & Education Programming';
+  let posts = getPosts(data, 'wpEvent', 'eventPosts', 'eventPost');
+  posts = _.take(posts, 3);
 
-  loadLive = () => {
-    if (this.mounted) {
-      const {
-        dispatch,
-        data: { wpSchedule: { edges } = {} } = {}
-      } = this.props;
-      dispatch(loadLiveVideosAction());
-      this.setState({
-        programs: getPrograms(edges, 5)
-      });
-      setTimeout(this.loadLive, 30000);
-    }
-  };
-
-  render() {
-    const { data, liveVideos } = this.props;
-
-    const {
-      wpEvent: { title, thumbnail, content, link = '', slug } = {},
-      wpSite: { siteMetadata: { siteUrl, fbAppId } = {} }
-    } = data;
-
-    const { programs } = this.state;
-
-    const description =
-      content || 'On Demand Arts, Culture & Education Programming';
-    let posts = getPosts(data, 'wpEvent', 'eventPosts', 'eventPost');
-    posts = _.take(posts, 3);
-
-    return (
-      <div>
-        <SEO
-          {...{
-            title,
-            image: thumbnail,
-            description: getExcerpt(description, 320),
-            url: siteUrl,
-            fbAppId,
-            pathname: link.replace(/https?:\/\/[^/]+/, ''),
-            siteName: 'hecmedia.org',
-            author: 'hectv',
-            twitterHandle: '@hec_tv'
-          }}
-        />
-        <Layout slug={slug} liveVideos={liveVideos} programs={programs}>
-          <div className="col-md-12">
-            <SinglePost {...{ post: data.wpEvent }} />
-            <ListOfPosts
-              title="Related Posts"
-              posts={posts || []}
-              link={{ page: 'posts' }}
-              numResults={0}
-              style={{
-                background: '#f9f9f9',
-                marginBottom: '20px',
-                border: '1px solid #ddd'
-              }}
-              design={{
-                defaultRowLayout: '3 Columns',
-                defaultDisplayType: 'Post'
-              }}
-              loadMore={null}
-              resizeRows
-            />
-          </div>
-        </Layout>
-      </div>
-    );
-  }
-}
-
-const mapStateToProps = state => ({
-  liveVideos: state.postReducers.liveVideos
-});
-
-export default connect(mapStateToProps)(Event);
+  return (
+    <Fragment>
+      <SEO
+        {...{
+          title,
+          image: thumbnail,
+          description: getExcerpt(description, 320),
+          url: siteUrl,
+          fbAppId,
+          pathname: link.replace(/https?:\/\/[^/]+/, ''),
+          siteName: 'hecmedia.org',
+          author: 'hectv',
+          twitterHandle: '@hec_tv'
+        }}
+      />
+      <Layout
+        slug={slug}
+        menus={wpMenu.edges}
+        programs={programs}
+        fbAppId={fbAppId}
+        googleOauth2ClientId={googleOauth2ClientId}
+      >
+        <div className="col-md-12">
+          <SinglePost {...{ post: data.wpEvent }} />
+          <ListOfPosts
+            title="Related Posts"
+            posts={posts || []}
+            link={{ page: 'posts' }}
+            numResults={0}
+            style={{
+              background: '#f9f9f9',
+              marginBottom: '20px',
+              border: '1px solid #ddd'
+            }}
+            design={{
+              defaultRowLayout: '3 Columns',
+              defaultDisplayType: 'Post'
+            }}
+            loadMore={null}
+            resizeRows
+          />
+        </div>
+      </Layout>
+    </Fragment>
+  );
+};
 
 export const query = graphql`
   query eventQuery($id: String!) {
@@ -110,6 +76,25 @@ export const query = graphql`
       siteMetadata {
         siteUrl
         fbAppId
+        googleOauth2ClientId
+      }
+    }
+    wpMenu: allWordpressWpApiMenusMenusItems {
+      edges {
+        node {
+          name
+          count
+          items {
+            title
+            url
+            wordpress_children {
+              wordpress_id
+              wordpress_parent
+              title
+              url
+            }
+          }
+        }
       }
     }
     wpSchedule: allWordpressWpSchedules {

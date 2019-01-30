@@ -1,8 +1,5 @@
-import React, { Component } from 'react';
+import React, { Fragment } from 'react';
 import { graphql } from 'gatsby';
-import { connect } from 'react-redux';
-
-import { loadLiveVideosAction } from '../store/actions/postActions';
 
 import { getPrograms, getExcerpt } from '../utils/helperFunctions';
 import SEO from '../components/SEO';
@@ -10,92 +7,80 @@ import Layout from '../components/Layout';
 import SinglePost from '../components/SinglePost';
 import DefaultNav from '../components/SubNavigation/DefaultNav';
 
-class Template2Page extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      programs: {}
-    };
+export default ({
+  data: {
+    wpPage: { title, content, link = '', slug } = {},
+    wpSite: {
+      siteMetadata: { siteUrl, fbAppId, googleOauth2ClientId } = {}
+    } = {},
+    wpSchedule: { edges } = {},
+    wpMenu
   }
+}) => {
+  const programs = getPrograms(edges, 5);
+  const post = { title, content, link, slug, acf: { content } };
 
-  componentDidMount() {
-    this.mounted = true;
-    this.loadLive();
-  }
+  const description =
+    content || 'On Demand Arts, Culture & Education Programming';
 
-  componentWillUnmount() {
-    this.mounted = false;
-  }
+  return (
+    <Fragment>
+      <SEO
+        {...{
+          title: `HEC-TV | ${title}`,
+          image: '',
+          description: getExcerpt(description, 320),
+          url: siteUrl,
+          fbAppId,
+          pathname: link.replace(/https?:\/\/[^/]+/, ''),
+          siteName: 'hecmedia.org',
+          author: 'hectv',
+          twitterHandle: '@hec_tv'
+        }}
+      />
+      <Layout
+        slug={slug}
+        menus={wpMenu.edges}
+        programs={programs}
+        fbAppId={fbAppId}
+        googleOauth2ClientId={googleOauth2ClientId}
+      >
+        <div className="col-md-12">
+          <DefaultNav title={title} link={link} />
+        </div>
+        <div className="col-md-12">
+          <SinglePost {...{ post }} hideTitle />
+        </div>
+      </Layout>
+    </Fragment>
+  );
+};
 
-  loadLive = () => {
-    if (this.mounted) {
-      const {
-        dispatch,
-        data: { wpSchedule: { edges } = {} } = {}
-      } = this.props;
-      dispatch(loadLiveVideosAction());
-      this.setState({
-        programs: getPrograms(edges, 5)
-      });
-      setTimeout(this.loadLive, 30000);
-    }
-  };
-
-  render() {
-    const { data, liveVideos } = this.props;
-
-    const {
-      wpPage: { title, content, link = '', slug } = {},
-      wpSite: { siteMetadata: { siteUrl, fbAppId } = {} } = {}
-    } = data;
-
-    const { programs } = this.state;
-    const post = { ...data.wpPage, acf: { content } };
-
-    const description =
-      content || 'On Demand Arts, Culture & Education Programming';
-
-    return (
-      <div>
-        <SEO
-          {...{
-            title: `HEC-TV | ${title}`,
-            image: '',
-            description: getExcerpt(description, 320),
-            url: siteUrl,
-            fbAppId,
-            pathname: link.replace(/https?:\/\/[^/]+/, ''),
-            siteName: 'hecmedia.org',
-            author: 'hectv',
-            twitterHandle: '@hec_tv'
-          }}
-        />
-        <Layout slug={slug} liveVideos={liveVideos} programs={programs}>
-          <div>
-            <div className="col-md-12">
-              <DefaultNav title={title} link={link} />
-            </div>
-            <div className="col-md-12">
-              <SinglePost {...{ post }} hideTitle />
-            </div>
-          </div>
-        </Layout>
-      </div>
-    );
-  }
-}
-
-const mapStateToProps = state => ({
-  liveVideos: state.postReducers.liveVideos
-});
-
-export default connect(mapStateToProps)(Template2Page);
 export const query = graphql`
   query template2PageQuery($slug: String!) {
     wpSite: site {
       siteMetadata {
         siteUrl
         fbAppId
+        googleOauth2ClientId
+      }
+    }
+    wpMenu: allWordpressWpApiMenusMenusItems {
+      edges {
+        node {
+          name
+          count
+          items {
+            title
+            url
+            wordpress_children {
+              wordpress_id
+              wordpress_parent
+              title
+              url
+            }
+          }
+        }
       }
     }
     wpSchedule: allWordpressWpSchedules {

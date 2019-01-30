@@ -105,13 +105,15 @@ export default ({
           className={`blog-image ${(classes && classes.thumbnail) ||
             'default-img'}`}
         >
-          <LazyLoad height={500}>
-            <img
-              src={thumbnail}
-              className="img-responsive blog-thumbnail"
-              alt="thumbnail"
-            />
-          </LazyLoad>
+          {thumbnail && (
+            <LazyLoad height={500}>
+              <img
+                src={thumbnail}
+                className="img-responsive blog-thumbnail"
+                alt="thumbnail"
+              />
+            </LazyLoad>
+          )}
         </div>
       )}
       <div className={`blog-content ${(classes && classes.content) || ''}`}>

@@ -1,10 +1,8 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { graphql } from 'gatsby';
-import { connect } from 'react-redux';
 import _ from 'lodash';
 import moment from 'moment';
 
-import { loadLiveVideosAction } from '../store/actions/postActions';
 import SEO from '../components/SEO';
 import Layout from '../components/Layout';
 import EventNav from '../components/SubNavigation/EventNav';
@@ -17,45 +15,27 @@ import {
 
 import ListOfPosts from '../components/ListOfPosts';
 
-class Events extends Component {
+export default class Events extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentDate: moment(moment().format('MM/DD/YYYY')),
-      programs: {}
+      currentDate: moment(moment().format('MM/DD/YYYY'))
     };
   }
-
-  componentDidMount() {
-    this.mounted = true;
-    this.loadLive();
-  }
-
-  componentWillUnmount() {
-    this.mounted = false;
-  }
-
-  loadLive = () => {
-    if (this.mounted) {
-      const {
-        dispatch,
-        data: { wpSchedule: { edges } = {} } = {}
-      } = this.props;
-      dispatch(loadLiveVideosAction());
-      this.setState({
-        programs: getPrograms(edges, 5)
-      });
-      setTimeout(this.loadLive, 30000);
-    }
-  };
 
   changeDate = newDate => {
     this.setState({ currentDate: moment(newDate) });
   };
 
   render() {
-    const { data, liveVideos } = this.props;
-    const { programs, currentDate } = this.state;
+    const { data } = this.props;
+    const { currentDate } = this.state;
+    const {
+      wpSchedule: { edges } = {},
+      wpSite: { siteMetadata: { siteUrl, fbAppId, googleOauth2ClientId } = {} }
+    } = data;
+
+    const programs = getPrograms(edges, 5);
 
     if (data.wpPage.acf) data.wpPage.acf.content = data.wpPage.content;
 
@@ -71,14 +51,14 @@ class Events extends Component {
       data.wpPage.content || 'On Demand Arts, Culture & Education Programming';
 
     return (
-      <div>
+      <Fragment>
         <SEO
           {...{
             title: `HEC-TV | ${data.wpPage.title}`,
             image: getFirstImageFromWpList(posts),
             description: getExcerpt(description, 320),
-            url: data.wpSite.siteMetadata.siteUrl,
-            fbAppId: data.wpSite.siteMetadata.fbAppId,
+            url: siteUrl,
+            fbAppId,
             pathname: data.wpPage.link.replace(/https?:\/\/[^/]+/, ''),
             siteName: 'hecmedia.org',
             author: 'hectv',
@@ -87,37 +67,31 @@ class Events extends Component {
         />
         <Layout
           slug={data.wpPage.slug}
-          liveVideos={liveVideos}
+          menus={data.wpMenu.edges}
           programs={programs}
+          fbAppId={fbAppId}
+          googleOauth2ClientId={googleOauth2ClientId}
         >
-          <div>
-            <div className="col-md-12">
-              <EventNav
-                {...data.wpPage}
-                changeDate={this.changeDate}
-                selectTitle="Filter Events"
-              />
-            </div>
-            <ListOfPosts
-              posts={posts || []}
-              link={{ page: 'events' }}
-              numResults={0}
-              design={data.wpPage.acf}
-              loadMore={null}
-              resizeRows
+          <div className="col-md-12">
+            <EventNav
+              {...data.wpPage}
+              changeDate={this.changeDate}
+              selectTitle="Filter Events"
             />
           </div>
+          <ListOfPosts
+            posts={posts || []}
+            link={{ page: 'events' }}
+            numResults={0}
+            design={data.wpPage.acf}
+            loadMore={null}
+            resizeRows
+          />
         </Layout>
-      </div>
+      </Fragment>
     );
   }
 }
-
-const mapStateToProps = state => ({
-  liveVideos: state.postReducers.liveVideos
-});
-
-export default connect(mapStateToProps)(Events);
 
 export const query = graphql`
   query eventPageQuery {
@@ -125,6 +99,25 @@ export const query = graphql`
       siteMetadata {
         siteUrl
         fbAppId
+        googleOauth2ClientId
+      }
+    }
+    wpMenu: allWordpressWpApiMenusMenusItems {
+      edges {
+        node {
+          name
+          count
+          items {
+            title
+            url
+            wordpress_children {
+              wordpress_id
+              wordpress_parent
+              title
+              url
+            }
+          }
+        }
       }
     }
     wpPage: wordpressPage(slug: { eq: "events" }) {
