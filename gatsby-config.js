@@ -40,7 +40,8 @@ module.exports = {
     mapKey: process.env.GOOGLE_API_KEY,
     captchaKey: process.env.RE_CAPTCHA_SITE_KEY,
     apiUrl: process.env.GATSBY_WP_HOST,
-    fbAppId: process.env.FACEBOOK_APP_ID
+    fbAppId: process.env.FACEBOOK_APP_ID,
+    googleOauth2ClientId: process.env.GOOGLE_OAUTH2_CLIENT_ID
   },
   plugins: [
     `gatsby-plugin-react-helmet`,
@@ -96,6 +97,9 @@ module.exports = {
       options: {
         precision: 8
       }
+    },
+    {
+      resolve: `gatsby-plugin-page-transitions`
     },
     {
       resolve: `gatsby-plugin-feed`,

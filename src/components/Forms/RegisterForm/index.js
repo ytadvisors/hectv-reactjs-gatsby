@@ -1,35 +1,48 @@
 import React, { Component } from 'react';
-import $ from 'jquery';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { reduxForm, SubmissionError } from 'redux-form';
-import Validator from '../../ReactForm/Validator';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import $ from 'jquery';
 import ReactForm from '../../ReactForm';
-
+import Validator from '../../ReactForm/Validator';
 import './styles.scss';
 
 const fields = [
   {
     name: 'email',
     component: 'input',
-    type: 'email',
-    placeholder: 'Email*',
-    validation: ['required', 'email']
+    type: 'text',
+    placeholder: 'Email or username',
+    validation: ['required']
+  },
+  {
+    name: 'firstName',
+    component: 'input',
+    type: 'text',
+    placeholder: 'First Name',
+    validation: ['required']
+  },
+  {
+    name: 'lastName',
+    component: 'input',
+    type: 'text',
+    placeholder: 'Last Name',
+    validation: ['required']
   },
   {
     name: 'password',
     component: 'input',
     type: 'password',
-    placeholder: 'Password*',
+    placeholder: 'Password',
     validation: ['required']
   }
 ];
 
 const validate = Validator(fields);
 
-class SignUpForm extends Component {
+class RegisterForm extends Component {
   onSubmit = () => {
-    const { callbackFunc, terms } = this.props;
+    const { callbackFunc, terms, values } = this.props;
     const validSubmit =
       !terms || (terms && $('.terms-and-conditions').is(':checked'));
 
@@ -40,24 +53,24 @@ class SignUpForm extends Component {
       });
     }
 
-    callbackFunc.call(this);
+    callbackFunc.call(null, values);
   };
 
   render() {
     return (
-      <section className="signup-form">
+      <section className="register-form">
         <ReactContainer
           title=""
           fields={fields}
           onSubmit={this.onSubmit}
-          buttons={{ next: 'Sign In' }}
+          buttons={{ next: 'Register' }}
         />
       </section>
     );
   }
 }
 
-SignUpForm.propTypes = {
+RegisterForm.propTypes = {
   callbackFunc: PropTypes.func.isRequired
 };
 
@@ -67,7 +80,7 @@ const ReactContainer = reduxForm({
 })(ReactForm);
 
 const mapStateToProps = state => ({
-  values: state.form.user.values
+  values: state.form.newsletter.values
 });
 
-export default connect(mapStateToProps)(SignUpForm);
+export default connect(mapStateToProps)(RegisterForm);

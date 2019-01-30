@@ -1,7 +1,5 @@
-import React, { Component } from 'react';
+import React, { Fragment } from 'react';
 import { graphql } from 'gatsby';
-import { connect } from 'react-redux';
-import { loadLiveVideosAction } from '../store/actions/postActions';
 
 import {
   removeDuplicates,
@@ -16,96 +14,86 @@ import Layout from '../components/Layout';
 import DefaultNav from '../components/SubNavigation/DefaultNav';
 import ListOfPosts from '../components/ListOfPosts';
 
-class Articles extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      programs: {}
-    };
-  }
+export default ({ data }) => {
+  const {
+    wpSchedule: { edges } = {},
+    wpSite: {
+      siteMetadata: { siteUrl, googleOauth2ClientId, fbAppId } = {}
+    } = {},
+    wpMenu,
+    wpPage
+  } = data;
 
-  componentDidMount() {
-    this.mounted = true;
-    this.loadLive();
-  }
+  const programs = getPrograms(edges, 5);
+  const pageInfo = { ...wpPage.acf };
+  if (pageInfo) pageInfo.content = wpPage.content;
+  let posts = getPosts(data, 'wpPage', 'postList', 'post', 'wpPosts');
+  posts = removeDuplicates(posts, 'wordpress_id');
 
-  componentWillUnmount() {
-    this.mounted = false;
-  }
-
-  loadLive = () => {
-    if (this.mounted) {
-      const {
-        dispatch,
-        data: { wpSchedule: { edges } = {} } = {}
-      } = this.props;
-      dispatch(loadLiveVideosAction());
-      this.setState({
-        programs: getPrograms(edges, 5)
-      });
-      setTimeout(this.loadLive, 30000);
-    }
-  };
-
-  render() {
-    const { data, liveVideos } = this.props;
-    const { programs } = this.state;
-
-    if (data.wpPage.acf) data.wpPage.acf.content = data.wpPage.content;
-    let posts = getPosts(data, 'wpPage', 'postList', 'post', 'wpPosts');
-    posts = removeDuplicates(posts, 'wordpress_id');
-
-    const description =
-      data.wpPage.content || 'On Demand Arts, Culture & Education Programming';
-    return (
-      <div>
-        <SEO
-          {...{
-            title: `HEC-TV | ${data.wpPage.title}`,
-            image: getFirstImageFromWpList(posts),
-            description: getExcerpt(description, 320),
-            url: data.wpSite.siteMetadata.siteUrl,
-            fbAppId: data.wpSite.siteMetadata.fbAppId,
-            pathname: data.wpPage.link.replace(/https?:\/\/[^/]+/, ''),
-            siteName: 'hecmedia.org',
-            author: 'hectv',
-            twitterHandle: '@hec_tv'
-          }}
+  const description =
+    wpPage.content || 'On Demand Arts, Culture & Education Programming';
+  return (
+    <Fragment>
+      <SEO
+        {...{
+          title: `HEC-TV | ${wpPage.title}`,
+          image: getFirstImageFromWpList(posts),
+          description: getExcerpt(description, 320),
+          url: siteUrl,
+          fbAppId,
+          pathname: wpPage.link.replace(/https?:\/\/[^/]+/, ''),
+          siteName: 'hecmedia.org',
+          author: 'hectv',
+          twitterHandle: '@hec_tv'
+        }}
+      />
+      <Layout
+        slug={wpPage.slug}
+        menus={wpMenu.edges}
+        programs={programs}
+        fbAppId={fbAppId}
+        googleOauth2ClientId={googleOauth2ClientId}
+      >
+        <div className="col-md-12">
+          <DefaultNav title="Articles" link="/articles" />
+        </div>
+        <ListOfPosts
+          posts={posts || []}
+          link={{ page: 'posts' }}
+          numResults={0}
+          design={pageInfo}
+          loadMore={null}
         />
-        <Layout
-          slug={data.wpPage.slug}
-          liveVideos={liveVideos}
-          programs={programs}
-        >
-          <div>
-            <div className="col-md-12">
-              <DefaultNav title="Articles" link="/articles" />
-            </div>
-            <ListOfPosts
-              posts={posts || []}
-              link={{ page: 'posts' }}
-              numResults={0}
-              design={data.wpPage.acf}
-              loadMore={null}
-            />
-          </div>
-        </Layout>
-      </div>
-    );
-  }
-}
+      </Layout>
+    </Fragment>
+  );
+};
 
-const mapStateToProps = state => ({
-  liveVideos: state.postReducers.liveVideos
-});
-
-export default connect(mapStateToProps)(Articles);
 export const query = graphql`
   query articlesPageQuery {
     wpSite: site {
       siteMetadata {
         siteUrl
         fbAppId
+        googleOauth2ClientId
+      }
+    }
+    wpMenu: allWordpressWpApiMenusMenusItems {
+      edges {
+        node {
+          name
+          count
+          items {
+            title
+            url
+            wordpress_children {
+              wordpress_id
+              wordpress_parent
+              title
+              url
+            }
+          }
+        }
       }
     }
     wpSchedule: allWordpressWpSchedules {

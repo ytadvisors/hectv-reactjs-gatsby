@@ -1,12 +1,32 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { navigate } from 'gatsby';
 import { connect } from 'react-redux';
 import Header from '../components/Header';
 import Banner from '../components/Banner';
+import Signin from '../components/Signin';
+import { loadLiveVideosAction } from '../store/actions/postActions';
+import { setPageOperation } from '../store/actions/pageActions';
+import { loginAction, registerAction } from '../store/actions/accountActions';
 
 import { BasicModal } from './Modals';
 
 class HeaderContainer extends Component {
+  componentDidMount() {
+    this.mounted = true;
+    this.loadLive();
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
+  }
+
+  loadLive = () => {
+    if (this.mounted) {
+      const { dispatch } = this.props;
+      dispatch(loadLiveVideosAction());
+    }
+  };
+
   searchFunc = () => {
     const { pageForm: { search: { values } = {} } = {} } = this.props;
 
@@ -15,13 +35,63 @@ class HeaderContainer extends Component {
     }
   };
 
+  openSignin = () => {
+    const { dispatch } = this.props;
+    dispatch(setPageOperation('signin'));
+  };
+
+  openCreateAccount = () => {
+    const { dispatch } = this.props;
+    dispatch(setPageOperation('register'));
+  };
+
+  closeSignin = () => {
+    const { dispatch } = this.props;
+    dispatch(setPageOperation(''));
+  };
+
+  signinFunc = () => {
+    const { dispatch, pageForm: { user: { values } = {} } = {} } = this.props;
+
+    dispatch(loginAction(values));
+  };
+
+  registerFunc = () => {
+    const { dispatch, pageForm: { user: { values } = {} } = {} } = this.props;
+
+    dispatch(registerAction(values));
+  };
+
   render() {
+    const {
+      liveVideos,
+      social,
+      pageOperation,
+      fbAppId,
+      googleOauth2ClientId
+    } = this.props;
+
     return (
-      <section>
+      <Fragment>
+        <Signin
+          pageOperation={pageOperation}
+          closeSignin={this.closeSignin}
+          openCreateAccount={this.openCreateAccount}
+          openSignin={this.openSignin}
+          social={social}
+          fbAppId={fbAppId}
+          googleOauth2ClientId={googleOauth2ClientId}
+          signinFunc={this.signinFunc}
+          registerFunc={this.registerFunc}
+        />
         <BasicModal {...this.props} />
-        <Header {...this.props} searchFunc={this.searchFunc} />
-        <Banner {...this.props} />
-      </section>
+        <Header
+          {...this.props}
+          searchFunc={this.searchFunc}
+          openSignin={this.openSignin}
+        />
+        <Banner liveVideos={liveVideos} />
+      </Fragment>
     );
   }
 }
@@ -29,7 +99,9 @@ class HeaderContainer extends Component {
 const mapStateToProps = state => ({
   pageForm: state.form,
   openOverlay: state.pageReducers.openOverlay,
-  overlaySettings: state.pageReducers.overlaySettings
+  liveVideos: state.postReducers.liveVideos,
+  overlaySettings: state.pageReducers.overlaySettings,
+  pageOperation: state.pageReducers.pageOperation
 });
 
 export default connect(mapStateToProps)(HeaderContainer);

@@ -136,23 +136,6 @@ export const getFirstImageFromWpList = posts => {
   return image;
 };
 
-export const getTransitions = timeout => ({
-  entering: {
-    opacity: 0
-  },
-  entered: {
-    transition: `opacity ${timeout}ms ease-in-out`,
-    opacity: 1
-  },
-  exiting: {
-    transition: `opacity ${timeout}ms ease-in-out`,
-    opacity: 0
-  }
-});
-
-export const getTransitionStyle = ({ timeout, status }) =>
-  getTransitions(timeout)[status] || {};
-
 export const getEventDate = (eventDates, displayFormat = 'MMM DD') => {
   let eDate = [];
   for (let x = 0; x < eventDates.length; x += 1) {

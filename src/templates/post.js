@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { graphql } from 'gatsby';
 import { connect } from 'react-redux';
 import _ from 'lodash';
@@ -52,7 +52,10 @@ class Post extends Component {
     let categories = [];
 
     const {
-      wpSite: { siteMetadata: { siteUrl = '', fbAppId = '' } = {} } = {}
+      wpSite: {
+        siteMetadata: { siteUrl = '', fbAppId = '', googleOauth2ClientId } = {}
+      } = {},
+      wpMenu
     } = data;
 
     if (data.wpCategory && data.wpCategory.edges) {
@@ -74,7 +77,7 @@ class Post extends Component {
     const pathname = link.replace(/https?:\/\/[^/]+/, '');
     posts = _.take(posts, 3);
     return (
-      <div>
+      <Fragment>
         <SEO
           {...{
             title,
@@ -91,9 +94,11 @@ class Post extends Component {
         />
         <Layout
           style={{ background: '#eee' }}
+          menus={wpMenu.edges}
           slug={slug}
-          liveVideos={liveVideos}
           programs={programs}
+          fbAppId={fbAppId}
+          googleOauth2ClientId={googleOauth2ClientId}
         >
           <div className="col-md-12" style={{ background: '#eee' }}>
             <SinglePost
@@ -134,7 +139,7 @@ class Post extends Component {
             />
           </div>
         </Layout>
-      </div>
+      </Fragment>
     );
   }
 }
@@ -151,6 +156,25 @@ export const query = graphql`
       siteMetadata {
         siteUrl
         fbAppId
+        googleOauth2ClientId
+      }
+    }
+    wpMenu: allWordpressWpApiMenusMenusItems {
+      edges {
+        node {
+          name
+          count
+          items {
+            title
+            url
+            wordpress_children {
+              wordpress_id
+              wordpress_parent
+              title
+              url
+            }
+          }
+        }
       }
     }
     wpSchedule: allWordpressWpSchedules {

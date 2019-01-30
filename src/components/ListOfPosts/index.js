@@ -19,16 +19,20 @@ export default class ListOfPosts extends Component {
   }
 
   componentDidMount() {
+    this.mounted = true;
     if (!isServer) window.addEventListener('resize', this.resize);
     this.setState({ isMobile: !isServer && window.innerWidth <= 500 });
   }
 
   componentWillUnmount() {
+    this.mounted = false;
     if (!isServer) window.removeEventListener('resize', this.resize);
   }
 
   resize = () => {
-    this.setState({ isMobile: !isServer && window.innerWidth <= 500 });
+    if (this.mounted) {
+      this.setState({ isMobile: !isServer && window.innerWidth <= 500 });
+    }
   };
 
   truncate = (excerpt, truncateLength) =>

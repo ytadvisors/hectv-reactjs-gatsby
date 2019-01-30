@@ -1,8 +1,6 @@
-import React, { Component } from 'react';
+import React, { Fragment } from 'react';
 import { graphql } from 'gatsby';
-import { connect } from 'react-redux';
 
-import { loadLiveVideosAction } from '../store/actions/postActions';
 import {
   removeDuplicates,
   getPosts,
@@ -15,93 +13,57 @@ import SEO from '../components/SEO';
 import Layout from '../components/Layout';
 import ListOfPosts from '../components/ListOfPosts';
 
-class Home extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      programs: {}
-    };
-  }
+export default ({ data }) => {
+  const {
+    wpPage: { content, title, slug, link = '', acf = {} } = {},
+    wpSite: {
+      siteMetadata: { siteUrl, fbAppId, googleOauth2ClientId } = {}
+    } = {},
+    wpSchedule: { edges } = {},
+    wpMenu
+  } = data;
 
-  componentDidMount() {
-    this.mounted = true;
-    this.loadLive();
-  }
+  const programs = getPrograms(edges, 5);
+  const description =
+    content || 'On Demand Arts, Culture & Education Programming';
+  let posts = getPosts(data, 'wpPage', 'postList', 'post', 'wpPosts');
+  posts = removeDuplicates(posts, 'wordpress_id');
 
-  componentWillUnmount() {
-    this.mounted = false;
-  }
-
-  loadLive = () => {
-    if (this.mounted) {
-      const {
-        dispatch,
-        data: { wpSchedule: { edges } = {} } = {}
-      } = this.props;
-
-      dispatch(loadLiveVideosAction());
-      this.setState({
-        programs: getPrograms(edges, 5)
-      });
-      setTimeout(this.loadLive, 30000);
-    }
-  };
-
-  render() {
-    const { data, liveVideos } = this.props;
-
-    const {
-      wpPage: { content, title, slug, link = '', acf = {} } = {},
-      wpSite: { siteMetadata: { siteUrl, fbAppId } = {} } = {}
-    } = data;
-
-    const { programs } = this.state;
-
-    const description =
-      content || 'On Demand Arts, Culture & Education Programming';
-    let posts = getPosts(data, 'wpPage', 'postList', 'post', 'wpPosts');
-    posts = removeDuplicates(posts, 'wordpress_id');
-
-    return (
-      <div>
-        <SEO
-          {...{
-            title: `HEC-TV | ${title}`,
-            image: getFirstImageFromWpList(posts),
-            description: getExcerpt(description, 320),
-            url: siteUrl,
-            fbAppId,
-            pathname: link.replace(/https?:\/\/[^/]+/, ''),
-            siteName: 'hecmedia.org',
-            author: 'hectv',
-            twitterHandle: '@hec_tv'
-          }}
+  return (
+    <Fragment>
+      <SEO
+        {...{
+          title: `HEC-TV | ${title}`,
+          image: getFirstImageFromWpList(posts),
+          description: getExcerpt(description, 320),
+          url: siteUrl,
+          fbAppId,
+          pathname: link.replace(/https?:\/\/[^/]+/, ''),
+          siteName: 'hecmedia.org',
+          author: 'hectv',
+          twitterHandle: '@hec_tv'
+        }}
+      />
+      <Layout
+        showBottomNav
+        slug={slug}
+        menus={wpMenu.edges}
+        programs={programs}
+        fbAppId={fbAppId}
+        googleOauth2ClientId={googleOauth2ClientId}
+      >
+        <ListOfPosts
+          posts={posts || []}
+          link={{ page: 'posts' }}
+          numResults={0}
+          design={acf}
+          loadMore={null}
+          resizeRows
         />
-        <Layout
-          showBottomNav
-          slug={slug}
-          liveVideos={liveVideos}
-          programs={programs}
-        >
-          <ListOfPosts
-            posts={posts || []}
-            link={{ page: 'posts' }}
-            numResults={0}
-            design={acf}
-            loadMore={null}
-            resizeRows
-          />
-        </Layout>
-      </div>
-    );
-  }
-}
-
-const mapStateToProps = state => ({
-  liveVideos: state.postReducers.liveVideos
-});
-
-export default connect(mapStateToProps)(Home);
+      </Layout>
+    </Fragment>
+  );
+};
 
 export const query = graphql`
   query homePageQuery {
@@ -109,6 +71,25 @@ export const query = graphql`
       siteMetadata {
         siteUrl
         fbAppId
+        googleOauth2ClientId
+      }
+    }
+    wpMenu: allWordpressWpApiMenusMenusItems {
+      edges {
+        node {
+          name
+          count
+          items {
+            title
+            url
+            wordpress_children {
+              wordpress_id
+              wordpress_parent
+              title
+              url
+            }
+          }
+        }
       }
     }
     wpSchedule: allWordpressWpSchedules {
