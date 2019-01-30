@@ -99,9 +99,6 @@ module.exports = {
       }
     },
     {
-      resolve: `gatsby-plugin-page-transitions`
-    },
-    {
       resolve: `gatsby-plugin-feed`,
       options: {
         query: `
