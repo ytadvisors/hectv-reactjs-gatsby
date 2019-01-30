@@ -121,6 +121,24 @@ export const query = graphql`
         googleOauth2ClientId
       }
     }
+    wpMenu: allWordpressWpApiMenusMenusItems {
+      edges {
+        node {
+          name
+          count
+          items {
+            title
+            url
+            wordpress_children {
+              wordpress_id
+              wordpress_parent
+              title
+              url
+            }
+          }
+        }
+      }
+    }
     wpSchedule: allWordpressWpSchedules {
       edges {
         node {
