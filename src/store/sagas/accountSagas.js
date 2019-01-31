@@ -4,6 +4,7 @@ import { navigate } from 'gatsby';
 import AccountApi from '../api/AccountApi';
 import * as types from '../types/accountTypes';
 import * as formTypes from '../types/formTypes';
+import * as pageTypes from '../types/pageTypes';
 import sendUserEmail from '../../utils/emailer';
 import { setUserToken, deleteUser } from '../../utils/session';
 
@@ -164,6 +165,7 @@ function* setSiteMember({ data, pathname }) {
     console.log(pathname);
     setUserToken(token);
     yield put({ type: types.LOAD_USER, values: {} });
+    yield put({ type: pageTypes.SET_PAGE_OPERATION, operation: '' });
   } catch (error) {
     yield put({
       type: types.LOCAL_STORAGE_ERROR,

@@ -74,39 +74,29 @@ export default class Header extends Component {
         title={label}
         id={url}
       >
-        {link.children.map(menu => {
-          const cleanUrl = menu.url.replace(/https?:\/\/[^/]+/, '');
-          return (
+        {link.children.map(menu => (
             <NavWrap key={`${menu.label} ${menu.url}`}>
-              {menu.url.match(/^\/\//) ? (
-                <a
-                  href={cleanUrl}
-                  dangerouslySetInnerHTML={{
-                    __html: menu.label
-                  }}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                />
-              ) : (
-                <Link
-                  to={cleanUrl}
-                  dangerouslySetInnerHTML={{
-                    __html: menu.label
-                  }}
-                />
-              )}
+              {this.getLink(menu)}
             </NavWrap>
-          );
-        })}
+          ))}
       </NavDropdown>
     );
   };
 
   getLink = link => {
-    const { url, label } = link;
-    const cleanUrl = url.replace(/https?:\/\/[^/]+/, '');
-    const isRedirect = url.match(/^\/\//);
-    if (isRedirect) {
+    const { url, label, buttonClick } = link;
+    const cleanUrl = url && url.replace(/https?:\/\/[^/]+/, '');
+    const isRedirect = url && url.match(/^\/\//);
+    if (buttonClick) {
+      return (
+        <Button
+          onClick={buttonClick}
+          dangerouslySetInnerHTML={{
+            __html: label
+          }}
+        />
+      );
+    } if (isRedirect) {
       return (
         <a
           href={cleanUrl}
@@ -170,7 +160,7 @@ export default class Header extends Component {
     );
 
   render() {
-    const { header, social, openSignin } = this.props;
+    const { header, social, openSignin, logoutFunc } = this.props;
     const { navExpanded } = this.state;
 
     const isMobile = !isServer && window.innerWidth <= 1170;
@@ -246,7 +236,7 @@ export default class Header extends Component {
                 label: 'Profile'
               },
               {
-                url: '/profile',
+                buttonClick: logoutFunc,
                 label: 'Logout'
               }
             ]

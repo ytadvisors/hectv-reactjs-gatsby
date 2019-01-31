@@ -66,12 +66,9 @@ export default props => {
     openCreateAccount,
     openSignin,
     signinFunc,
-    registerFunc
+    registerFunc,
+    thirdPartySigninFunc
   } = props;
-
-  const googleLogin = () => {};
-
-  const facebookLogin = () => {};
 
   const failedLogin = () => {};
 
@@ -85,7 +82,7 @@ export default props => {
         <SocialLoginButton
           provider="google"
           appId={googleOauth2ClientId}
-          onLoginSuccess={googleLogin}
+          onLoginSuccess={thirdPartySigninFunc}
           onLoginFailure={failedLogin}
           onLogoutSuccess={logout}
           width="100%"
@@ -99,7 +96,7 @@ export default props => {
         <SocialLoginButton
           provider="facebook"
           appId={fbAppId}
-          onLoginSuccess={facebookLogin}
+          onLoginSuccess={thirdPartySigninFunc}
           onLoginFailure={failedLogin}
           onLogoutSuccess={logout}
           width="100%"

@@ -116,8 +116,10 @@
     .btn-default {
       background: darkgreen;
     }
-    &.left-links {
+    &.left-links,
+    &.user-admin {
       padding: 0;
+      margin: 0;
       li {
         font-size: 15px;
         border-radius: 0;
@@ -141,11 +143,18 @@
               position: relative;
               padding: 0;
               margin: 0;
+              button,
               a {
                 line-height: initial;
                 display: block;
                 color: #337ab7 !important;
                 font-weight: normal;
+              }
+              button {
+                background: #fff;
+                width: 100%;
+                padding: 0.5em 0.9em;
+                text-align: left;
               }
             }
             li:after {
@@ -417,7 +426,8 @@
     ul.user-admin {
       float: none !important;
       padding-left: 1em;
-      &.left-links {
+      &.left-links,
+      &.user-admin {
         padding: 0;
         margin: 0;
         li {
@@ -430,11 +440,16 @@
               margin: 0;
               border: 0;
               li {
+                button,
                 a {
                   padding: 10px;
                   padding-left: 15px;
                   color: #8ff5ff !important;
                   font-weight: normal !important;
+                }
+                button {
+                  background: transparent;
+                  width: 100%;
                 }
               }
               li:after {
