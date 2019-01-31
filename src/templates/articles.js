@@ -2,8 +2,6 @@ import React, { Fragment } from 'react';
 import { graphql } from 'gatsby';
 
 import {
-  removeDuplicates,
-  getPosts,
   getFirstImageFromWpList,
   getPrograms,
   getExcerpt
@@ -14,9 +12,13 @@ import Layout from '../components/Layout';
 import DefaultNav from '../components/SubNavigation/DefaultNav';
 import ListOfPosts from '../components/ListOfPosts';
 
-export default ({ data }) => {
+export default ({
+  data,
+  pageContext: { page, edges, numPages = 1 },
+  location: { pathname }
+}) => {
   const {
-    wpSchedule: { edges } = {},
+    wpSchedule,
     wpSite: {
       siteMetadata: { siteUrl, googleOauth2ClientId, fbAppId } = {}
     } = {},
@@ -24,11 +26,12 @@ export default ({ data }) => {
     wpPage
   } = data;
 
-  const programs = getPrograms(edges, 5);
+  const [urlPrefix] = pathname.split('page');
+  const posts = edges && edges.map(obj => obj.node);
+
+  const programs = getPrograms(wpSchedule.edges, 5);
   const pageInfo = { ...wpPage.acf };
   if (pageInfo) pageInfo.content = wpPage.content;
-  let posts = getPosts(data, 'wpPage', 'postList', 'post', 'wpPosts');
-  posts = removeDuplicates(posts, 'wordpress_id');
 
   const description =
     wpPage.content || 'On Demand Arts, Culture & Education Programming';
@@ -59,10 +62,13 @@ export default ({ data }) => {
         </div>
         <ListOfPosts
           posts={posts || []}
+          urlPrefix={urlPrefix}
           link={{ page: 'posts' }}
           numResults={0}
           design={pageInfo}
           loadMore={null}
+          numPages={numPages}
+          currentPage={page}
         />
       </Layout>
     </Fragment>
@@ -150,25 +156,6 @@ export const query = graphql`
                 }
               }
             }
-          }
-        }
-      }
-    }
-    wpPosts: allWordpressPost(filter: { acf: { isVideo: { eq: false } } }) {
-      edges {
-        node {
-          link
-          title
-          excerpt
-          slug
-          wordpress_id
-          categories {
-            link
-            name
-          }
-          thumbnail
-          acf {
-            isVideo
           }
         }
       }
