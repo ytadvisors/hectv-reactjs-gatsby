@@ -12,16 +12,22 @@ import Layout from '../components/Layout';
 import DefaultNav from '../components/SubNavigation/DefaultNav';
 import ListOfPosts from '../components/ListOfPosts';
 
-export default ({ data }) => {
+export default ({
+  data,
+  pageContext: { page, edges, numPages = 1 },
+  location: { pathname }
+}) => {
   const {
     wpSchedule,
     wpSite: {
       siteMetadata: { siteUrl, googleOauth2ClientId, fbAppId } = {}
     } = {},
-    pageContext: { page, edges, numPages = 1 },
     wpMenu,
     wpPage
   } = data;
+
+  const [urlPrefix] = pathname.split('page');
+  const posts = edges && edges.map(obj => obj.node);
 
   const programs = getPrograms(wpSchedule.edges, 5);
   const pageInfo = { ...wpPage.acf };
@@ -34,7 +40,7 @@ export default ({ data }) => {
       <SEO
         {...{
           title: `HEC-TV | ${wpPage.title}`,
-          image: getFirstImageFromWpList(edges),
+          image: getFirstImageFromWpList(posts),
           description: getExcerpt(description, 320),
           url: siteUrl,
           fbAppId,
@@ -55,7 +61,8 @@ export default ({ data }) => {
           <DefaultNav title="Articles" link="/articles" />
         </div>
         <ListOfPosts
-          posts={edges || []}
+          posts={posts || []}
+          urlPrefix={urlPrefix}
           link={{ page: 'posts' }}
           numResults={0}
           design={pageInfo}
