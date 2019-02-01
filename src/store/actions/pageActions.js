@@ -50,6 +50,11 @@ export const openOverlayAction = (overlayName, overlaySettings = {}) => ({
   overlaySettings
 });
 
+export const setPageOperation = operation => ({
+  type: types.SET_PAGE_OPERATION,
+  operation
+});
+
 export const closeOverlayAction = () => ({
   type: types.CLOSE_OVERLAY
 });

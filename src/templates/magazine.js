@@ -1,115 +1,88 @@
-import React, { Component } from 'react';
+import React, { Fragment } from 'react';
 import { graphql } from 'gatsby';
-import { connect } from 'react-redux';
 import { getPosts, getPrograms, getExcerpt } from '../utils/helperFunctions';
-import { loadLiveVideosAction } from '../store/actions/postActions';
 import SEO from '../components/SEO';
 import Layout from '../components/Layout';
 import SinglePost from '../components/SinglePost';
 import ListOfPosts from '../components/ListOfPosts';
 
-class Magazine extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      programs: {}
-    };
-  }
+export default ({ data }) => {
+  const {
+    wpSchedule,
+    wpMenu,
+    wpSite: {
+      siteMetadata: { siteUrl, googleOauth2ClientId, fbAppId } = {}
+    } = {},
+    wpMagazine
+  } = data;
 
-  componentDidMount() {
-    this.mounted = true;
-    this.loadLive();
-  }
+  const programs = getPrograms(wpSchedule.edges, 5);
+  const pageInfo = { ...wpMagazine };
 
-  componentWillUnmount() {
-    this.mounted = false;
-  }
+  pageInfo.thumbnail = '';
+  if (pageInfo.acf && pageInfo.acf.coverImage)
+    pageInfo.thumbnail = pageInfo.acf.coverImage;
 
-  loadLive = () => {
-    if (this.mounted) {
-      const {
-        dispatch,
-        data: { wpSchedule: { edges } = {} } = {}
-      } = this.props;
-      dispatch(loadLiveVideosAction());
-      this.setState({
-        programs: getPrograms(edges, 5)
-      });
-      setTimeout(this.loadLive, 30000);
-    }
-  };
+  const description =
+    pageInfo.content || 'On Demand Arts, Culture & Education Programming';
+  const posts = getPosts(data, 'wpMagazine', 'magazinePost', 'post');
 
-  render() {
-    const { data, liveVideos } = this.props;
-    const { programs } = this.state;
-
-    data.wpMagazine.thumbnail = '';
-    if (data.wpMagazine.acf && data.wpMagazine.acf.coverImage)
-      data.wpMagazine.thumbnail = data.wpMagazine.acf.coverImage;
-
-    const description =
-      data.wpMagazine.content ||
-      'On Demand Arts, Culture & Education Programming';
-    const posts = getPosts(data, 'wpMagazine', 'magazinePost', 'post');
-
-    return (
-      <div>
-        <SEO
-          {...{
-            title: data.wpMagazine.title,
-            image: data.wpMagazine.thumbnail,
-            description: getExcerpt(description, 320),
-            url: data.wpSite.siteMetadata.siteUrl,
-            fbAppId: data.wpSite.siteMetadata.fbAppId,
-            pathname: data.wpMagazine.link.replace(/https?:\/\/[^/]+/, ''),
-            siteName: 'hecmedia.org',
-            author: 'hectv',
-            twitterHandle: '@hec_tv'
-          }}
-        />
-        <Layout
-          style={{ background: '#eee' }}
-          slug={data.wpMagazine.slug}
-          liveVideos={liveVideos}
-          programs={programs}
-        >
-          <div className="col-md-12" style={{ background: '#eee' }}>
-            <SinglePost
-              {...{
-                post: data.wpMagazine,
-                classes: {
-                  thumbnail: 'col-md-2 pull-right',
-                  content: 'col-md-10 no-padding'
-                }
-              }}
-            />
-            <ListOfPosts
-              posts={posts || []}
-              link={{ page: 'posts' }}
-              numResults={0}
-              design={{
-                defaultRowLayout: '2 Columns',
-                defaultDisplayType: 'Post'
-              }}
-              loadMore={null}
-              style={{
-                background: '#f9f9f9',
-                border: '1px solid #ddd'
-              }}
-              resizeRows
-            />
-          </div>
-        </Layout>
-      </div>
-    );
-  }
-}
-
-const mapStateToProps = state => ({
-  liveVideos: state.postReducers.liveVideos
-});
-
-export default connect(mapStateToProps)(Magazine);
+  return (
+    <Fragment>
+      <SEO
+        {...{
+          title: pageInfo.title,
+          image: pageInfo.thumbnail,
+          description: getExcerpt(description, 320),
+          url: siteUrl,
+          fbAppId,
+          pathname:
+            pageInfo &&
+            pageInfo.link &&
+            pageInfo.link.replace(/https?:\/\/[^/]+/, ''),
+          siteName: 'hecmedia.org',
+          author: 'hectv',
+          twitterHandle: '@hec_tv'
+        }}
+      />
+      <Layout
+        style={{ background: '#eee' }}
+        slug={pageInfo.slug}
+        menus={wpMenu.edges}
+        programs={programs}
+        fbAppId={fbAppId}
+        googleOauth2ClientId={googleOauth2ClientId}
+      >
+        <div className="col-md-12" style={{ background: '#eee' }}>
+          <SinglePost
+            {...{
+              post: pageInfo,
+              classes: {
+                thumbnail: 'col-md-2 pull-right',
+                content: 'col-md-10 no-padding'
+              }
+            }}
+          />
+          <ListOfPosts
+            posts={posts || []}
+            link={{ page: 'posts' }}
+            numResults={0}
+            design={{
+              defaultRowLayout: '2 Columns',
+              defaultDisplayType: 'Post'
+            }}
+            loadMore={null}
+            style={{
+              background: '#f9f9f9',
+              border: '1px solid #ddd'
+            }}
+            resizeRows
+          />
+        </div>
+      </Layout>
+    </Fragment>
+  );
+};
 
 export const query = graphql`
   query magazineQuery($id: String!) {
@@ -117,6 +90,25 @@ export const query = graphql`
       siteMetadata {
         siteUrl
         fbAppId
+        googleOauth2ClientId
+      }
+    }
+    wpMenu: allWordpressWpApiMenusMenusItems {
+      edges {
+        node {
+          name
+          count
+          items {
+            title
+            url
+            wordpress_children {
+              wordpress_id
+              wordpress_parent
+              title
+              url
+            }
+          }
+        }
       }
     }
     wpSchedule: allWordpressWpSchedules {
@@ -136,7 +128,7 @@ export const query = graphql`
         }
       }
     }
-    wpMagazine: wordpressWpMagazine(id: { eq: $id }) {
+    pageInfo: wordpressWpMagazine(id: { eq: $id }) {
       title
       content
       link

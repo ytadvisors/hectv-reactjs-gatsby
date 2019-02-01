@@ -1,8 +1,5 @@
-import React, { Component } from 'react';
+import React, { Fragment } from 'react';
 import { graphql } from 'gatsby';
-import { connect } from 'react-redux';
-
-import { loadLiveVideosAction } from '../store/actions/postActions';
 
 import { getPrograms, getExcerpt } from '../utils/helperFunctions';
 
@@ -11,85 +8,52 @@ import Layout from '../components/Layout';
 import DefaultNav from '../components/SubNavigation/DefaultNav';
 import Template1 from '../components/Templates/template-1/index';
 
-class Template1Page extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      programs: {}
-    };
+export default ({
+  data: {
+    wpPage: { title, content, acf = {}, link = '', slug } = {},
+    wpSite: {
+      siteMetadata: { siteUrl, fbAppId, googleOauth2ClientId } = {}
+    } = {},
+    wpSchedule,
+    wpMenu
   }
+}) => {
+  const programs = getPrograms(wpSchedule.edges, 5);
+  const pageContent = { ...acf };
+  pageContent.content = content;
 
-  componentDidMount() {
-    this.mounted = true;
-    this.loadLive();
-  }
-
-  componentWillUnmount() {
-    this.mounted = false;
-  }
-
-  loadLive = () => {
-    if (this.mounted) {
-      const {
-        dispatch,
-        data: { wpSchedule: { edges } = {} } = {}
-      } = this.props;
-      dispatch(loadLiveVideosAction());
-      this.setState({
-        programs: getPrograms(edges, 5)
-      });
-      setTimeout(this.loadLive, 30000);
-    }
-  };
-
-  render() {
-    const {
-      data: {
-        wpPage: { title, content, acf = {}, link = '', slug } = {},
-        wpSite: { siteMetadata: { siteUrl, fbAppId } = {} } = {}
-      },
-      liveVideos
-    } = this.props;
-
-    const { programs } = this.state;
-    const pageContent = { ...acf };
-    pageContent.content = content;
-
-    const description =
-      content || 'On Demand Arts, Culture & Education Programming';
-    return (
-      <div>
-        <SEO
-          {...{
-            title: `HEC-TV | ${title}`,
-            image: '',
-            description: getExcerpt(description, 320),
-            url: siteUrl,
-            fbAppId,
-            pathname: link.replace(/https?:\/\/[^/]+/, ''),
-            siteName: 'hecmedia.org',
-            author: 'hectv',
-            twitterHandle: '@hec_tv'
-          }}
-        />
-        <Layout slug={slug} liveVideos={liveVideos} programs={programs}>
-          <div>
-            <div className="col-md-12">
-              <DefaultNav title={title} link={link} />
-            </div>
-            <Template1 {...{ pageContent }} />
-          </div>
-        </Layout>
-      </div>
-    );
-  }
-}
-
-const mapStateToProps = state => ({
-  liveVideos: state.postReducers.liveVideos
-});
-
-export default connect(mapStateToProps)(Template1Page);
+  const description =
+    content || 'On Demand Arts, Culture & Education Programming';
+  return (
+    <Fragment>
+      <SEO
+        {...{
+          title: `HEC-TV | ${title}`,
+          image: '',
+          description: getExcerpt(description, 320),
+          url: siteUrl,
+          fbAppId,
+          pathname: link.replace(/https?:\/\/[^/]+/, ''),
+          siteName: 'hecmedia.org',
+          author: 'hectv',
+          twitterHandle: '@hec_tv'
+        }}
+      />
+      <Layout
+        slug={slug}
+        menus={wpMenu.edges}
+        programs={programs}
+        fbAppId={fbAppId}
+        googleOauth2ClientId={googleOauth2ClientId}
+      >
+        <div className="col-md-12">
+          <DefaultNav title={title} link={link} />
+        </div>
+        <Template1 {...{ pageContent }} />
+      </Layout>
+    </Fragment>
+  );
+};
 
 export const query = graphql`
   query template1PageQuery($slug: String!) {
@@ -97,6 +61,25 @@ export const query = graphql`
       siteMetadata {
         siteUrl
         fbAppId
+        googleOauth2ClientId
+      }
+    }
+    wpMenu: allWordpressWpApiMenusMenusItems {
+      edges {
+        node {
+          name
+          count
+          items {
+            title
+            url
+            wordpress_children {
+              wordpress_id
+              wordpress_parent
+              title
+              url
+            }
+          }
+        }
       }
     }
     wpSchedule: allWordpressWpSchedules {

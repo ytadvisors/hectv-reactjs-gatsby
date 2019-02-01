@@ -1,8 +1,6 @@
-import React, { Component } from 'react';
+import React, { Fragment } from 'react';
 import { graphql } from 'gatsby';
-import { connect } from 'react-redux';
 
-import { loadLiveVideosAction } from '../store/actions/postActions';
 import {
   getFirstImageFromWpList,
   getPrograms,
@@ -14,89 +12,60 @@ import Layout from '../components/Layout';
 import DefaultNav from '../components/SubNavigation/DefaultNav';
 import ListOfPosts from '../components/ListOfPosts';
 
-class Magazines extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      programs: {}
-    };
-  }
+export default ({ data }) => {
+  const {
+    wpSchedule,
+    wpMenu,
+    wpSite: {
+      siteMetadata: { siteUrl, googleOauth2ClientId, fbAppId } = {}
+    } = {},
+    wpMagazine,
+    wpPage
+  } = data;
+  const programs = getPrograms(wpSchedule.edges, 5);
+  const pageInfo = { ...wpPage };
 
-  componentDidMount() {
-    this.mounted = true;
-    this.loadLive();
-  }
+  if (pageInfo) pageInfo.content = wpPage.content;
 
-  componentWillUnmount() {
-    this.mounted = false;
-  }
-
-  loadLive = () => {
-    if (this.mounted) {
-      const {
-        dispatch,
-        data: { wpSchedule: { edges } = {} } = {}
-      } = this.props;
-      dispatch(loadLiveVideosAction());
-      this.setState({
-        programs: getPrograms(edges, 5)
-      });
-      setTimeout(this.loadLive, 30000);
-    }
-  };
-
-  render() {
-    const { data, liveVideos } = this.props;
-    const { programs } = this.state;
-
-    if (data.wpPage.acf) data.wpPage.acf.content = data.wpPage.content;
-
-    const posts = data.wpMagazine && data.wpMagazine.edges.map(obj => obj.node);
-    const description =
-      data.wpPage.content || 'On Demand Arts, Culture & Education Programming';
-    return (
-      <div>
-        <SEO
-          {...{
-            title: `HEC-TV | ${data.wpPage.title}`,
-            image: getFirstImageFromWpList(posts),
-            description: getExcerpt(description, 320),
-            url: data.wpSite.siteMetadata.siteUrl,
-            fbAppId: data.wpSite.siteMetadata.fbAppId,
-            pathname: data.wpPage.link.replace(/https?:\/\/[^/]+/, ''),
-            siteName: 'hecmedia.org',
-            author: 'hectv',
-            twitterHandle: '@hec_tv'
-          }}
+  const posts = wpMagazine && wpMagazine.edges.map(obj => obj.node);
+  const description =
+    wpPage.content || 'On Demand Arts, Culture & Education Programming';
+  return (
+    <Fragment>
+      <SEO
+        {...{
+          title: `HEC-TV | ${wpPage.title}`,
+          image: getFirstImageFromWpList(posts),
+          description: getExcerpt(description, 320),
+          url: siteUrl,
+          fbAppId,
+          pathname: wpPage.link.replace(/https?:\/\/[^/]+/, ''),
+          siteName: 'hecmedia.org',
+          author: 'hectv',
+          twitterHandle: '@hec_tv'
+        }}
+      />
+      <Layout
+        slug={wpPage.slug}
+        menus={wpMenu.edges}
+        programs={programs}
+        fbAppId={fbAppId}
+        googleOauth2ClientId={googleOauth2ClientId}
+      >
+        <div className="col-md-12">
+          <DefaultNav title="Magazines" link="/magazines" />
+        </div>
+        <ListOfPosts
+          posts={posts || []}
+          link={{ page: 'magazine' }}
+          numResults={0}
+          design={wpPage.acf}
+          loadMore={null}
         />
-        <Layout
-          slug={data.wpPage.slug}
-          liveVideos={liveVideos}
-          programs={programs}
-        >
-          <div>
-            <div className="col-md-12">
-              <DefaultNav title="Magazines" link="/magazines" />
-            </div>
-            <ListOfPosts
-              posts={posts || []}
-              link={{ page: 'magazine' }}
-              numResults={0}
-              design={data.wpPage.acf}
-              loadMore={null}
-            />
-          </div>
-        </Layout>
-      </div>
-    );
-  }
-}
-
-const mapStateToProps = state => ({
-  liveVideos: state.postReducers.liveVideos
-});
-
-export default connect(mapStateToProps)(Magazines);
+      </Layout>
+    </Fragment>
+  );
+};
 
 export const query = graphql`
   query magazinePageQuery {
@@ -104,6 +73,7 @@ export const query = graphql`
       siteMetadata {
         siteUrl
         fbAppId
+        googleOauth2ClientId
       }
     }
     wpSchedule: allWordpressWpSchedules {
@@ -118,6 +88,24 @@ export const query = graphql`
               programEndTime
               programTitle
               programStartDate
+            }
+          }
+        }
+      }
+    }
+    wpMenu: allWordpressWpApiMenusMenusItems {
+      edges {
+        node {
+          name
+          count
+          items {
+            title
+            url
+            wordpress_children {
+              wordpress_id
+              wordpress_parent
+              title
+              url
             }
           }
         }

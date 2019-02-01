@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import $ from 'jquery';
 import * as FontAwesome from 'react-icons/lib/fa';
+import * as Material from 'react-icons/lib/md';
 import PropTypes from 'prop-types';
 import { Navbar, Nav, NavDropdown, Button } from 'react-bootstrap';
 import { Link } from 'gatsby';
@@ -13,6 +14,7 @@ import {
   getSocialMenuObject,
   isServer
 } from '../../utils/helperFunctions';
+import { isLoggedIn } from '../../utils/session';
 import './styles.scss';
 
 export default class Header extends Component {
@@ -25,111 +27,111 @@ export default class Header extends Component {
   }
 
   componentDidMount() {
+    this.mounted = true;
     $('#main-nav > div:first-child').addClass('main-container');
   }
 
-  componentWillReceiveProps(newProps) {
-    const { slug } = this.props;
-    if (slug !== newProps.slug) {
-      this.closeNav();
-    }
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.navExpanded) {
-      this.closeNav();
-    }
+  componentWillUnmount() {
+    this.mounted = false;
   }
 
   search = () => {
-    this.close('#');
+    this.setToggle('#', false);
     const { searchFunc } = this.props;
     searchFunc();
   };
 
-  open = url => {
-    this.setState(prevState => {
-      const state = { ...prevState };
-      state.open[url] = true;
-      return { open: state.open };
-    });
-  };
-
-  close = url => {
-    this.setState(prevState => {
-      const state = { ...prevState };
-      state.open[url] = false;
-      return { open: state.open };
-    });
-  };
-
-  toggle = url => {
-    this.setState(prevState => {
-      const state = { ...prevState };
-      state.open[url] = !state.open[url];
-      return { open: state.open };
-    });
+  setToggle = (url, isOpen = true) => {
+    if (this.mounted) {
+      this.setState(prevState => {
+        const state = { ...prevState };
+        state.open[url] = isOpen;
+        return { open: state.open };
+      });
+    }
   };
 
   setNavExpanded = expanded => {
-    this.setState({ navExpanded: expanded });
+    if (this.mounted) {
+      this.setState({ navExpanded: expanded });
+    }
   };
 
   closeNav = () => {
-    this.setState({ navExpanded: false });
+    if (this.mounted) {
+      this.setState({ navExpanded: false });
+    }
   };
 
-  getNavDropDown = (link, linkFunction, currentLink, i) => {
+  getNavDropDown = link => {
+    const { url, label } = link;
     const btnDisplay = link.btnClass || 'btn-secondary';
 
     return (
       <NavDropdown
-        key={`top_link${i}`}
+        key={`${label} ${url}`}
         className={`btn ${btnDisplay}`}
-        title={link.label}
-        id={`${link.label}-${i}`}
+        title={label}
+        id={url}
       >
-        {link.children.map(menu => {
-          const { url, label } = menu;
-          const cleanUrl = url.replace(/https?:\/\/[^/]+/, '');
-          return (
-            <NavWrap key={url}>
-              {url.match(/^\/\//) ? (
-                <a
-                  href={cleanUrl}
-                  dangerouslySetInnerHTML={{
-                    __html: label
-                  }}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                />
-              ) : (
-                <Link
-                  to={cleanUrl}
-                  dangerouslySetInnerHTML={{
-                    __html: label
-                  }}
-                />
-              )}
-            </NavWrap>
-          );
-        })}
+        {link.children.map(menu => (
+          <NavWrap key={`${menu.label} ${menu.url}`}>
+            {this.getLink(menu)}
+          </NavWrap>
+        ))}
       </NavDropdown>
     );
   };
 
-  getNavItem = (link, linkFunction, currentLink, i) => {
+  getLink = link => {
+    const { url, label, buttonClick } = link;
+    const cleanUrl = url && url.replace(/https?:\/\/[^/]+/, '');
+    const isRedirect = url && url.match(/^\/\//);
+    if (buttonClick) {
+      return (
+        <Button
+          onClick={buttonClick}
+          dangerouslySetInnerHTML={{
+            __html: label
+          }}
+        />
+      );
+    }
+    if (isRedirect) {
+      return (
+        <a
+          href={cleanUrl}
+          dangerouslySetInnerHTML={{
+            __html: label
+          }}
+          target="_blank"
+          rel="noopener noreferrer"
+        />
+      );
+    }
+    return (
+      <Link
+        to={cleanUrl}
+        dangerouslySetInnerHTML={{
+          __html: label
+        }}
+      />
+    );
+  };
+
+  getNavItem = link => {
+    const { currentPage } = this.props;
     const { url, icon, label, iconPlacement, btnClass, toggle, onClick } = link;
     const cleanUrl = url.replace(/https?:\/\/[^/]+/, '');
     const btnDisplay = btnClass || 'btn-secondary';
-    const clickFunction = toggle ? () => {} : onClick || linkFunction;
+    const clickFunction = toggle ? () => {} : onClick;
     const { open } = this.state;
 
     return open[url] ? (
       <NavWrap
-        key={`top_link${i}`}
+        key={`${label} ${url}`}
         className={`${
-          currentLink === cleanUrl.replace(/\//g, '')
+          currentPage === cleanUrl.replace(/\//g, '')
             ? `btn show ${btnDisplay}`
             : `btn  ${btnDisplay}`
         }`}
@@ -139,45 +141,33 @@ export default class Header extends Component {
       </NavWrap>
     ) : (
       <NavWrap
-        key={`top_link${i}`}
+        key={`${label} ${url}`}
         className={`${
-          currentLink === cleanUrl.replace(/\//g, '')
+          currentPage === cleanUrl.replace(/\//g, '')
             ? `btn show ${btnDisplay}`
             : `btn  ${btnDisplay}`
         }`}
       >
         {icon && iconPlacement !== 'right' ? icon : ''}
-        {url.match(/^\/\//) ? (
-          <a
-            href={cleanUrl}
-            dangerouslySetInnerHTML={{
-              __html: label
-            }}
-            target="_blank"
-            rel="noopener noreferrer"
-          />
-        ) : (
-          <Link
-            to={cleanUrl}
-            dangerouslySetInnerHTML={{
-              __html: label
-            }}
-          />
-        )}
+        {label && this.getLink(link)}
       </NavWrap>
     );
   };
 
-  getLinks = (links, linkFunction, currentLink) =>
+  getLinks = links =>
     links.map(
-      (link, i) =>
-        link.children
-          ? this.getNavDropDown(link, linkFunction, currentLink, i)
-          : this.getNavItem(link, linkFunction, currentLink, i)
+      link =>
+        link.children ? this.getNavDropDown(link) : this.getNavItem(link)
     );
 
   render() {
-    const { currentPage, header, social, openLink } = this.props;
+    const {
+      header,
+      social,
+      openSignin,
+      logoutFunc,
+      displaySignin = false
+    } = this.props;
     const { navExpanded } = this.state;
 
     const isMobile = !isServer && window.innerWidth <= 1170;
@@ -194,11 +184,13 @@ export default class Header extends Component {
 
     const userAdmin = [
       {
-        label: '',
         url: '#',
         btnClass: 'btn-secondary pull-right search-btn',
         icon: (
-          <Button className="search-btn-icon" onClick={() => this.open('#')}>
+          <Button
+            className="search-btn-icon"
+            onClick={() => this.setToggle('#', true)}
+          >
             <FontAwesome.FaSearch
               className="search-icon"
               size="20"
@@ -222,11 +214,45 @@ export default class Header extends Component {
                 </Button>
               </div>
             </div>
-            <Button className="gradient" onClick={() => this.close('#')} />
+            <Button
+              className="gradient"
+              onClick={() => this.setToggle('#', false)}
+            />
           </div>
         )
       }
     ];
+
+    if (displaySignin)
+      userAdmin.push({
+        url: '#signin',
+        btnClass: 'btn-secondary pull-right login',
+        icon: !isLoggedIn() ? (
+          <Button className="admin-btn-icon" onClick={openSignin}>
+            <Material.MdPersonOutline
+              className="search-icon"
+              size="23"
+              color="#fff"
+            />
+            <span>Sign In</span>
+          </Button>
+        ) : (
+          this.getNavDropDown({
+            url: '#',
+            label: 'My Account',
+            children: [
+              {
+                url: '/profile',
+                label: 'Profile'
+              },
+              {
+                buttonClick: logoutFunc,
+                label: 'Logout'
+              }
+            ]
+          })
+        )
+      });
 
     return (
       <section className="header">
@@ -261,7 +287,7 @@ export default class Header extends Component {
             </div>
             <Navbar.Toggle className="nav-toggle " />
             <Nav onSelect={this.closeNav} className="user-admin pull-right">
-              {this.getLinks(userAdmin, openLink, currentPage)}
+              {this.getLinks(userAdmin)}
             </Nav>
           </Navbar.Header>
           <div className="bottom-nav row">
@@ -270,7 +296,7 @@ export default class Header extends Component {
                 onSelect={this.closeNav}
                 className="pull-left top-navigation left-links"
               >
-                {this.getLinks(topLinks, openLink, currentPage)}
+                {this.getLinks(topLinks)}
               </Nav>
             </Navbar.Collapse>
           </div>

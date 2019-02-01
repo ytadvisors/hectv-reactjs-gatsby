@@ -85,12 +85,18 @@
   ul.user-admin {
     margin: 0px;
     float: right;
+    a {
+      display: inline-block;
+    }
     .btn {
       padding: 1px 2px;
       border: 0;
+      display: inline-block;
       &.login {
+        > a:first-child {
+          padding: 0;
+        }
         a {
-          padding: 0 2em;
           color: #fff;
         }
       }
@@ -110,12 +116,15 @@
     .btn-default {
       background: darkgreen;
     }
-    &.left-links {
+    &.left-links,
+    &.user-admin {
       padding: 0;
+      margin: 0;
       li {
         font-size: 15px;
         border-radius: 0;
         margin-right: 1px;
+        display: block !important;
         &.dropdown {
           border: 0;
           .dropdown-toggle {
@@ -134,11 +143,18 @@
               position: relative;
               padding: 0;
               margin: 0;
+              button,
               a {
                 line-height: initial;
                 display: block;
                 color: #337ab7 !important;
                 font-weight: normal;
+              }
+              button {
+                background: #fff;
+                width: 100%;
+                padding: 0.5em 0.9em;
+                text-align: left;
               }
             }
             li:after {
@@ -203,12 +219,22 @@
   ul.user-admin {
     li {
       display: inline-block;
-      .search-btn-icon {
+      .search-btn-icon,
+      .admin-btn-icon {
         border-radius: 50%;
         background: #fff;
         padding: 0.8em;
         margin: 5px;
         border: 1px solid #555;
+      }
+      .admin-btn-icon {
+        border: 0;
+        background: transparent;
+        color: #fff;
+        padding: 1em 0.8em;
+        span {
+          padding: 0.5em;
+        }
       }
       &.search-btn {
         padding: 2px !important;
@@ -400,7 +426,8 @@
     ul.user-admin {
       float: none !important;
       padding-left: 1em;
-      &.left-links {
+      &.left-links,
+      &.user-admin {
         padding: 0;
         margin: 0;
         li {
@@ -413,11 +440,16 @@
               margin: 0;
               border: 0;
               li {
+                button,
                 a {
                   padding: 10px;
                   padding-left: 15px;
                   color: #8ff5ff !important;
                   font-weight: normal !important;
+                }
+                button {
+                  background: transparent;
+                  width: 100%;
                 }
               }
               li:after {
