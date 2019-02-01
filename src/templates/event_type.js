@@ -35,13 +35,17 @@ export default class EventType extends Component {
     const {
       wpSite: {
         siteMetadata: { siteUrl, googleOauth2ClientId, fbAppId } = {}
-      } = {}
+      } = {},
+      wpSchedule,
+      wpPage,
+      wpEventCategory,
+      wpMenu
     } = data;
 
     const { currentDate } = this.state;
-    const programs = getPrograms(data.wpSchedule.edges, 5);
+    const programs = getPrograms(wpSchedule.edges, 5);
 
-    if (data.wpPage.acf) data.wpPage.acf.content = data.wpPage.content;
+    if (wpPage.acf) wpPage.acf.content = wpPage.content;
 
     const events = edges || [];
     const currentEvents = getCurrentEvents(currentDate, events);
@@ -52,35 +56,35 @@ export default class EventType extends Component {
 
     const [urlPrefix] = pathname.split('page');
     const description =
-      data.wpPage.content || 'On Demand Arts, Culture & Education Programming';
+      wpPage.content || 'On Demand Arts, Culture & Education Programming';
     const selectTitle =
-      (data.wpEventCategory && data.wpEventCategory.name) || 'Filter Events';
+      (wpEventCategory && wpEventCategory.name) || 'Filter Events';
 
     return (
       <Fragment>
         <SEO
           {...{
-            title: `HEC-TV | ${data.wpPage.title}`,
+            title: `HEC-TV | ${wpPage.title}`,
             image: getFirstImageFromWpList(posts),
             description: getExcerpt(description, 320),
             url: siteUrl,
             fbAppId,
-            pathname: data.wpPage.link.replace(/https?:\/\/[^/]+/, ''),
+            pathname: wpPage.link.replace(/https?:\/\/[^/]+/, ''),
             siteName: 'hecmedia.org',
             author: 'hectv',
             twitterHandle: '@hec_tv'
           }}
         />
         <Layout
-          slug={data.wpPage.slug}
-          menus={data.wpMenu.edges}
+          slug={wpPage.slug}
+          menus={wpMenu.edges}
           programs={programs}
           fbAppId={fbAppId}
           googleOauth2ClientId={googleOauth2ClientId}
         >
           <div className="col-md-12">
             <EventNav
-              {...data.wpPage}
+              {...wpPage}
               changeDate={this.changeDate}
               selectTitle={selectTitle}
             />
@@ -92,7 +96,7 @@ export default class EventType extends Component {
             numPages={numPages}
             urlPrefix={urlPrefix}
             currentPage={page}
-            design={data.wpPage.acf}
+            design={wpPage.acf}
             loadMore={null}
             resizeRows
           />

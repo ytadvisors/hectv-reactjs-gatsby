@@ -14,17 +14,18 @@ import ListOfPosts from '../components/ListOfPosts';
 
 export default ({ data }) => {
   const {
-    wpSchedule: { edges } = {},
+    wpSchedule,
     wpMenu,
     wpSite: {
       siteMetadata: { siteUrl, googleOauth2ClientId, fbAppId } = {}
-    } = {}
+    } = {},
+    wpPage
   } = data;
 
-  const programs = getPrograms(edges, 5);
+  const programs = getPrograms(wpSchedule.edges, 5);
 
   const description =
-    data.wpPage.content || 'On Demand Arts, Culture & Education Programming';
+    wpPage.content || 'On Demand Arts, Culture & Education Programming';
 
   let posts = getPosts(data, 'wpPage', 'postList', 'post', 'wpPosts');
   posts = removeDuplicates(posts, 'wordpress_id');
@@ -38,19 +39,19 @@ export default ({ data }) => {
     <Fragment>
       <SEO
         {...{
-          title: `HEC-TV | ${data.wpPage.title}`,
+          title: `HEC-TV | ${wpPage.title}`,
           image,
           description: getExcerpt(description, 320),
           url: siteUrl,
           fbAppId,
-          pathname: data.wpPage.link.replace(/https?:\/\/[^/]+/, ''),
+          pathname: wpPage.link.replace(/https?:\/\/[^/]+/, ''),
           siteName: 'hecmedia.org',
           author: 'hectv',
           twitterHandle: '@hec_tv'
         }}
       />
       <Layout
-        slug={data.wpPage.slug}
+        slug={wpPage.slug}
         menus={wpMenu.edges}
         programs={programs}
         fbAppId={fbAppId}
@@ -60,7 +61,7 @@ export default ({ data }) => {
           posts={posts || []}
           link={{ page: 'posts' }}
           numResults={0}
-          design={data.wpPage.acf}
+          design={wpPage.acf}
           loadMore={null}
           resizeRows
         />

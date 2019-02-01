@@ -37,8 +37,8 @@ class Post extends Component {
 
   render() {
     const { data, liveVideos, post = {}, categoryPosts } = this.props;
-    const { wpSchedule: { edges } = {} } = data;
-    const programs = getPrograms(edges, 5);
+    const { wpSchedule } = data;
+    const programs = getPrograms(wpSchedule.edges, 5);
 
     const {
       wpSite: {

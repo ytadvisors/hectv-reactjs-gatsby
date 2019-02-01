@@ -14,6 +14,7 @@ export default ({
 }) => {
   const {
     wpCategory = {},
+    wpSchedule,
     wpSite: {
       siteMetadata: { siteUrl, fbAppId, googleOauth2ClientId } = {}
     } = {},
@@ -23,7 +24,7 @@ export default ({
   const { name = '', description = '', link = '', slug = '' } =
     wpCategory || {};
   const [urlPrefix] = pathname.split('page');
-  const programs = getPrograms(data.wpSchedule.edges, 5);
+  const programs = getPrograms(wpSchedule.edges, 5);
 
   const pageDescription =
     description || 'On Demand Arts, Culture & Education Programming';

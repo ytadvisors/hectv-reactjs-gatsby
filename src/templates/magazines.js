@@ -14,7 +14,7 @@ import ListOfPosts from '../components/ListOfPosts';
 
 export default ({ data }) => {
   const {
-    wpSchedule: { edges } = {},
+    wpSchedule,
     wpMenu,
     wpSite: {
       siteMetadata: { siteUrl, googleOauth2ClientId, fbAppId } = {}
@@ -22,7 +22,7 @@ export default ({ data }) => {
     wpMagazine,
     wpPage
   } = data;
-  const programs = getPrograms(edges, 5);
+  const programs = getPrograms(wpSchedule.edges, 5);
   const pageInfo = { ...wpPage };
 
   if (pageInfo) pageInfo.content = wpPage.content;

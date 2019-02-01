@@ -54,12 +54,13 @@ class Search extends Component {
     } = this.props;
 
     const {
-      wpSchedule: { edges } = {},
+      wpSchedule,
       wpSite: {
         siteMetadata: { siteUrl = '', fbAppId = '', googleOauth2ClientId } = {}
-      } = {}
+      } = {},
+      wpMenu
     } = data;
-    const programs = getPrograms(edges, 5);
+    const programs = getPrograms(wpSchedule.edges, 5);
 
     const description = 'On Demand Arts, Culture & Education Programming';
     const [, , searchValue] = pathname.split('/');
@@ -81,7 +82,7 @@ class Search extends Component {
         />
         <Layout
           programs={programs}
-          menus={data.wpMenu.edges}
+          menus={wpMenu.edges}
           fbAppId={fbAppId}
           googleOauth2ClientId={googleOauth2ClientId}
         >
