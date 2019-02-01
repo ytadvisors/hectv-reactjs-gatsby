@@ -75,10 +75,10 @@ export default class Header extends Component {
         id={url}
       >
         {link.children.map(menu => (
-            <NavWrap key={`${menu.label} ${menu.url}`}>
-              {this.getLink(menu)}
-            </NavWrap>
-          ))}
+          <NavWrap key={`${menu.label} ${menu.url}`}>
+            {this.getLink(menu)}
+          </NavWrap>
+        ))}
       </NavDropdown>
     );
   };
@@ -96,7 +96,8 @@ export default class Header extends Component {
           }}
         />
       );
-    } if (isRedirect) {
+    }
+    if (isRedirect) {
       return (
         <a
           href={cleanUrl}
@@ -160,7 +161,13 @@ export default class Header extends Component {
     );
 
   render() {
-    const { header, social, openSignin, logoutFunc } = this.props;
+    const {
+      header,
+      social,
+      openSignin,
+      logoutFunc,
+      displaySignin = false
+    } = this.props;
     const { navExpanded } = this.state;
 
     const isMobile = !isServer && window.innerWidth <= 1170;
@@ -213,8 +220,11 @@ export default class Header extends Component {
             />
           </div>
         )
-      },
-      {
+      }
+    ];
+
+    if (displaySignin)
+      userAdmin.push({
         url: '#signin',
         btnClass: 'btn-secondary pull-right login',
         icon: !isLoggedIn() ? (
@@ -242,8 +252,7 @@ export default class Header extends Component {
             ]
           })
         )
-      }
-    ];
+      });
 
     return (
       <section className="header">
