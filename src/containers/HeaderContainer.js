@@ -81,23 +81,26 @@ class HeaderContainer extends Component {
       social,
       pageOperation,
       fbAppId,
-      googleOauth2ClientId
+      googleOauth2ClientId,
+      displaySignin = false
     } = this.props;
 
     return (
       <Fragment>
-        <Signin
-          pageOperation={pageOperation}
-          closeSignin={this.closeSignin}
-          openCreateAccount={this.openCreateAccount}
-          openSignin={this.openSignin}
-          social={social}
-          fbAppId={fbAppId}
-          googleOauth2ClientId={googleOauth2ClientId}
-          signinFunc={this.signinFunc}
-          registerFunc={this.registerFunc}
-          thirdPartySigninFunc={this.thirdPartySigninFunc}
-        />
+        {displaySignin && (
+          <Signin
+            pageOperation={pageOperation}
+            closeSignin={this.closeSignin}
+            openCreateAccount={this.openCreateAccount}
+            openSignin={this.openSignin}
+            social={social}
+            fbAppId={fbAppId}
+            googleOauth2ClientId={googleOauth2ClientId}
+            signinFunc={this.signinFunc}
+            registerFunc={this.registerFunc}
+            thirdPartySigninFunc={this.thirdPartySigninFunc}
+          />
+        )}
         <BasicModal {...this.props} />
         <Header
           {...this.props}
