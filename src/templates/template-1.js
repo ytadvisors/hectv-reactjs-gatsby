@@ -14,11 +14,11 @@ export default ({
     wpSite: {
       siteMetadata: { siteUrl, fbAppId, googleOauth2ClientId } = {}
     } = {},
-    wpSchedule: { edges } = {},
+    wpSchedule,
     wpMenu
   }
 }) => {
-  const programs = getPrograms(edges, 5);
+  const programs = getPrograms(wpSchedule.edges, 5);
   const pageContent = { ...acf };
   pageContent.content = content;
 

@@ -12,11 +12,11 @@ export default ({ data }) => {
   const {
     wpEvent: { title, thumbnail, content, link = '', slug } = {},
     wpSite: { siteMetadata: { siteUrl, fbAppId, googleOauth2ClientId } = {} },
-    wpSchedule: { edges } = {},
+    wpSchedule,
     wpMenu
   } = data;
 
-  const programs = getPrograms(edges, 5);
+  const programs = getPrograms(wpSchedule.edges, 5);
 
   const description =
     content || 'On Demand Arts, Culture & Education Programming';

@@ -19,11 +19,11 @@ export default ({ data }) => {
     wpSite: {
       siteMetadata: { siteUrl, fbAppId, googleOauth2ClientId } = {}
     } = {},
-    wpSchedule: { edges } = {},
+    wpSchedule,
     wpMenu
   } = data;
 
-  const programs = getPrograms(edges, 5);
+  const programs = getPrograms(wpSchedule.edges, 5);
   const description =
     content || 'On Demand Arts, Culture & Education Programming';
   let posts = getPosts(data, 'wpPage', 'postList', 'post', 'wpPosts');

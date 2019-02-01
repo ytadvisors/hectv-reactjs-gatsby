@@ -31,11 +31,11 @@ export default class Events extends Component {
     const { data } = this.props;
     const { currentDate } = this.state;
     const {
-      wpSchedule: { edges } = {},
+      wpSchedule,
       wpSite: { siteMetadata: { siteUrl, fbAppId, googleOauth2ClientId } = {} }
     } = data;
 
-    const programs = getPrograms(edges, 5);
+    const programs = getPrograms(wpSchedule.edges, 5);
 
     if (data.wpPage.acf) data.wpPage.acf.content = data.wpPage.content;
 

@@ -48,12 +48,12 @@ class Template3Page extends Component {
         wpSite: {
           siteMetadata: { siteUrl, fbAppId, mapKey, googleOauth2ClientId } = {}
         } = {},
-        wpSchedule: { edges } = {},
+        wpSchedule,
         wpMenu
       }
     } = this.props;
 
-    const programs = getPrograms(edges, 5);
+    const programs = getPrograms(wpSchedule.edges, 5);
     const pageContent = { ...acf };
     pageContent.content = content;
 
