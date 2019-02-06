@@ -161,13 +161,7 @@ export default class Header extends Component {
     );
 
   render() {
-    const {
-      header,
-      social,
-      openSignin,
-      logoutFunc,
-      displaySignin = false
-    } = this.props;
+    const { header, social, openSignin, logoutFunc } = this.props;
     const { navExpanded } = this.state;
 
     const isMobile = !isServer && window.innerWidth <= 1170;
@@ -223,7 +217,7 @@ export default class Header extends Component {
       }
     ];
 
-    if (displaySignin)
+    if (process.env.GATSBY_ENABLE_SIGNIN === 'true') {
       userAdmin.push({
         url: '#signin',
         btnClass: 'btn-secondary pull-right login',
@@ -253,6 +247,7 @@ export default class Header extends Component {
           })
         )
       });
+    }
 
     return (
       <section className="header">
