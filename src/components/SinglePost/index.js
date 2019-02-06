@@ -7,11 +7,13 @@ import LazyLoad from 'react-lazyload';
 import VideoPlayer from '../VideoPlayer/index';
 import ShareSocialLinks from '../ShareSocialLinks';
 import { getEventDate, cleanUrl } from '../../utils/helperFunctions';
-
 import './styles.scss';
 
 export default class SinglePost extends Component {
   componentDidMount() {
+    /* eslint-disable global-require */
+    require('slick-carousel/slick/slick'); // required here for build to work
+
     $('.gallery-columns-3 br').remove();
     $('.gallery-columns-3').slick({
       dots: false,
