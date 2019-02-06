@@ -48,9 +48,18 @@ export default class Banner extends Component {
       <div>
         <div>{getExcerpt(postTitle, isMobile ? 25 : 150)}</div>
         <div className="breaker">.&nbsp;</div>
-        <div>{moment(new Date(startDate)).format('MMM, Do hh:mm a z')} CT</div>
+        <div />
+
+        <div>
+          {!startDate ? 'Starts ' : 'Started '}
+          {moment(new Date(startDate))
+            .endOf('hour')
+            .fromNow()}
+          .
+        </div>
       </div>
     );
+
     return (
       <section className="banner">
         {postTitle &&
