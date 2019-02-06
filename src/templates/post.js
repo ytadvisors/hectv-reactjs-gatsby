@@ -192,6 +192,12 @@ export const query = graphql`
                   mediumLarge
                 }
               }
+              postHeader {
+                sizes {
+                  medium
+                  mediumLarge
+                }
+              }
             }
           }
         }
