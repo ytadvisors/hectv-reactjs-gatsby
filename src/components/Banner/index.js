@@ -51,6 +51,7 @@ export default class Banner extends Component {
         <div>{moment(new Date(startDate)).format('MMM, Do hh:mm a z')} CT</div>
       </div>
     );
+
     return (
       <section className="banner">
         {postTitle &&

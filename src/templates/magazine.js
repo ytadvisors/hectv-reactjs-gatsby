@@ -128,7 +128,7 @@ export const query = graphql`
         }
       }
     }
-    pageInfo: wordpressWpMagazine(id: { eq: $id }) {
+    wpMagazine: wordpressWpMagazine(id: { eq: $id }) {
       title
       content
       link
