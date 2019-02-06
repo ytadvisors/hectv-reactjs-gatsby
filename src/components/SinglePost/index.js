@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import moment from 'moment';
 import $ from 'jquery';
-import 'slick-carousel/slick/slick';
 import * as Material from 'react-icons/lib/md';
 import LazyLoad from 'react-lazyload';
 import VideoPlayer from '../VideoPlayer/index';
