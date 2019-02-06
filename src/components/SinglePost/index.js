@@ -12,18 +12,28 @@ import './styles.scss';
 
 export default class SinglePost extends Component {
   componentDidMount() {
-    $('.gallery-item').slick({
+    $('.gallery-columns-3 br').remove();
+    $('.gallery-columns-3').slick({
       dots: false,
       pauseOnHover: false,
       swipe: false,
       swipeToSlide: false,
       touchMove: false,
       arrows: true,
-      fade: true,
+      fade: false,
       autoplay: true,
+      infinite: true,
+      slidesToScroll: 1,
       autoplaySpeed: 4000,
       slidesToShow: 3,
-      slidesToScroll: 1
+      responsive: [
+        {
+          breakpoint: 768,
+          settings: {
+            slidesToShow: 1
+          }
+        }
+      ]
     });
   }
 
