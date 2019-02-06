@@ -214,8 +214,11 @@ export default class Header extends Component {
             />
           </div>
         )
-      },
-      {
+      }
+    ];
+
+    if (process.env.GATSBY_ENABLE_SIGNIN === 'true') {
+      userAdmin.push({
         url: '#signin',
         btnClass: 'btn-secondary pull-right login',
         icon: !isLoggedIn() ? (
@@ -243,8 +246,8 @@ export default class Header extends Component {
             ]
           })
         )
-      }
-    ];
+      });
+    }
 
     return (
       <section className="header">
