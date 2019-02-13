@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-// import moment from 'moment';
+import moment from 'moment';
 import { Link } from 'gatsby';
 import playButton from '../../assets/play-button.png';
 import { isServer, getExcerpt, cleanUrl } from '../../utils/helperFunctions';
@@ -45,13 +45,17 @@ export default class Banner extends Component {
 
         <div>
           {/* <CountDownTimer deadline={moment(new Date(startDate))} /> */}
-          Starts in <CountDownTimer deadline={startDate} />
+          Starts in{' '}
+          <CountDownTimer deadline="Sun Jan 22 2019 22:00:28 GMT-0600" />
         </div>
       </div>
     );
 
+    console.log('**************', moment());
+
     return (
       <section className="banner">
+        <CountDownTimer deadline="Sun Jan 22 2019 22:00:28 GMT-0600" />
         {postTitle &&
           url &&
           startDate && (
