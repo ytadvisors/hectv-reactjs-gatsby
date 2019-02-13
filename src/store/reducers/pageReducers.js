@@ -10,10 +10,11 @@ const initialState = {
   openOverlay: '',
   overlaySettings: {},
   menus: {},
-  live_video: {},
-  page_title: '',
-  category_title: '',
-  page_data: {}
+  liveVideo: {},
+  pageTitle: '',
+  categoryTitle: '',
+  pageOperation: '',
+  pageData: {}
 };
 
 export default (curState = initialState, action) => {
@@ -34,18 +35,18 @@ export default (curState = initialState, action) => {
       return {
         ...state,
         error: false,
-        page_data: { ...state.page_data, ...action.page_data }
+        pageData: { ...state.pageData, ...action.pageData }
       };
     case types.SET_PAGE_TITLE:
       return {
         ...state,
-        page_title: action.title,
+        pageTitle: action.title,
         error: false
       };
     case types.SET_CATEGORY_TITLE:
       return {
         ...state,
-        category_title: action.title,
+        categoryTitle: action.title,
         error: false
       };
     case types.SET_PRICING:
@@ -61,7 +62,12 @@ export default (curState = initialState, action) => {
     case types.SET_LIVE_VIDEO:
       return {
         ...state,
-        live_video: action.live_video
+        liveVideo: action.liveVideo
+      };
+    case types.SET_PAGE_OPERATION:
+      return {
+        ...state,
+        pageOperation: action.operation
       };
 
     // Non Async Requests

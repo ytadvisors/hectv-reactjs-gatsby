@@ -136,23 +136,6 @@ export const getFirstImageFromWpList = posts => {
   return image;
 };
 
-export const getTransitions = timeout => ({
-  entering: {
-    opacity: 0
-  },
-  entered: {
-    transition: `opacity ${timeout}ms ease-in-out`,
-    opacity: 1
-  },
-  exiting: {
-    transition: `opacity ${timeout}ms ease-in-out`,
-    opacity: 0
-  }
-});
-
-export const getTransitionStyle = ({ timeout, status }) =>
-  getTransitions(timeout)[status] || {};
-
 export const getEventDate = (eventDates, displayFormat = 'MMM DD') => {
   let eDate = [];
   for (let x = 0; x < eventDates.length; x += 1) {
@@ -226,25 +209,26 @@ export const getPrograms = (schedules, numEntries) => {
     const programs = schedules.reduce(
       (acc, schedule) =>
         schedule.node.slug === day ? schedule.node.acf.schedulePrograms : acc,
-      {}
+      []
     );
 
-    return programs.reduce(
-      (acc, item) => {
-        const result = { ...acc };
-        if (result.started < numEntries) {
-          const endTime = moment(
-            new Date(`${item.programStartDate} ${item.programEndTime}`)
-          );
-          if (currentTime.isSameOrBefore(endTime) || result.started > 0) {
-            result.values.push(item);
-            result.started += 1;
+    if (programs.length > 0)
+      return programs.reduce(
+        (acc, item) => {
+          const result = { ...acc };
+          if (result.started < numEntries) {
+            const endTime = moment(
+              new Date(`${item.programStartDate} ${item.programEndTime}`)
+            );
+            if (currentTime.isSameOrBefore(endTime) || result.started > 0) {
+              result.values.push(item);
+              result.started += 1;
+            }
           }
-        }
-        return result;
-      },
-      { values: [], started: 0 }
-    );
+          return result;
+        },
+        { values: [], started: 0 }
+      );
   }
   return {};
 };

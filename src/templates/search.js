@@ -1,10 +1,7 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { graphql } from 'gatsby';
 import { connect } from 'react-redux';
-import {
-  loadSearchPostsAction,
-  loadLiveVideosAction
-} from '../store/actions/postActions';
+import { loadSearchPostsAction } from '../store/actions/postActions';
 
 import { getPrograms, getExcerpt } from '../utils/helperFunctions';
 
@@ -14,21 +11,12 @@ import DefaultNav from '../components/SubNavigation/DefaultNav';
 import ListOfPosts from '../components/ListOfPosts';
 
 class Search extends Component {
-  constructor(props) {
-    super(props);
-    this.loadPage = this.loadPage.bind(this);
-    this.state = {
-      programs: {}
-    };
-  }
-
   componentDidMount() {
     this.mounted = true;
     const {
       location: { pathname }
     } = this.props;
     this.loadPage(pathname);
-    this.loadLive();
   }
 
   componentDidUpdate(prevProps) {
@@ -42,21 +30,7 @@ class Search extends Component {
     this.mounted = false;
   }
 
-  loadLive = () => {
-    if (this.mounted) {
-      const {
-        dispatch,
-        data: { wpSchedule: { edges } = {} } = {}
-      } = this.props;
-      dispatch(loadLiveVideosAction());
-      this.setState({
-        programs: getPrograms(edges, 5)
-      });
-      setTimeout(this.loadLive, 30000);
-    }
-  };
-
-  loadPage(pathname) {
+  loadPage = pathname => {
     if (this.mounted) {
       const {
         dispatch,
@@ -70,36 +44,48 @@ class Search extends Component {
       const [, , searchValue] = pathname.split('/');
       dispatch(loadSearchPostsAction(apiUrl, searchValue));
     }
-  }
+  };
 
   render() {
     const {
       data,
       posts,
-      liveVideos,
       location: { pathname }
     } = this.props;
-    const { programs } = this.state;
+
+    const {
+      wpSchedule,
+      wpSite: {
+        siteMetadata: { siteUrl = '', fbAppId = '', googleOauth2ClientId } = {}
+      } = {},
+      wpMenu
+    } = data;
+    const programs = getPrograms(wpSchedule.edges, 5);
 
     const description = 'On Demand Arts, Culture & Education Programming';
     const [, , searchValue] = pathname.split('/');
 
     return (
-      <div>
+      <Fragment>
         <SEO
           {...{
             title: `HEC-TV | Search`,
             image: '',
             description: getExcerpt(description, 320),
-            url: data.wpSite.siteMetadata.siteUrl,
-            fbAppId: data.wpSite.siteMetadata.fbAppId,
-            pathname: `${data.wpSite.siteMetadata.siteUrl}/search`,
+            url: siteUrl,
+            fbAppId,
+            pathname: `${siteUrl}/search`,
             siteName: 'hecmedia.org',
             author: 'hectv',
             twitterHandle: '@hec_tv'
           }}
         />
-        <Layout liveVideos={liveVideos} programs={programs}>
+        <Layout
+          programs={programs}
+          menus={wpMenu.edges}
+          fbAppId={fbAppId}
+          googleOauth2ClientId={googleOauth2ClientId}
+        >
           <div className="col-md-12">
             <DefaultNav
               title={`Results: ${decodeURI(searchValue)}`}
@@ -115,14 +101,13 @@ class Search extends Component {
             resizeRows
           />
         </Layout>
-      </div>
+      </Fragment>
     );
   }
 }
 
 const mapStateToProps = state => ({
-  posts: state.postReducers.posts,
-  liveVideos: state.postReducers.liveVideos
+  posts: state.postReducers.posts
 });
 
 export default connect(mapStateToProps)(Search);
@@ -134,6 +119,25 @@ export const query = graphql`
         siteUrl
         apiUrl
         fbAppId
+        googleOauth2ClientId
+      }
+    }
+    wpMenu: allWordpressWpApiMenusMenusItems {
+      edges {
+        node {
+          name
+          count
+          items {
+            title
+            url
+            wordpress_children {
+              wordpress_id
+              wordpress_parent
+              title
+              url
+            }
+          }
+        }
       }
     }
     wpSchedule: allWordpressWpSchedules {

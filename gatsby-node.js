@@ -121,6 +121,7 @@ async function createCategoryPageHelper(
       const response = await categoryFunc(graphql, obj.node.slug, [
         obj.node.wordpress_id
       ]);
+
       const { data: { siteCategory = {} } = {} } = response;
       const { edges = [] } = siteCategory || {};
       const newLink = obj.node.link.replace(/https?:\/\/[^/]+/, '');
@@ -180,6 +181,7 @@ function createPageHelper(createPage, links) {
     let templatePath = './src/templates/page.js';
     let slug = obj.node.slug.toLowerCase();
     if (!slug) slug = 'home';
+    if (slug === 'articles') return;
 
     if (obj.node.template === '') {
       const filePath = `./src/templates/${slug}.js`;
@@ -190,6 +192,8 @@ function createPageHelper(createPage, links) {
         .toLowerCase()}.js`;
     }
 
+    if (slug === 'articles') return;
+
     const pageInfo = {
       path: newLink,
       component: slash(path.resolve(templatePath)),
@@ -198,9 +202,61 @@ function createPageHelper(createPage, links) {
         slug: obj.node.slug
       }
     };
-
-    // console.log("PAGE INFO: ", util.inspect(pageInfo, true, 5));
     createPage(pageInfo);
+  });
+}
+
+async function createArticles(createPage, graphql, perPage) {
+  const result = await graphql(
+    `
+      {
+        siteCategory: allWordpressPost(
+          filter: { acf: { isVideo: { eq: false } } }
+        ) {
+          edges {
+            node {
+              link
+              title
+              excerpt
+              slug
+              wordpress_id
+              thumbnail
+              id
+              categories {
+                link
+                name
+                slug
+              }
+              acf {
+                isVideo
+              }
+            }
+          }
+        }
+      }
+    `
+  );
+
+  if (result.errors) throw new Error(result.errors);
+
+  const pageTemplate = path.resolve('./src/templates/articles.js');
+  const { data: { siteCategory: { edges = [] } } = {} } = result;
+  const pages = _.chunk(edges, perPage);
+  const numPages = _.size(pages);
+  return pages.forEach((edge, page) => {
+    const currentPage = page + 1;
+    const pagePath =
+      currentPage > 1 ? `articles/page/${currentPage}` : `articles`;
+    return createPage({
+      path: pagePath,
+      component: slash(pageTemplate),
+      context: Object.assign({
+        edges: edge,
+        page: currentPage,
+        numPages,
+        slug: 'articles'
+      })
+    });
   });
 }
 
@@ -226,6 +282,46 @@ async function createSitePages(createPage, graphql) {
   if (result.errors) throw new Error(result.errors);
 
   return createPageHelper(createPage, result.data.sitePages.edges);
+}
+
+async function createSiteCategories(createPage, graphql) {
+  const result = await graphql(
+    `
+      {
+        siteCategory: allWordpressCategory {
+          edges {
+            node {
+              name
+              slug
+              link
+              id
+              wordpress_parent
+              wordpress_id
+              parent_element {
+                name
+                slug
+              }
+            }
+          }
+        }
+      }
+    `
+  );
+  if (result.errors) throw new Error(result.errors);
+
+  const pageTemplate = path.resolve('./src/templates/category.js');
+  createCategoryPageHelper(
+    createPage,
+    graphql,
+    getCategoryGraphQl,
+    40,
+    result.data.siteCategory.edges,
+    pageTemplate
+  );
+
+  return result.data.siteCategory && result.data.siteCategory.edges.length > 0
+    ? result.data.siteCategory.edges.map(obj => obj.node)
+    : [];
 }
 
 async function createSiteEvents(createPage, graphql) {
@@ -287,46 +383,6 @@ async function createSiteEventCategories(createPage, graphql) {
     result.data.siteEventCategories.edges,
     eventTemplate
   );
-}
-
-async function createSiteCategories(createPage, graphql) {
-  const result = await graphql(
-    `
-      {
-        siteCategory: allWordpressCategory {
-          edges {
-            node {
-              name
-              slug
-              link
-              id
-              wordpress_parent
-              wordpress_id
-              parent_element {
-                name
-                slug
-              }
-            }
-          }
-        }
-      }
-    `
-  );
-  if (result.errors) throw new Error(result.errors);
-
-  const pageTemplate = path.resolve('./src/templates/category.js');
-  createCategoryPageHelper(
-    createPage,
-    graphql,
-    getCategoryGraphQl,
-    40,
-    result.data.siteCategory.edges,
-    pageTemplate
-  );
-
-  return result.data.siteCategory && result.data.siteCategory.edges.length > 0
-    ? result.data.siteCategory.edges.map(obj => obj.node)
-    : [];
 }
 
 async function createSiteMagazines(createPage, graphql) {
@@ -423,6 +479,7 @@ exports.createPages = async ({ graphql, actions }) => {
       createSitePosts(createPage, graphql),
       createSiteEventCategories(createPage, graphql),
       createSiteCategories(createPage, graphql),
+      createArticles(createPage, graphql, 40),
       createSitePages(createPage, graphql),
       createSiteEvents(createPage, graphql),
       createSiteMagazines(createPage, graphql),

@@ -1,13 +1,10 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { graphql } from 'gatsby';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import querystring from 'query-string';
 
-import {
-  loadLiveVideosAction,
-  loadPostWithSlugAction
-} from '../store/actions/postActions';
+import { loadPostWithSlugAction } from '../store/actions/postActions';
 import {
   getPosts,
   getPrograms,
@@ -21,16 +18,8 @@ import SinglePost from '../components/SinglePost';
 import ListOfPosts from '../components/ListOfPosts';
 
 class Post extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      programs: {}
-    };
-  }
-
   componentDidMount() {
     this.mounted = true;
-    this.loadLive();
     this.loadPost();
   }
 
@@ -38,32 +27,24 @@ class Post extends Component {
     this.mounted = false;
   }
 
-  loadLive = () => {
-    if (this.mounted) {
-      const {
-        dispatch,
-        data: { wpSchedule: { edges } = {} } = {}
-      } = this.props;
-      dispatch(loadLiveVideosAction());
-      this.setState({
-        programs: getPrograms(edges, 5)
-      });
-      setTimeout(this.loadLive, 30000);
-    }
-  };
-
   loadPost = () => {
-    const { dispatch, location: { search } = {} } = this.props;
-    const { id } = querystring.parse(search) || {};
-    if (id) dispatch(loadPostWithSlugAction(id.replace(/\/$/, '')));
+    if (this.mounted) {
+      const { dispatch, location: { search } = {} } = this.props;
+      const { id } = querystring.parse(search) || {};
+      if (id) dispatch(loadPostWithSlugAction(id.replace(/\/$/, '')));
+    }
   };
 
   render() {
     const { data, liveVideos, post = {}, categoryPosts } = this.props;
-    const { programs } = this.state;
+    const { wpSchedule } = data;
+    const programs = getPrograms(wpSchedule.edges, 5);
 
     const {
-      wpSite: { siteMetadata: { siteUrl = '', fbAppId = '' } = {} } = {}
+      wpSite: {
+        siteMetadata: { siteUrl = '', fbAppId = '', googleOauth2ClientId } = {}
+      } = {},
+      wpMenu
     } = data;
 
     const newPost = {
@@ -117,7 +98,7 @@ class Post extends Component {
     );
     relatedPosts = _.take(relatedPosts, 3);
     return (
-      <div>
+      <Fragment>
         <SEO
           {...{
             title,
@@ -134,8 +115,10 @@ class Post extends Component {
         <Layout
           style={{ background: '#eee' }}
           slug={slug}
-          liveVideos={liveVideos}
+          menus={wpMenu.edges}
           programs={programs}
+          fbAppId={fbAppId}
+          googleOauth2ClientId={googleOauth2ClientId}
         >
           <div className="col-md-12" style={{ background: '#eee' }}>
             <SinglePost
@@ -176,14 +159,14 @@ class Post extends Component {
             />
           </div>
         </Layout>
-      </div>
+      </Fragment>
     );
   }
 }
 
 const mapStateToProps = state => ({
-  liveVideos: state.postReducers.liveVideos,
   post: state.postReducers.post,
+  liveVideos: state.postReducers.liveVideos,
   categoryPosts: state.postReducers.categoryPosts
 });
 
@@ -195,6 +178,25 @@ export const query = graphql`
       siteMetadata {
         siteUrl
         fbAppId
+        googleOauth2ClientId
+      }
+    }
+    wpMenu: allWordpressWpApiMenusMenusItems {
+      edges {
+        node {
+          name
+          count
+          items {
+            title
+            url
+            wordpress_children {
+              wordpress_id
+              wordpress_parent
+              title
+              url
+            }
+          }
+        }
       }
     }
     wpSchedule: allWordpressWpSchedules {

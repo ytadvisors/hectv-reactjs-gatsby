@@ -1,8 +1,6 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { graphql } from 'gatsby';
 import { connect } from 'react-redux';
-
-import { loadLiveVideosAction } from '../store/actions/postActions';
 import { sendContactEmail } from '../store/actions/accountActions';
 import { openOverlayAction } from '../store/actions/pageActions';
 
@@ -14,22 +12,6 @@ import DefaultNav from '../components/SubNavigation/DefaultNav';
 import Template3 from '../components/Templates/template-3/index';
 
 class Template3Page extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      programs: {}
-    };
-  }
-
-  componentDidMount() {
-    this.mounted = true;
-    this.loadLive();
-  }
-
-  componentWillUnmount() {
-    this.mounted = false;
-  }
-
   getSuccessMsg = () => (
     <div
       className="text-center"
@@ -59,37 +41,26 @@ class Template3Page extends Component {
     dispatch(openOverlayAction('basic', { content: this.getSuccessMsg() }));
   };
 
-  loadLive = () => {
-    if (this.mounted) {
-      const {
-        dispatch,
-        data: { wpSchedule: { edges } = {} } = {}
-      } = this.props;
-      dispatch(loadLiveVideosAction());
-      this.setState({
-        programs: getPrograms(edges, 5)
-      });
-      setTimeout(this.loadLive, 30000);
-    }
-  };
-
   render() {
     const {
       data: {
         wpPage: { title, content, acf = {}, link = '', slug } = {},
-        wpSite: { siteMetadata: { siteUrl, fbAppId, mapKey } = {} } = {}
-      },
-      liveVideos
+        wpSite: {
+          siteMetadata: { siteUrl, fbAppId, mapKey, googleOauth2ClientId } = {}
+        } = {},
+        wpSchedule,
+        wpMenu
+      }
     } = this.props;
 
-    const { programs } = this.state;
+    const programs = getPrograms(wpSchedule.edges, 5);
     const pageContent = { ...acf };
     pageContent.content = content;
 
     const description =
       content || 'On Demand Arts, Culture & Education Programming';
     return (
-      <div>
+      <Fragment>
         <SEO
           {...{
             title: `HEC-TV | ${title}`,
@@ -103,27 +74,31 @@ class Template3Page extends Component {
             twitterHandle: '@hec_tv'
           }}
         />
-        <Layout slug={slug} liveVideos={liveVideos} programs={programs}>
-          <div>
-            <div className="col-md-12">
-              <DefaultNav title={title} link={link} />
-            </div>
-            <Template3 {...{ pageContent }} callbackFunc={this.contactUs}>
-              <Map mapKey={mapKey} />
-            </Template3>
+        <Layout
+          slug={slug}
+          menus={wpMenu.edges}
+          programs={programs}
+          fbAppId={fbAppId}
+          googleOauth2ClientId={googleOauth2ClientId}
+        >
+          <div className="col-md-12">
+            <DefaultNav title={title} link={link} />
           </div>
+          <Template3 {...{ pageContent }} callbackFunc={this.contactUs}>
+            <Map mapKey={mapKey} />
+          </Template3>
         </Layout>
-      </div>
+      </Fragment>
     );
   }
 }
 
 const mapStateToProps = state => ({
-  pageForm: state.form,
-  liveVideos: state.postReducers.liveVideos
+  pageForm: state.form
 });
 
 export default connect(mapStateToProps)(Template3Page);
+
 export const query = graphql`
   query template3PageQuery($slug: String!) {
     wpSite: site {
@@ -131,6 +106,7 @@ export const query = graphql`
         siteUrl
         mapKey
         fbAppId
+        googleOauth2ClientId
       }
     }
     wpSchedule: allWordpressWpSchedules {
@@ -145,6 +121,24 @@ export const query = graphql`
               programEndTime
               programTitle
               programStartDate
+            }
+          }
+        }
+      }
+    }
+    wpMenu: allWordpressWpApiMenusMenusItems {
+      edges {
+        node {
+          name
+          count
+          items {
+            title
+            url
+            wordpress_children {
+              wordpress_id
+              wordpress_parent
+              title
+              url
             }
           }
         }

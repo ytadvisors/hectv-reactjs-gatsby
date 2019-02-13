@@ -1,7 +1,5 @@
-import React, { Component } from 'react';
+import React, { Fragment } from 'react';
 import { graphql } from 'gatsby';
-import { connect } from 'react-redux';
-import { loadLiveVideosAction } from '../store/actions/postActions';
 import { getPrograms, getExcerpt } from '../utils/helperFunctions';
 
 import SEO from '../components/SEO';
@@ -9,94 +7,71 @@ import Layout from '../components/Layout';
 import CategoryNav from '../components/SubNavigation/CategoryNav';
 import ListOfPosts from '../components/ListOfPosts';
 
-class Category extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      programs: {}
-    };
-  }
+export default ({
+  data,
+  pageContext: { page, edges, numPages = 1 },
+  location: { pathname }
+}) => {
+  const {
+    wpCategory = {},
+    wpSchedule,
+    wpSite: {
+      siteMetadata: { siteUrl, fbAppId, googleOauth2ClientId } = {}
+    } = {},
+    wpMenu
+  } = data;
 
-  componentDidMount() {
-    this.mounted = true;
-    this.loadLive();
-  }
+  const { name = '', description = '', link = '', slug = '' } =
+    wpCategory || {};
+  const [urlPrefix] = pathname.split('page');
+  const programs = getPrograms(wpSchedule.edges, 5);
 
-  componentWillUnmount() {
-    this.mounted = false;
-  }
+  const pageDescription =
+    description || 'On Demand Arts, Culture & Education Programming';
+  const pageLink = link.replace(/https?:\/\/[^/]+/, '');
 
-  loadLive = () => {
-    const { dispatch, data: { wpSchedule: { edges } = {} } = {} } = this.props;
-    dispatch(loadLiveVideosAction());
-    this.setState({
-      programs: getPrograms(edges, 5)
-    });
-    setTimeout(this.loadLive, 30000);
-  };
+  const posts = edges && edges.map(obj => obj.node);
 
-  render() {
-    const {
-      data: { wpCategory, wpSite } = {},
-      liveVideos,
-      pageContext: { edges, page, numPages = 1 },
-      location: { pathname }
-    } = this.props;
-
-    const { name, description, link = '', slug = '' } = wpCategory || {};
-    const { siteMetadata: { siteUrl, fbAppId } = {} } = wpSite || {};
-    const { programs } = this.state;
-    const [urlPrefix] = pathname.split('page');
-
-    const pageDescription =
-      description || 'On Demand Arts, Culture & Education Programming';
-    const pageLink = link.replace(/https?:\/\/[^/]+/, '');
-
-    const posts = edges && edges.map(obj => obj.node);
-
-    let image = '';
-    if (posts && posts.length > 0) image = posts[0].thumbnail;
-    return (
-      <div>
-        <SEO
-          {...{
-            title: `HEC-TV | ${name}`,
-            image,
-            description: getExcerpt(pageDescription, 320),
-            url: siteUrl,
-            fbAppId,
-            pathname: pageLink,
-            siteName: 'hecmedia.org',
-            author: 'hectv',
-            twitterHandle: '@hec_tv'
-          }}
+  let image = '';
+  if (posts && posts.length > 0) image = posts[0].thumbnail;
+  return (
+    <Fragment>
+      <SEO
+        {...{
+          title: `HEC-TV | ${name}`,
+          image,
+          description: getExcerpt(pageDescription, 320),
+          url: siteUrl,
+          fbAppId,
+          pathname: pageLink,
+          siteName: 'hecmedia.org',
+          author: 'hectv',
+          twitterHandle: '@hec_tv'
+        }}
+      />
+      <Layout
+        slug={slug}
+        menus={wpMenu.edges}
+        programs={programs}
+        fbAppId={fbAppId}
+        googleOauth2ClientId={googleOauth2ClientId}
+      >
+        <CategoryNav slug={slug} />
+        <ListOfPosts
+          posts={posts || []}
+          link={{ page: 'posts' }}
+          urlPrefix={urlPrefix}
+          numResults={0}
+          numPages={numPages}
+          currentPage={page}
+          design={null}
+          loadMore={null}
+          resizeRows
         />
-        <Layout slug={slug} liveVideos={liveVideos} programs={programs}>
-          <section>
-            <CategoryNav slug={slug} />
-            <ListOfPosts
-              posts={posts || []}
-              link={{ page: 'posts' }}
-              urlPrefix={urlPrefix}
-              numResults={0}
-              numPages={numPages}
-              currentPage={page}
-              design={null}
-              loadMore={null}
-              resizeRows
-            />
-          </section>
-        </Layout>
-      </div>
-    );
-  }
-}
-
-const mapStateToProps = state => ({
-  liveVideos: state.postReducers.liveVideos
-});
-
-export default connect(mapStateToProps)(Category);
+      </Layout>
+    </Fragment>
+  );
+};
 
 export const query = graphql`
   query categoryQuery($slug: String!) {
@@ -104,6 +79,25 @@ export const query = graphql`
       siteMetadata {
         siteUrl
         fbAppId
+        googleOauth2ClientId
+      }
+    }
+    wpMenu: allWordpressWpApiMenusMenusItems {
+      edges {
+        node {
+          name
+          count
+          items {
+            title
+            url
+            wordpress_children {
+              wordpress_id
+              wordpress_parent
+              title
+              url
+            }
+          }
+        }
       }
     }
     wpSchedule: allWordpressWpSchedules {
