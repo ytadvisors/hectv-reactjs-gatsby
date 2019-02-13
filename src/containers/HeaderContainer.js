@@ -3,9 +3,13 @@ import { navigate } from 'gatsby';
 import { connect } from 'react-redux';
 import Header from '../components/Header';
 import Banner from '../components/Banner';
-import Signin from '../components/Signin';
+import LoginModal from './Modals/LoginModal';
 import { loadLiveVideosAction } from '../store/actions/postActions';
-import { setPageOperation } from '../store/actions/pageActions';
+import {
+  changeOverlayStepAction,
+  openOverlayAction,
+  closeOverlayAction
+} from '../store/actions/pageActions';
 import {
   loginAction,
   registerAction,
@@ -42,17 +46,26 @@ class HeaderContainer extends Component {
 
   openSignin = () => {
     const { dispatch } = this.props;
-    dispatch(setPageOperation('signin'));
+    dispatch(
+      openOverlayAction('signin', {
+        screen: 'signin'
+      })
+    );
   };
 
   openCreateAccount = () => {
     const { dispatch } = this.props;
-    dispatch(setPageOperation('register'));
+    dispatch(
+      openOverlayAction('signin', {
+        screen: 'registration'
+      })
+    );
   };
 
   closeSignin = () => {
     const { dispatch } = this.props;
-    dispatch(setPageOperation(''));
+    dispatch(changeOverlayStepAction(0));
+    dispatch(closeOverlayAction());
   };
 
   signinFunc = () => {
@@ -76,18 +89,11 @@ class HeaderContainer extends Component {
   };
 
   render() {
-    const {
-      liveVideos,
-      social,
-      pageOperation,
-      fbAppId,
-      googleOauth2ClientId
-    } = this.props;
+    const { liveVideos, social, fbAppId, googleOauth2ClientId } = this.props;
 
     return (
       <Fragment>
-        <Signin
-          pageOperation={pageOperation}
+        <LoginModal
           closeSignin={this.closeSignin}
           openCreateAccount={this.openCreateAccount}
           openSignin={this.openSignin}
@@ -97,6 +103,7 @@ class HeaderContainer extends Component {
           signinFunc={this.signinFunc}
           registerFunc={this.registerFunc}
           thirdPartySigninFunc={this.thirdPartySigninFunc}
+          {...this.props}
         />
         <BasicModal {...this.props} />
         <Header
