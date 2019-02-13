@@ -5,7 +5,7 @@ export default class CountDownTimer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      days: '0',
+      // days: '0',
       hours: '0',
       minutes: '0',
       seconds: '0'
@@ -46,10 +46,10 @@ export default class CountDownTimer extends Component {
       const seconds = Math.floor((time / 1000) % 60);
       const minutes = Math.floor((time / 1000 / 60) % 60);
       const hours = Math.floor((time / (1000 * 60 * 60)) % 24);
-      const days = Math.floor(time / (1000 * 60 * 60 * 24));
+      // const days = Math.floor(time / (1000 * 60 * 60 * 24));
 
       this.setState({
-        days: days < 10 ? `0${days}` : days,
+        // days: days < 10 ? `0${days}` : days,
         hours: hours < 10 ? `0${hours}` : hours,
         minutes: minutes < 10 ? `0${minutes}` : minutes,
         seconds: seconds < 10 ? `0${seconds}` : seconds
@@ -60,7 +60,7 @@ export default class CountDownTimer extends Component {
     }
   }
 
-  renderDays() {
+  /* renderDays() {
     const { days } = this.state;
     if (days > 1) {
       return `${days}Days`;
@@ -69,13 +69,29 @@ export default class CountDownTimer extends Component {
       return `${days}day`;
     }
     return '';
+  } */
+
+  renderHours() {
+    const { hours } = this.state;
+    if (hours <= 1) {
+      return '';
+    }
+    return `${hours} Hours`;
+  }
+
+  renderMinutes() {
+    const { minutes } = this.state;
+    if (minutes <= 1) {
+      return '';
+    }
+    return `${minutes} Minutes`;
   }
 
   render() {
-    const { hours, minutes, seconds } = this.state;
+    const { seconds } = this.state;
     return (
       <span>
-        {this.renderDays()} {hours} Hours {minutes} Minutes {seconds} Seconds
+        {this.renderHours()} {this.renderMinutes()} {seconds} Seconds
       </span>
     );
   }

@@ -52,18 +52,19 @@ export default class Banner extends Component {
         <div />
 
         <div>
-          {/* <CountDownTimer deadline={moment(new Date(startDate))} /> */}
-          Starts in{' '}
-          <CountDownTimer deadline="Sun Jan 22 2019 22:00:28 GMT-0600" />
+          {startDate >= moment() ? (
+            <span>
+              Starts in <CountDownTimer deadline={startDate} />
+            </span>
+          ) : (
+            ''
+          )}
         </div>
       </div>
     );
 
-    console.log('**************', moment());
-
     return (
       <section className="banner">
-        <CountDownTimer deadline="Sun Jan 22 2019 22:00:28 GMT-0600" />
         {postTitle &&
           url &&
           startDate && (
