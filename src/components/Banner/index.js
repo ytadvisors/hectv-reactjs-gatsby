@@ -54,7 +54,8 @@ export default class Banner extends Component {
         <div>
           {startDate >= moment() ? (
             <span>
-              Starts in <CountDownTimer deadline={startDate} />
+              Starts in{' '}
+              <CountDownTimer deadline="Wed Feb 13 2019 12:42:45 GMT-0600" />
             </span>
           ) : (
             ''
