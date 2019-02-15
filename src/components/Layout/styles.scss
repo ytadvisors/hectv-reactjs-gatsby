@@ -364,12 +364,13 @@ a:active {
     border: 1px solid #ccc;
   }
   .modal-header {
-    background: #0065bc;
-    color: #fff;
     width: 100%;
     position: relative;
     height: 90px;
     padding: 10px;
+    border: 0;
+    border-radius: 0;
+    background: whitesmoke;
     img {
       display: inline-block;
       height: 65px;
@@ -386,21 +387,23 @@ a:active {
       color: #eee;
     }
     .close {
-      color: #fff;
+      color: #333;
       opacity: 0.4;
     }
   }
 
   .modal-body {
-    background: #f7f7f7;
+    background: #fff;
   }
   .modal-footer {
-    background: #f7f7f7;
+    background: #fff;
     border: 0;
   }
   .modal-dialog {
     min-height: 600px;
     .modal-content {
+      border: 0;
+      border-radius: 0;
     }
     h3 {
       color: #444;

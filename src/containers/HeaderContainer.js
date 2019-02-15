@@ -5,17 +5,8 @@ import Header from '../components/Header';
 import Banner from '../components/Banner';
 import LoginModal from './Modals/LoginModal';
 import { loadLiveVideosAction } from '../store/actions/postActions';
-import {
-  changeOverlayStepAction,
-  openOverlayAction,
-  closeOverlayAction
-} from '../store/actions/pageActions';
-import {
-  loginAction,
-  registerAction,
-  loginThirdPartyAction,
-  logoutAction
-} from '../store/actions/accountActions';
+import { openOverlayAction } from '../store/actions/pageActions';
+import { logoutAction } from '../store/actions/accountActions';
 
 import { BasicModal } from './Modals';
 
@@ -53,36 +44,6 @@ class HeaderContainer extends Component {
     );
   };
 
-  openCreateAccount = () => {
-    const { dispatch } = this.props;
-    dispatch(
-      openOverlayAction('signin', {
-        screen: 'registration'
-      })
-    );
-  };
-
-  closeSignin = () => {
-    const { dispatch } = this.props;
-    dispatch(changeOverlayStepAction(0));
-    dispatch(closeOverlayAction());
-  };
-
-  signinFunc = () => {
-    const { dispatch, pageForm: { user: { values } = {} } = {} } = this.props;
-    dispatch(loginAction(values));
-  };
-
-  registerFunc = () => {
-    const { dispatch, pageForm: { user: { values } = {} } = {} } = this.props;
-    dispatch(registerAction(values));
-  };
-
-  thirdPartySigninFunc = data => {
-    const { dispatch } = this.props;
-    dispatch(loginThirdPartyAction(data));
-  };
-
   logoutFunc = () => {
     const { dispatch } = this.props;
     dispatch(logoutAction('reload_page'));
@@ -94,15 +55,9 @@ class HeaderContainer extends Component {
     return (
       <Fragment>
         <LoginModal
-          closeSignin={this.closeSignin}
-          openCreateAccount={this.openCreateAccount}
-          openSignin={this.openSignin}
           social={social}
           fbAppId={fbAppId}
           googleOauth2ClientId={googleOauth2ClientId}
-          signinFunc={this.signinFunc}
-          registerFunc={this.registerFunc}
-          thirdPartySigninFunc={this.thirdPartySigninFunc}
           {...this.props}
         />
         <BasicModal {...this.props} />

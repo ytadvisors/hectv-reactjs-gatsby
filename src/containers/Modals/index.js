@@ -1,4 +1,4 @@
 import BasicModal from './BasicModal';
-import RegistrationModal from './RegistrationModal';
+import LoginModal from './LoginModal';
 
-export { BasicModal, RegistrationModal };
+export { BasicModal, LoginModal };

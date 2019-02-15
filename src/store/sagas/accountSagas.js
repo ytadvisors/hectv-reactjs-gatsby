@@ -115,6 +115,9 @@ function* logout({ operation }) {
     switch (operation) {
       case 'reload_page':
         navigate('/');
+        yield put({
+          type: pageTypes.CLOSE_OVERLAY
+        });
         break;
       default:
         break;
@@ -158,14 +161,15 @@ function* registerUser({ register, pathname }) {
   }
 }
 
-function* setSiteMember({ data, pathname }) {
+function* setSiteMember({ data, pathname = '/' }) {
   try {
     const { token } = deepMapKeys(data, key => _.camelCase(key));
-    console.log(data);
-    console.log(pathname);
     setUserToken(token);
+    navigate(pathname);
     yield put({ type: types.LOAD_USER, values: {} });
-    yield put({ type: pageTypes.SET_PAGE_OPERATION, operation: '' });
+    yield put({
+      type: pageTypes.CLOSE_OVERLAY
+    });
   } catch (error) {
     yield put({
       type: types.LOCAL_STORAGE_ERROR,

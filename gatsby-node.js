@@ -464,6 +464,22 @@ async function createPostPreview(createPage) {
   });
 }
 
+async function createUserPages(createPage) {
+  const userPages = [
+    'profile',
+    'favorite-shows',
+    'viewing-history',
+    'watchlist'
+  ];
+
+  _.forEach(userPages, page =>
+    createPage({
+      path: page,
+      component: slash(path.resolve(`./src/templates/user-${page}.js`)),
+      context: {}
+    })
+  );
+}
 exports.onCreateWebpackConfig = ({ actions }) => {
   actions.setWebpackConfig({
     node: {
@@ -484,6 +500,7 @@ exports.createPages = async ({ graphql, actions }) => {
       createSiteEvents(createPage, graphql),
       createSiteMagazines(createPage, graphql),
       createSearch(createPage),
+      createUserPages(createPage),
       createPostPreview(createPage)
     ]);
     return new Promise(resolve => resolve(true));
