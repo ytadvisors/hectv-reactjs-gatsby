@@ -1,9 +1,8 @@
 import React from 'react';
 import { Modal } from 'react-bootstrap';
-import VideoPlayer from '../../components/VideoPlayer';
-import { closeOverlayAction } from '../../store/actions/pageActions';
-
-import logo from '../../assets/white_hec.png';
+import VideoPlayer from '../../../components/VideoPlayer';
+import { closeOverlayAction } from '../../../store/actions/pageActions';
+import './styles.scss';
 
 export default ({
   openOverlay,
@@ -14,27 +13,19 @@ export default ({
     dispatch(closeOverlayAction());
   };
 
-  const title = "St. Louis' home of Education";
   return (
     <Modal
       show={openOverlay === 'basic'}
       onHide={closeOverlay}
       aria-labelledby="page-modal"
-      className="page-modal"
+      className="page-modal basic-modal"
     >
-      <Modal.Header closeButton className="modal-header">
-        <Modal.Title id="modal-header">
-          <div className="col-xs-2 no-padding col-xs-offset-1">
-            <img src={logo} className="img-responsive" alt="logo" />
-          </div>
-
-          <div className="col-xs-8 brand-details no-padding">
-            <div className="brand-text">
-              <div>{title}</div>
-              <div>Arts, and Culture</div>
-            </div>
-          </div>
-        </Modal.Title>
+      <Modal.Header
+        closeButton
+        className="modal-header"
+        style={{ height: 'auto' }}
+      >
+        <Modal.Title id="modal-header" />
       </Modal.Header>
       <Modal.Body className="modal-body" style={{ padding: '0' }}>
         {img && (
@@ -42,7 +33,7 @@ export default ({
             src={img}
             className="img-responsive "
             style={{ width: '100%' }}
-            alt="header"
+            alt="background"
           />
         )}
         {video && (
