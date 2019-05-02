@@ -3,8 +3,5 @@ import '@babel/polyfill';
 import React from 'react';
 import wrapWithProvider from './src/utils/wrapWithProvider';
 
-const timeout = 250;
-const historyExitingEventType = `history::exiting`;
-
-export { historyExitingEventType, timeout };
 export const wrapRootElement = wrapWithProvider;
+export default wrapRootElement;

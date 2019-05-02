@@ -236,12 +236,24 @@ export default class Header extends Component {
             label: 'My Account',
             children: [
               {
+                url: '/favorite_shows',
+                label: 'Favorite Shows'
+              },
+              {
+                url: '/watchlist',
+                label: 'Watchlist'
+              },
+              {
+                url: '/viewing_history',
+                label: 'Viewing History'
+              },
+              {
                 url: '/profile',
                 label: 'Profile'
               },
               {
                 buttonClick: logoutFunc,
-                label: 'Logout'
+                label: 'Sign Out'
               }
             ]
           })

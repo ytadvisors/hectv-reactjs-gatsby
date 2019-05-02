@@ -3,15 +3,10 @@ import { navigate } from 'gatsby';
 import { connect } from 'react-redux';
 import Header from '../components/Header';
 import Banner from '../components/Banner';
-import Signin from '../components/Signin';
+import LoginModal from './Modals/LoginModal';
 import { loadLiveVideosAction } from '../store/actions/postActions';
-import { setPageOperation } from '../store/actions/pageActions';
-import {
-  loginAction,
-  registerAction,
-  loginThirdPartyAction,
-  logoutAction
-} from '../store/actions/accountActions';
+import { openOverlayAction } from '../store/actions/pageActions';
+import { logoutAction } from '../store/actions/accountActions';
 
 import { BasicModal } from './Modals';
 
@@ -42,32 +37,11 @@ class HeaderContainer extends Component {
 
   openSignin = () => {
     const { dispatch } = this.props;
-    dispatch(setPageOperation('signin'));
-  };
-
-  openCreateAccount = () => {
-    const { dispatch } = this.props;
-    dispatch(setPageOperation('register'));
-  };
-
-  closeSignin = () => {
-    const { dispatch } = this.props;
-    dispatch(setPageOperation(''));
-  };
-
-  signinFunc = () => {
-    const { dispatch, pageForm: { user: { values } = {} } = {} } = this.props;
-    dispatch(loginAction(values));
-  };
-
-  registerFunc = () => {
-    const { dispatch, pageForm: { user: { values } = {} } = {} } = this.props;
-    dispatch(registerAction(values));
-  };
-
-  thirdPartySigninFunc = data => {
-    const { dispatch } = this.props;
-    dispatch(loginThirdPartyAction(data));
+    dispatch(
+      openOverlayAction('signin', {
+        screen: 'signin'
+      })
+    );
   };
 
   logoutFunc = () => {
@@ -76,27 +50,15 @@ class HeaderContainer extends Component {
   };
 
   render() {
-    const {
-      liveVideos,
-      social,
-      pageOperation,
-      fbAppId,
-      googleOauth2ClientId
-    } = this.props;
+    const { liveVideos, social, fbAppId, googleOauth2ClientId } = this.props;
 
     return (
       <Fragment>
-        <Signin
-          pageOperation={pageOperation}
-          closeSignin={this.closeSignin}
-          openCreateAccount={this.openCreateAccount}
-          openSignin={this.openSignin}
+        <LoginModal
           social={social}
           fbAppId={fbAppId}
           googleOauth2ClientId={googleOauth2ClientId}
-          signinFunc={this.signinFunc}
-          registerFunc={this.registerFunc}
-          thirdPartySigninFunc={this.thirdPartySigninFunc}
+          {...this.props}
         />
         <BasicModal {...this.props} />
         <Header
