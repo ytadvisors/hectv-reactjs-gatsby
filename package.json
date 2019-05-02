@@ -55,7 +55,7 @@
     "gatsby-plugin-sitemap": "^2.0.1",
     "gatsby-source-wordpress": "^3.0.58",
     "google-fonts": "^1.0.0",
-    "graphql": "^0.13.2",
+    "graphql": "^14.2.1",
     "gsap": "^2.0.2",
     "install": "^0.12.1",
     "jquery": "^3.4.1",
