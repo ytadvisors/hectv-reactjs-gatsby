@@ -463,6 +463,7 @@ async function createPostPreview(createPage) {
     context: {}
   });
 }
+/*
 
 async function createUserPages(createPage) {
   const userPages = [
@@ -479,7 +480,8 @@ async function createUserPages(createPage) {
       context: {}
     })
   );
-}
+} */
+
 exports.onCreateWebpackConfig = ({ actions }) => {
   actions.setWebpackConfig({
     node: {
@@ -500,7 +502,6 @@ exports.createPages = async ({ graphql, actions }) => {
       createSiteEvents(createPage, graphql),
       createSiteMagazines(createPage, graphql),
       createSearch(createPage),
-      createUserPages(createPage),
       createPostPreview(createPage)
     ]);
     return new Promise(resolve => resolve(true));
