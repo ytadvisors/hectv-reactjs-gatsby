@@ -142,14 +142,10 @@ module.exports = {
               }
             },
             {
-              'webfeeds:icon': `${
-                process.env.GATSBY_SITE_HOST
-              }/favicons/favicon-32x32.png`
+              'webfeeds:icon': `${process.env.GATSBY_SITE_HOST}/favicons/favicon-32x32.png`
             },
             {
-              'webfeeds:logo': `${
-                process.env.GATSBY_SITE_HOST
-              }/favicons/favicon-32x32.png`
+              'webfeeds:logo': `${process.env.GATSBY_SITE_HOST}/favicons/favicon-32x32.png`
             },
             { 'webfeeds:accentColor': '00FF00' }
           ]
