@@ -3,9 +3,9 @@
   "description": "HEC-TV website",
   "license": "MIT",
   "scripts": {
-    "build:dev": "ACTIVE_ENV=development  node --stack_size=9000 --max-old-space-size=9000 --inspect-brk --no-lazy  -r esm ./node_modules/.bin/gatsby build --prefix-paths --verbose --no-uglify",
-    "build:staging": "ACTIVE_ENV=staging node --stack_size=9000 --max-old-space-size=9000 -r esm ./node_modules/.bin/gatsby build --verbose --no-uglify",
-    "build:production": "ACTIVE_ENV=production node  --stack_size=9000 --max-old-space-size=9000 -r esm ./node_modules/.bin/gatsby build --verbose",
+    "build:dev": "ACTIVE_ENV=development  node --stack_size=4184 --max-old-space-size=4184 --inspect-brk --no-lazy  -r esm ./node_modules/.bin/gatsby build --prefix-paths --verbose --no-uglify",
+    "build:staging": "ACTIVE_ENV=staging node --stack_size=4184 --max-old-space-size=4184 -r esm ./node_modules/.bin/gatsby build --verbose --no-uglify",
+    "build:production": "ACTIVE_ENV=production node  --stack_size=4184 --max-old-space-size=4184 -r esm ./node_modules/.bin/gatsby build --verbose",
     "sync-static:staging": "aws --profile eb-cli2 s3 sync --exclude '*' --include '/*.js' --include '/*.css' --include '/*.json' public/ s3://dev.hecmedia.org/",
     "sync-dynamic:staging": "aws --profile eb-cli2 s3 sync public/ s3://dev.hecmedia.org --cache-control 'max-age=0'",
     "sync-static:production": "aws --profile eb-cli2 s3 sync --exclude '*' --include '/*.js' --include '/*.css' --include '/*.json' public/ s3://hectv.org/",
@@ -13,9 +13,9 @@
     "clear:production": "aws cloudfront create-invalidation --distribution-id E3MZJ4ROMYBGNG --paths '/*'",
     "clear:staging": "aws cloudfront create-invalidation --distribution-id E2PUI3F4NGV2Z1 --paths '/*' ",
     "dev": " node --max_old_space_size=2084 --inspect-brk --no-lazy -r esm ./node_modules/.bin/gatsby develop",
-    "develop": " node --stack_size=9000 --max-old-space-size=9000 -r esm ./node_modules/.bin/gatsby develop",
-    "build": " node --stack_size=9000 --max-old-space-size=9000 -r esm ./node_modules/.bin/gatsby build",
-    "serve": " node --stack_size=9000 --max-old-space-size=9000 -r esm ./node_modules/.bin/gatsby serve"
+    "develop": " node --stack_size=4184 --max-old-space-size=4184 -r esm ./node_modules/.bin/gatsby develop",
+    "build": " node --stack_size=4184 --max-old-space-size=4184 -r esm ./node_modules/.bin/gatsby build",
+    "serve": " node --stack_size=4184 --max-old-space-size=4184 -r esm ./node_modules/.bin/gatsby serve"
   },
   "husky": {
     "hooks": {
