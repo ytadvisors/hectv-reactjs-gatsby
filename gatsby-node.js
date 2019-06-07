@@ -1,16 +1,20 @@
-const _ = require(`lodash`);
-const Promise = require(`bluebird`);
-const path = require(`path`);
-const slash = require(`slash`);
-const fs = require(`fs`);
-// const util = require('util');
+import _ from 'lodash';
+import Promise from 'bluebird';
+import path from 'path';
+import slash from 'slash';
+import fs from 'fs';
+import dotenv from 'dotenv';
 
-let activeEnv = process.env.ACTIVE_ENV;
-if (!activeEnv) {
+const {
+  env: { ACTIVE_ENV }
+} = process;
+
+let activeEnv = ACTIVE_ENV;
+if (!ACTIVE_ENV) {
   activeEnv = 'development';
 }
 
-require('dotenv').config({
+dotenv.config({
   path: `.env.${activeEnv}`,
   silent: true
 });
@@ -463,24 +467,6 @@ async function createPostPreview(createPage) {
     context: {}
   });
 }
-/*
-
-async function createUserPages(createPage) {
-  const userPages = [
-    'profile',
-    'favorite-shows',
-    'viewing-history',
-    'watchlist'
-  ];
-
-  _.forEach(userPages, page =>
-    createPage({
-      path: page,
-      component: slash(path.resolve(`./src/templates/user-${page}.js`)),
-      context: {}
-    })
-  );
-} */
 
 exports.onCreateWebpackConfig = ({ actions }) => {
   actions.setWebpackConfig({
