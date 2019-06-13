@@ -1,8 +1,9 @@
 import React, { Component, Fragment } from 'react';
 import { graphql } from 'gatsby';
 import { connect } from 'react-redux';
-import { loadSearchPostsAction } from '../store/actions/postActions';
+import queryString from 'query-string';
 
+import { loadSearchPostsAction } from '../store/actions/postActions';
 import { getPrograms, getExcerpt } from '../utils/helperFunctions';
 
 import SEO from '../components/SEO';
@@ -14,15 +15,15 @@ class Search extends Component {
   componentDidMount() {
     this.mounted = true;
     const {
-      location: { pathname }
+      location: { search }
     } = this.props;
-    this.loadPage(pathname);
+    this.loadPage(search);
   }
 
   componentDidUpdate(prevProps) {
-    const { location: { pathname } = {} } = this.props;
-    if (prevProps.location.pathname !== pathname) {
-      this.loadPage(pathname);
+    const { location: { search } = {} } = this.props;
+    if (prevProps.location.search !== search) {
+      this.loadPage(search);
     }
   }
 
@@ -30,7 +31,8 @@ class Search extends Component {
     this.mounted = false;
   }
 
-  loadPage = pathname => {
+  loadPage = searchQuery => {
+    const query = queryString.parse(searchQuery.toLowerCase());
     if (this.mounted) {
       const {
         dispatch,
@@ -41,8 +43,7 @@ class Search extends Component {
         }
       } = this.props;
 
-      const [, , searchValue] = pathname.split('/');
-      dispatch(loadSearchPostsAction(apiUrl, searchValue));
+      if (query.q) dispatch(loadSearchPostsAction(apiUrl, query.q));
     }
   };
 
@@ -50,7 +51,7 @@ class Search extends Component {
     const {
       data,
       posts,
-      location: { pathname }
+      location: { search }
     } = this.props;
 
     const {
@@ -63,7 +64,8 @@ class Search extends Component {
     const programs = getPrograms(wpSchedule.edges, 5);
 
     const description = 'On Demand Arts, Culture & Education Programming';
-    const [, , searchValue] = pathname.split('/');
+    const query = queryString.parse(search.toLowerCase());
+    const searchValue = query.q || '';
 
     return (
       <Fragment>
@@ -89,7 +91,7 @@ class Search extends Component {
           <div className="col-md-12">
             <DefaultNav
               title={`Results: ${decodeURI(searchValue)}`}
-              link={`/search/${searchValue}`}
+              link={`/search/?q=${searchValue}`}
             />
           </div>
           <ListOfPosts

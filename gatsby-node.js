@@ -454,7 +454,7 @@ async function createSitePosts(createPage, graphql) {
 
 async function createSearch(createPage) {
   createPage({
-    path: '/search/:searchpath',
+    path: '/search/',
     component: slash(path.resolve('./src/templates/search.js')),
     context: {}
   });

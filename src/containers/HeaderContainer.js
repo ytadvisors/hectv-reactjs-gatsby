@@ -31,7 +31,7 @@ class HeaderContainer extends Component {
     const { pageForm: { search: { values } = {} } = {} } = this.props;
 
     if (values && values.search) {
-      navigate(`/search/${values.search}`);
+      navigate(`/search/?q=${values.search}`);
     }
   };
 
