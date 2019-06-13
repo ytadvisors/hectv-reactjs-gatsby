@@ -458,11 +458,6 @@ async function createSearch(createPage) {
     component: slash(path.resolve('./src/templates/search.js')),
     context: {}
   });
-  createPage({
-    path: '/search/:searchpath',
-    component: slash(path.resolve('./src/templates/search.js')),
-    context: {}
-  });
 }
 
 async function createPostPreview(createPage) {
