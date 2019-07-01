@@ -6,6 +6,7 @@ import LazyLoad from 'react-lazyload';
 import VideoPlayer from '../VideoPlayer/index';
 import ShareSocialLinks from '../ShareSocialLinks';
 import { getEventDate, cleanUrl } from '../../utils/helperFunctions';
+import PodcastLinks from '../PodcastLinks';
 import './styles.scss';
 
 export default class SinglePost extends Component {
@@ -60,7 +61,8 @@ export default class SinglePost extends Component {
       showShareIcons,
       liveVideos = [],
       hideTitle,
-      classes
+      classes,
+      podcasts
     } = this.props;
     const containerStyle = { padding: '0' };
     const { acf: { endDate, displayDate, url } = {} } =
@@ -151,6 +153,7 @@ export default class SinglePost extends Component {
             )}
           </div>
         )}
+        <PodcastLinks podcasts={podcasts} />
         <div className={`blog-content ${(classes && classes.content) || ''}`}>
           <div dangerouslySetInnerHTML={{ __html: content }} />
         </div>

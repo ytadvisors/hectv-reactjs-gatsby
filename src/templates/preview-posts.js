@@ -16,7 +16,6 @@ import SEO from '../components/SEO';
 import Layout from '../components/Layout';
 import SinglePost from '../components/SinglePost';
 import ListOfPosts from '../components/ListOfPosts';
-import PodcastLinks from '../components/PodcastLinks';
 
 class Post extends Component {
   componentDidMount() {
@@ -130,10 +129,10 @@ class Post extends Component {
                 liveVideos,
                 pageTitle: decodeHTML(title || ''),
                 pageUrl: `${siteUrl}${pathname}`,
-                showShareIcons: true
+                showShareIcons: true,
+                podcasts
               }}
             />
-            <PodcastLinks podcasts={podcasts} />
             <ListOfPosts
               title="Related Posts"
               posts={relatedPosts || []}
