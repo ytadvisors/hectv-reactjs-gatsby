@@ -16,6 +16,7 @@ import SEO from '../components/SEO';
 import Layout from '../components/Layout';
 import SinglePost from '../components/SinglePost';
 import ListOfPosts from '../components/ListOfPosts';
+import PodcastLinks from '../components/PodcastLinks';
 
 class Post extends Component {
   componentDidMount() {
@@ -78,6 +79,8 @@ class Post extends Component {
       wpPost: newPost
     };
 
+    const podcasts = (newPost && newPost.acf && newPost.acf.podcasts) || [];
+
     const description =
       excerpt || content || 'On Demand Arts, Culture & Education Programming';
 
@@ -130,6 +133,7 @@ class Post extends Component {
                 showShareIcons: true
               }}
             />
+            <PodcastLinks podcasts={podcasts} />
             <ListOfPosts
               title="Related Posts"
               posts={relatedPosts || []}
