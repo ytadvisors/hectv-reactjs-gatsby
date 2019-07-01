@@ -13,6 +13,7 @@ import SEO from '../components/SEO';
 import Layout from '../components/Layout';
 import SinglePost from '../components/SinglePost';
 import ListOfPosts from '../components/ListOfPosts';
+import PodcastLinks from '../components/PodcastLinks';
 
 const Post = ({ data, liveVideos }) => {
   let categories = [];
@@ -30,7 +31,15 @@ const Post = ({ data, liveVideos }) => {
     categories = wpCategory.edges.map(obj => obj.node.name);
   }
 
-  const { excerpt, content, title, thumbnail, slug, link } = wpPost;
+  const {
+    excerpt,
+    content,
+    title,
+    thumbnail,
+    slug,
+    link,
+    acf: { podcasts }
+  } = wpPost;
   const description =
     excerpt || content || 'On Demand Arts, Culture & Education Programming';
 
@@ -80,6 +89,7 @@ const Post = ({ data, liveVideos }) => {
               showShareIcons: true
             }}
           />
+          <PodcastLinks podcasts={podcasts} />
           <ListOfPosts
             title="Related Posts"
             posts={posts || []}
@@ -221,6 +231,10 @@ export const query = graphql`
               }
             }
           }
+        }
+        podcasts {
+          podcast
+          podcastLink
         }
       }
     }
