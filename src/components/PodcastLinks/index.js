@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'gatsby';
 import './styles.scss';
 
 const getPodcastListItem = podcastInfo => {
@@ -30,7 +29,15 @@ const getPodcastListItem = podcastInfo => {
 
   return (
     <li className="podcast">
-      <Link to={podcastLink} className={`${listClass} `} />
+      <a
+        href={podcastLink}
+        className={`${listClass} `}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {' '}
+        {''}
+      </a>
     </li>
   );
 };
