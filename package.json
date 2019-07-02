@@ -90,7 +90,8 @@
     "redux-form": "^7.4.2",
     "redux-logger": "^3.0.6",
     "redux-saga": "^0.16.0",
-    "slash": "3.0.0",
+    "shortid": "^2.2.14",
+    "slash": "^3.0.0",
     "slick-carousel": "^1.8.1",
     "validator": "^10.4.0"
   },

@@ -78,7 +78,14 @@ class Post extends Component {
       wpPost: newPost
     };
 
-    const podcasts = (newPost && newPost.acf && newPost.acf.podcasts) || [];
+    const showPodcasts =
+      (newPost && newPost.acf && newPost.acf.showPodcasts) || [];
+    const podcasts =
+      showPodcasts && wpMenu
+        ? wpMenu.edges.reduce((result, menu) =>
+            menu.node.name === 'Podcasts' ? menu.node.items : result
+          )
+        : [];
 
     const description =
       excerpt || content || 'On Demand Arts, Culture & Education Programming';
@@ -98,6 +105,7 @@ class Post extends Component {
       'postEvents',
       'relatedEvent'
     );
+
     relatedPosts = _.take(relatedPosts, 3);
     return (
       <Fragment>
