@@ -30,7 +30,15 @@ const Post = ({ data, liveVideos }) => {
     categories = wpCategory.edges.map(obj => obj.node.name);
   }
 
-  const { excerpt, content, title, thumbnail, slug, link } = wpPost;
+  const {
+    excerpt,
+    content,
+    title,
+    thumbnail,
+    slug,
+    link,
+    acf: { showPodcasts }
+  } = wpPost;
   const description =
     excerpt || content || 'On Demand Arts, Culture & Education Programming';
 
@@ -41,7 +49,12 @@ const Post = ({ data, liveVideos }) => {
     'relatedPost',
     'wpRelatedPosts'
   );
-
+  const podcasts =
+    showPodcasts && wpMenu
+      ? wpMenu.edges.reduce((result, menu) =>
+          menu.node.name === 'Podcasts' ? menu.node.items : result
+        )
+      : [];
   const programs = getPrograms(wpSchedule.edges, 5);
   const events = getPosts(data, 'wpPost', 'postEvents', 'relatedEvent');
   const pathname = link.replace(/https?:\/\/[^/]+/, '');
@@ -77,7 +90,8 @@ const Post = ({ data, liveVideos }) => {
               liveVideos,
               pageTitle: decodeHTML(title || ''),
               pageUrl: `${siteUrl}${pathname}`,
-              showShareIcons: true
+              showShareIcons: true,
+              podcasts
             }}
           />
           <ListOfPosts
@@ -175,6 +189,7 @@ export const query = graphql`
         vimeoId
         isVideo
         embedUrl
+        showPodcasts
         relatedPosts {
           relatedPost {
             postTitle

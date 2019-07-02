@@ -78,6 +78,15 @@ class Post extends Component {
       wpPost: newPost
     };
 
+    const showPodcasts =
+      (newPost && newPost.acf && newPost.acf.showPodcasts) || [];
+    const podcasts =
+      showPodcasts && wpMenu
+        ? wpMenu.edges.reduce((result, menu) =>
+            menu.node.name === 'Podcasts' ? menu.node.items : result
+          )
+        : [];
+
     const description =
       excerpt || content || 'On Demand Arts, Culture & Education Programming';
 
@@ -96,6 +105,7 @@ class Post extends Component {
       'postEvents',
       'relatedEvent'
     );
+
     relatedPosts = _.take(relatedPosts, 3);
     return (
       <Fragment>
@@ -127,7 +137,8 @@ class Post extends Component {
                 liveVideos,
                 pageTitle: decodeHTML(title || ''),
                 pageUrl: `${siteUrl}${pathname}`,
-                showShareIcons: true
+                showShareIcons: true,
+                podcasts
               }}
             />
             <ListOfPosts
