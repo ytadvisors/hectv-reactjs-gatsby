@@ -1,10 +1,10 @@
 import React from 'react';
+import shortid from 'shortid';
 import './styles.scss';
 
-const getPodcastListItem = podcastInfo => {
-  const { podcast, podcastLink } = podcastInfo;
+const getPodcastListItem = ({ title, url }) => {
   let listClass = '';
-  switch (podcast) {
+  switch (title) {
     case 'Apple Podcasts':
       listClass = 'apple-link';
       break;
@@ -18,19 +18,19 @@ const getPodcastListItem = podcastInfo => {
       listClass = 'tunein-link';
       break;
     case 'Spotify':
-      listClass = 'tunein-gray';
+      listClass = 'spotify-link';
       break;
     case 'RSS':
-      listClass = 'spotify-link';
+      listClass = 'rss-link';
       break;
     default:
       listClass = '';
   }
 
   return (
-    <li className="podcast">
+    <li className="podcast" key={shortid.generate()}>
       <a
-        href={podcastLink}
+        href={url}
         className={`${listClass} `}
         target="_blank"
         rel="noopener noreferrer"
