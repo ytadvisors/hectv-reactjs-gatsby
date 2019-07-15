@@ -49,16 +49,14 @@ export default class SinglePost extends Component {
   resizeVideos = () => {
     const isMobile = !isServer && window.innerWidth <= 1170;
     if (isMobile) {
-      let width = window.innerWidth;
-      if (width > 945) width -= width * 0.09;
-      else if (width > 800) width -= width * 0.05;
       $(`iframe`).each(function() {
-        $(this).attr('width', width - 160);
+        let width = window.innerWidth;
+        $(this).attr('width', Math.floor((width -= width * 0.32)));
         $(this).attr('height', Math.floor(width / 2));
       });
     } else {
-      const width = 1000;
       $(`iframe`).each(function() {
+        const width = 1000;
         $(this).attr('width', width - 170);
         $(this).attr('height', Math.floor(width / 2));
       });
