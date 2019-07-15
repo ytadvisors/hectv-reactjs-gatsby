@@ -1,6 +1,10 @@
 .post-container {
   padding: 0 0 1.8em 0;
 
+  a {
+    -ms-word-break: break-all !important;
+    word-break: break-all !important;
+  }
   .gallery {
     padding: 20px;
     .slick-slide {
