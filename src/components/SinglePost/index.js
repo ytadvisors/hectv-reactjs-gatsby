@@ -50,15 +50,21 @@ export default class SinglePost extends Component {
     const isMobile = !isServer && window.innerWidth <= 1170;
     if (isMobile) {
       $(`iframe`).each(function() {
-        let width = window.innerWidth;
-        $(this).attr('width', Math.floor((width -= width * 0.32)));
-        $(this).attr('height', Math.floor(width / 2));
+        const src = $(this).attr('src');
+        if (src.match(/youtube\.com/g)) {
+          let width = window.innerWidth;
+          $(this).attr('width', Math.floor((width -= width * 0.32)));
+          $(this).attr('height', Math.floor(width / 2));
+        }
       });
     } else {
       $(`iframe`).each(function() {
-        const width = 1000;
-        $(this).attr('width', width - 170);
-        $(this).attr('height', Math.floor(width / 2));
+        const src = $(this).attr('src');
+        if (src.match(/youtube\.com/g)) {
+          const width = 1000;
+          $(this).attr('width', width - 170);
+          $(this).attr('height', Math.floor(width / 2));
+        }
       });
     }
   };
