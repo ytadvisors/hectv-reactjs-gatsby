@@ -50,7 +50,8 @@ export default class SinglePost extends Component {
     const isMobile = !isServer && window.innerWidth <= 1170;
     if (isMobile) {
       let width = window.innerWidth;
-      width -= width * 0.04;
+      if (width > 600) width -= width * 0.04;
+      else width -= 20;
       $(`iframe`).each(function() {
         $(this).attr('width', width - 170);
         $(this).attr('height', Math.floor(width / 2));
