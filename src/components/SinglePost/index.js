@@ -5,7 +5,7 @@ import * as Material from 'react-icons/lib/md';
 import LazyLoad from 'react-lazyload';
 import VideoPlayer from '../VideoPlayer/index';
 import ShareSocialLinks from '../ShareSocialLinks';
-import { getEventDate, cleanUrl } from '../../utils/helperFunctions';
+import { getEventDate, cleanUrl, isServer } from '../../utils/helperFunctions';
 import PodcastLinks from '../PodcastLinks';
 import './styles.scss';
 
@@ -37,7 +37,31 @@ export default class SinglePost extends Component {
         }
       ]
     });
+
+    this.resizeVideos();
+    window.addEventListener('resize', this.resizeVideos);
   }
+
+  componentWillUnmount() {
+    if (!isServer) window.removeEventListener('resize', this.resizeVideos);
+  }
+
+  resizeVideos = () => {
+    const isMobile = !isServer && window.innerWidth <= 1170;
+    if (isMobile) {
+      $(`iframe`).each(function() {
+        let width = window.innerWidth;
+        $(this).attr('width', Math.floor((width -= width * 0.32)));
+        $(this).attr('height', Math.floor(width / 2));
+      });
+    } else {
+      $(`iframe`).each(function() {
+        const width = 1000;
+        $(this).attr('width', width - 170);
+        $(this).attr('height', Math.floor(width / 2));
+      });
+    }
+  };
 
   render() {
     const {
