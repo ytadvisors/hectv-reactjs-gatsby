@@ -156,6 +156,18 @@ div.aligncenter {
   margin: 5px 0 20px 20px;
 }
 
+img.alignright {
+  float: right;
+  margin: 0 0 1em 1em; }
+img.alignleft {
+  float: left;
+  margin: 0 1em 1em 0; }
+img.aligncenter {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .wp-caption {
   border: 1px solid #ddd;
   text-align: center;
