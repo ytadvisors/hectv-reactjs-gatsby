@@ -47,12 +47,12 @@ export default class SinglePost extends Component {
   }
 
   resizeVideos = () => {
-    const isMobile = !isServer && window.innerWidth <= 1170;
+    const isMobile = !isServer && $(window).width() <= 1170;
     if (isMobile) {
       $(`iframe`).each(function() {
         const src = $(this).attr('src');
         if (src.match(/youtube\.com/g)) {
-          let width = window.innerWidth;
+          let width = $(window).width();
           $(this).attr('width', Math.floor((width -= width * 0.32)));
           $(this).attr('height', Math.floor(width / 2));
         }
