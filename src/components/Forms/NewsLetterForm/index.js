@@ -28,7 +28,15 @@ const fields = [
     type: 'email',
     placeholder: 'Email*',
     validation: ['required', 'email']
-  }
+  },
+  [
+    {
+      name: 'newsletter-captcha',
+      component: 'captcha',
+      type: 'text',
+      validation: ['required']
+    }
+  ]
 ];
 
 const validate = Validator(fields);
