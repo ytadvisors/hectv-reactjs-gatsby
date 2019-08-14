@@ -79,7 +79,7 @@ export default class Header extends Component {
 
     return (
       <NavDropdown
-        key={shortid.generate()}
+        key={`${label} ${url}`}
         className={`btn ${btnDisplay}`}
         title={label}
         id={url}
@@ -137,7 +137,7 @@ export default class Header extends Component {
 
     return open[url] ? (
       <NavWrap
-        key={shortid.generate()}
+        key={`${label} ${url}`}
         className={`${
           currentPage === cleanUrl.replace(/\//g, '')
             ? `btn show ${btnDisplay}`
@@ -149,7 +149,7 @@ export default class Header extends Component {
       </NavWrap>
     ) : (
       <NavWrap
-        key={shortid.generate()}
+        key={`${label} ${url}`}
         className={`${
           currentPage === cleanUrl.replace(/\//g, '')
             ? `btn show ${btnDisplay}`
@@ -221,7 +221,7 @@ export default class Header extends Component {
 
     if (isMobile) {
       userAdmin.push({
-        url: '#',
+        url: '/#subscribe',
         btnClass: 'btn-primary pull-right search-btn',
         icon: (
           <Button
