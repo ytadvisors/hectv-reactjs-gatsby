@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import $ from 'jquery';
-import * as FontAwesome from 'react-icons/lib/fa';
+import { FaSearch } from 'react-icons/lib/fa';
 import * as Material from 'react-icons/lib/md';
+import shortid from 'shortid';
 import PropTypes from 'prop-types';
 import { Navbar, Nav, NavDropdown, Button } from 'react-bootstrap';
 import { Link } from 'gatsby';
@@ -20,20 +21,29 @@ import './styles.scss';
 export default class Header extends Component {
   constructor(props) {
     super(props);
+    this.mounted = true;
     this.state = {
       open: {},
-      navExpanded: false
+      navExpanded: false,
+      isMobile: false
     };
   }
 
   componentDidMount() {
     this.mounted = true;
     $('#main-nav > div:first-child').addClass('main-container');
+    this.setState({ isMobile: window.innerWidth <= 1170 });
+    window.addEventListener('resize', this.resize);
   }
 
   componentWillUnmount() {
     this.mounted = false;
+    if (!isServer) window.removeEventListener('resize', this.resize);
   }
+
+  resize = () => {
+    if (this.mounted) this.setState({ isMobile: window.innerWidth <= 1170 });
+  };
 
   search = () => {
     this.setToggle('#', false);
@@ -75,9 +85,7 @@ export default class Header extends Component {
         id={url}
       >
         {link.children.map(menu => (
-          <NavWrap key={`${menu.label} ${menu.url}`}>
-            {this.getLink(menu)}
-          </NavWrap>
+          <NavWrap key={shortid.generate()}>{this.getLink(menu)}</NavWrap>
         ))}
       </NavDropdown>
     );
@@ -155,16 +163,14 @@ export default class Header extends Component {
   };
 
   getLinks = links =>
-    links.map(
-      link =>
-        link.children ? this.getNavDropDown(link) : this.getNavItem(link)
+    links.map(link =>
+      link.children ? this.getNavDropDown(link) : this.getNavItem(link)
     );
 
   render() {
     const { header, social, openSignin, logoutFunc } = this.props;
-    const { navExpanded } = this.state;
+    const { navExpanded, isMobile } = this.state;
 
-    const isMobile = !isServer && window.innerWidth <= 1170;
     const style = isMobile
       ? { width: `${window.innerWidth - 50}px`, right: '12px' }
       : {};
@@ -185,11 +191,7 @@ export default class Header extends Component {
             className="search-btn-icon"
             onClick={() => this.setToggle('#', true)}
           >
-            <FontAwesome.FaSearch
-              className="search-icon"
-              size="20"
-              color="#444"
-            />
+            <FaSearch className="search-icon" size="20" color="#444" />
           </Button>
         ),
         toggle: (
@@ -204,7 +206,7 @@ export default class Header extends Component {
                   style={{ verticalAlign: 'middle' }}
                   onClick={() => this.search()}
                 >
-                  <FontAwesome.FaSearch className="search-icon" color="#222" />
+                  <FaSearch className="search-icon" color="#222" />
                 </Button>
               </div>
             </div>

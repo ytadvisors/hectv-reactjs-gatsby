@@ -19,7 +19,7 @@ export default class ListOfSideTabs extends Component {
     const { currentTab } = this.state;
 
     return (
-      <section className="list-of-side-tabs">
+      <section className="list-of-side-tabs" id="subscribe">
         <div className="tab-header">
           {tabs.map(tab => (
             <div
