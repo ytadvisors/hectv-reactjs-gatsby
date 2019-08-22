@@ -5,7 +5,7 @@ import * as Material from 'react-icons/lib/md';
 import shortid from 'shortid';
 import PropTypes from 'prop-types';
 import { Navbar, Nav, NavDropdown, Button } from 'react-bootstrap';
-import { Link, navigate } from 'gatsby';
+import { Link } from 'gatsby';
 import SearchForm from '../Forms/SearchForm';
 import SocialLinks from '../SocialLinks';
 import NavWrap from '../NavWrap';
@@ -218,21 +218,6 @@ export default class Header extends Component {
         )
       }
     ];
-
-    if (isMobile) {
-      userAdmin.push({
-        url: '/#subscribe',
-        btnClass: 'btn-primary pull-right search-btn',
-        icon: (
-          <Button
-            className="subscribe-btn"
-            onClick={() => navigate('/#subscribe')}
-          >
-            Subscribe to Newsletter
-          </Button>
-        )
-      });
-    }
 
     if (process.env.GATSBY_ENABLE_SIGNIN === 'true') {
       userAdmin.push({
