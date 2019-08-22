@@ -65,7 +65,6 @@ yarn.lock
 
 .cache/
 public
-package-lock.json
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
