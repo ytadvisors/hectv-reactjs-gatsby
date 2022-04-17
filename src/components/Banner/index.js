@@ -3,6 +3,7 @@ import moment from 'moment';
 import { Link } from 'gatsby';
 import playButton from '../../assets/play-button.png';
 import { isServer, getExcerpt, cleanUrl } from '../../utils/helperFunctions';
+import CountDownTimer from '../CountDownTimer';
 
 import './styles.scss';
 
@@ -48,7 +49,17 @@ export default class Banner extends Component {
       <div>
         <div>{getExcerpt(postTitle, isMobile ? 25 : 150)}</div>
         <div className="breaker">.&nbsp;</div>
-        <div>{moment(new Date(startDate)).format('MMM, Do hh:mm a z')} CT</div>
+        <div />
+
+        <div>
+          {startDate >= moment() ? (
+            <span>
+              Starts in <CountDownTimer deadline={startDate} />
+            </span>
+          ) : (
+            ''
+          )}
+        </div>
       </div>
     );
 
